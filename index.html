@@ -1,270 +1,1032 @@
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Поиск на Авито</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0d1117">
+  <title>RIV — Лучший поиск вещей</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #0d1117;
+      --card: #161b22;
+      --input: #1c2430;
+      --blue: #2ea6ff;
+      --cyan: #00d4ff;
+      --white: #fff;
+      --secondary: #c8d4e0;
+      --muted: #6b7d8b;
+      --green: #4dd47a;
+      --error: #ff7a7a;
+      --border: #21262d;
+      --glow: 0 4px 30px rgba(46, 166, 255, .22);
+    }
 
-        body {
-            background: #17212b;
-            color: #fff;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            padding: 16px;
-            min-height: 100vh;
-        }
+    * { box-sizing: border-box; }
+    html { background: var(--bg); scroll-behavior: smooth; }
 
-        h1 {
-            font-size: 20px;
-            margin-bottom: 16px;
-            color: #fff;
-        }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--white);
+      background:
+        radial-gradient(ellipse at 50% -12%, rgba(46,166,255,.13), transparent 42%),
+        radial-gradient(ellipse at 100% 42%, rgba(0,212,255,.045), transparent 35%),
+        var(--bg);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+        Roboto, Helvetica, Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
 
-        .input-block {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
+    button, input { font: inherit; }
+    button {
+      color: inherit;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
 
-        input[type="text"] {
-            padding: 12px 14px;
-            border-radius: 12px;
-            border: none;
-            background: #232e3c;
-            color: #fff;
-            font-size: 15px;
-            outline: none;
-            width: 100%;
-        }
+    .app {
+      width: min(100%, 480px);
+      margin: 0 auto;
+      padding: 18px 16px calc(28px + env(safe-area-inset-bottom));
+    }
 
-        input[type="text"]::placeholder {
-            color: #7d8b99;
-        }
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 5px 2px 20px;
+    }
 
-        button.search-btn {
-            padding: 14px;
-            border-radius: 12px;
-            border: none;
-            background: #2ea6ff;
-            color: #fff;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.15s;
-        }
+    .brand-mark {
+      width: 48px;
+      height: 48px;
+      border-radius: 16px;
+      display: grid;
+      place-items: center;
+      font-size: 24px;
+      font-weight: 900;
+      letter-spacing: -2px;
+      color: transparent;
+      background: linear-gradient(145deg, #2ea6ff, #00d4ff);
+      -webkit-background-clip: text;
+      background-clip: text;
+      border: 1px solid rgba(46,166,255,.38);
+      box-shadow: inset 0 0 20px rgba(46,166,255,.09),
+        0 0 22px rgba(46,166,255,.1);
+      position: relative;
+    }
 
-        button.search-btn:active {
-            background: #1e8ad6;
-        }
+    .brand-mark::before {
+      content: "";
+      position: absolute;
+      inset: 5px;
+      border-radius: 11px;
+      border: 1px solid rgba(0,212,255,.16);
+    }
 
-        button.search-btn:disabled {
-            background: #2a3a4a;
-            cursor: not-allowed;
-        }
+    .brand-copy { min-width: 0; }
 
-        .error {
-            background: #3a1f22;
-            color: #ff7a7a;
-            padding: 12px;
-            border-radius: 12px;
-            font-size: 14px;
-            margin-bottom: 16px;
-            word-break: break-word;
-        }
+    .brand-title {
+      font-size: 16px;
+      font-weight: 750;
+      letter-spacing: -.35px;
+      line-height: 1.25;
+    }
 
-        .loader {
-            text-align: center;
-            color: #7d8b99;
-            padding: 20px;
-            font-size: 14px;
-        }
+    .brand-sub {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
 
-        .grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      background: var(--green);
+      border-radius: 50%;
+      box-shadow: 0 0 9px rgba(77,212,122,.7);
+    }
 
-        .card {
-            background: #232e3c;
-            border-radius: 12px;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            transition: transform 0.15s;
-            text-decoration: none;
-            color: inherit;
-        }
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 22px 20px 17px;
+      border-radius: 24px;
+      background: linear-gradient(145deg, rgba(22,27,34,.98), rgba(14,24,35,.98));
+      border: 1px solid rgba(46,166,255,.3);
+      box-shadow: var(--glow), inset 0 1px rgba(255,255,255,.035);
+    }
 
-        .card:active {
-            transform: scale(0.97);
-        }
+    .hero::before {
+      content: "";
+      position: absolute;
+      width: 250px;
+      height: 250px;
+      right: -85px;
+      top: -78px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(0,212,255,.18),
+        rgba(46,166,255,.05) 42%, transparent 70%);
+      pointer-events: none;
+    }
 
-        .card-img {
-            width: 100%;
-            height: 130px;
-            object-fit: cover;
-            background: #2a3a4a;
-            display: block;
-        }
+    .hero-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 8px;
+      position: relative;
+      z-index: 1;
+    }
 
-        .card-img-placeholder {
-            width: 100%;
-            height: 130px;
-            background: linear-gradient(135deg, #2a3a4a 0%, #1f2a36 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #4a5a6a;
-            font-size: 32px;
-        }
+    .hero-crown {
+      font-size: 21px;
+      filter: drop-shadow(0 0 10px rgba(0,212,255,.5));
+    }
 
-        .card-body {
-            padding: 10px;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            flex: 1;
-        }
+    .discount {
+      padding: 7px 11px;
+      border: 1px solid rgba(77,212,122,.28);
+      background: rgba(77,212,122,.1);
+      color: var(--green);
+      border-radius: 10px;
+      font-weight: 800;
+      font-size: 13px;
+    }
 
-        .card-title {
-            font-size: 13px;
-            line-height: 1.3;
-            color: #c8d4e0;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            min-height: 34px;
-        }
+    .hero-word {
+      margin-top: 1px;
+      font-size: clamp(54px, 16vw, 76px);
+      font-weight: 950;
+      letter-spacing: -5px;
+      line-height: 1;
+      background: linear-gradient(105deg, #fff 3%, #73caff 48%, #00d4ff 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      filter: drop-shadow(0 0 22px rgba(46,166,255,.15));
+      position: relative;
+      z-index: 1;
+    }
 
-        .card-price {
-            font-size: 16px;
-            font-weight: 700;
-            color: #4dd47a;
-            margin-top: auto;
-        }
+    .hero-headline {
+      max-width: 310px;
+      margin: 13px 0 7px;
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -.65px;
+      line-height: 1.16;
+      position: relative;
+      z-index: 1;
+    }
 
-        .empty {
-            text-align: center;
-            color: #7d8b99;
-            padding: 40px 20px;
-            font-size: 14px;
-        }
-    </style>
+    .hero-headline span { color: var(--cyan); }
+
+    .hero-description {
+      max-width: 330px;
+      color: var(--secondary);
+      font-size: 14px;
+      line-height: 1.5;
+      margin: 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    .product-visual {
+      height: 132px;
+      position: relative;
+      margin: 10px -2px 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(ellipse at 50% 60%,
+        rgba(46,166,255,.14), transparent 58%);
+    }
+
+    .product-visual::before,
+    .product-visual::after {
+      content: "";
+      position: absolute;
+      width: 205px;
+      height: 68px;
+      border: 1px solid rgba(0,212,255,.35);
+      border-radius: 50%;
+      transform: rotate(-17deg);
+      box-shadow: 0 0 19px rgba(46,166,255,.1);
+    }
+
+    .product-visual::after {
+      width: 170px;
+      height: 48px;
+      transform: rotate(19deg);
+      border-color: rgba(46,166,255,.17);
+    }
+
+    .product-visual img {
+      position: relative;
+      z-index: 1;
+      width: min(75%, 260px);
+      height: 124px;
+      object-fit: contain;
+      filter: drop-shadow(0 12px 18px rgba(46,166,255,.48));
+      color: var(--muted);
+      text-align: center;
+    }
+
+    .floating-icon {
+      position: absolute;
+      z-index: 2;
+      display: grid;
+      place-items: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 12px;
+      background: rgba(28,36,48,.88);
+      border: 1px solid rgba(46,166,255,.35);
+      box-shadow: var(--glow);
+      font-size: 17px;
+    }
+
+    .float-cart { right: 9px; top: 7px; }
+    .float-fire { left: 8px; bottom: 6px; }
+
+    .hero-perks {
+      display: grid;
+      grid-template-columns: repeat(3,1fr);
+      gap: 7px;
+      margin-top: 12px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .perk {
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      padding: 9px 5px;
+      border-radius: 11px;
+      background: rgba(255,255,255,.035);
+      border: 1px solid rgba(255,255,255,.045);
+      color: var(--secondary);
+      font-size: 11px;
+      font-weight: 650;
+      white-space: nowrap;
+    }
+
+    .perk span { font-size: 14px; }
+
+    .search-area { margin-top: 17px; }
+
+    .link-field {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px;
+      border-radius: 18px;
+      background: var(--input);
+      border: 1px solid #2b3948;
+      transition: border-color .2s, box-shadow .2s;
+    }
+
+    .link-field:focus-within {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(46,166,255,.1),
+        0 0 22px rgba(46,166,255,.12);
+    }
+
+    .link-icon {
+      flex: 0 0 35px;
+      width: 35px;
+      height: 35px;
+      display: grid;
+      place-items: center;
+      font-size: 21px;
+    }
+
+    .input-wrap { flex: 1; min-width: 0; }
+
+    .input-wrap input {
+      display: block;
+      width: 100%;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: var(--white);
+      font-size: 14px;
+      padding: 4px 0;
+      min-width: 0;
+    }
+
+    .input-wrap input::placeholder { color: #d3deea; opacity: 1; }
+
+    .input-hint {
+      color: var(--muted);
+      font-size: 11px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      padding-top: 4px;
+    }
+
+    .send-button {
+      flex: 0 0 42px;
+      width: 42px;
+      height: 42px;
+      border: 0;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      font-size: 18px;
+      background: linear-gradient(135deg,var(--blue),var(--cyan));
+      color: #07131d;
+      box-shadow: 0 4px 18px rgba(46,166,255,.25);
+      transition: transform .15s, box-shadow .2s;
+    }
+
+    .primary-button {
+      width: 100%;
+      margin-top: 12px;
+      min-height: 58px;
+      border: 0;
+      border-radius: 18px;
+      padding: 15px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      color: #04121d;
+      background: linear-gradient(135deg,var(--blue) 0%,var(--cyan) 100%);
+      box-shadow: 0 5px 25px rgba(46,166,255,.28),
+        inset 0 1px rgba(255,255,255,.45);
+      font-size: 17px;
+      font-weight: 850;
+      letter-spacing: -.2px;
+      transition: transform .15s, box-shadow .2s;
+    }
+
+    .primary-button:hover {
+      box-shadow: 0 5px 32px rgba(46,166,255,.4),
+        inset 0 1px rgba(255,255,255,.45);
+    }
+
+    button:active { transform: scale(.97); }
+
+    .message {
+      display: none;
+      margin-top: 12px;
+      padding: 13px 14px;
+      border: 1px solid var(--border);
+      border-radius: 15px;
+      background: var(--card);
+      color: var(--secondary);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .message.show {
+      display: block;
+      animation: rise .25s ease both;
+    }
+
+    .message.error {
+      border-color: rgba(255,122,122,.3);
+      color: var(--error);
+    }
+
+    .results { display: none; margin-top: 12px; }
+    .results.show { display: block; animation: rise .25s ease both; }
+
+    .results-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin: 0 2px 10px;
+      font-weight: 750;
+      font-size: 15px;
+    }
+
+    .demo-label {
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 600;
+    }
+
+    .result-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 13px;
+      margin-top: 8px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+    }
+
+    .result-thumb {
+      flex: 0 0 46px;
+      width: 46px;
+      height: 46px;
+      display: grid;
+      place-items: center;
+      border-radius: 12px;
+      background: linear-gradient(145deg,rgba(46,166,255,.18),rgba(0,212,255,.05));
+      font-size: 24px;
+    }
+
+    .result-info { flex: 1; min-width: 0; }
+    .result-name { font-size: 13px; font-weight: 700; }
+    .result-store { color: var(--muted); font-size: 11px; margin-top: 4px; }
+
+    .result-price {
+      text-align: right;
+      font-size: 15px;
+      font-weight: 850;
+      color: var(--green);
+      white-space: nowrap;
+    }
+
+    .result-old {
+      display: block;
+      color: var(--muted);
+      font-size: 10px;
+      text-decoration: line-through;
+      font-weight: 500;
+      margin-top: 3px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4,minmax(0,1fr));
+      margin-top: 18px;
+      padding: 16px 6px 14px;
+      background: linear-gradient(145deg,rgba(22,27,34,.95),rgba(15,22,31,.96));
+      border: 1px solid rgba(46,166,255,.18);
+      border-radius: 20px;
+      box-shadow: 0 0 25px rgba(46,166,255,.055);
+    }
+
+    .stat {
+      min-width: 0;
+      padding: 0 4px;
+      text-align: center;
+      position: relative;
+    }
+
+    .stat + .stat::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 13px;
+      bottom: 8px;
+      width: 1px;
+      background: var(--border);
+    }
+
+    .stat-icon {
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      margin: 0 auto 9px;
+      border-radius: 12px;
+      background: rgba(46,166,255,.1);
+      border: 1px solid rgba(46,166,255,.18);
+      font-size: 17px;
+    }
+
+    .stat-value {
+      font-size: clamp(12px,3.5vw,16px);
+      font-weight: 850;
+      white-space: nowrap;
+      letter-spacing: -.3px;
+    }
+
+    .stat-label {
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 1.35;
+    }
+
+    .section-label {
+      margin: 22px 2px 10px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 750;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(4,minmax(0,1fr));
+      gap: 8px;
+    }
+
+    .feature {
+      min-height: 112px;
+      padding: 13px 5px 10px;
+      border-radius: 16px;
+      background: linear-gradient(155deg,#161b22,#111820);
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 8px;
+      transition: transform .15s,border-color .2s,box-shadow .2s;
+    }
+
+    .feature:hover, .feature:focus-visible {
+      border-color: rgba(46,166,255,.55);
+      box-shadow: 0 0 20px rgba(46,166,255,.1);
+      outline: none;
+    }
+
+    .feature-icon {
+      width: 37px;
+      height: 37px;
+      display: grid;
+      place-items: center;
+      border-radius: 13px;
+      background: rgba(46,166,255,.1);
+      border: 1px solid rgba(46,166,255,.18);
+      font-size: 19px;
+    }
+
+    .feature-text {
+      font-size: 11px;
+      line-height: 1.3;
+      font-weight: 650;
+      color: var(--secondary);
+    }
+
+    .feature-arrow {
+      margin-top: auto;
+      color: var(--blue);
+      font-size: 17px;
+      line-height: 1;
+    }
+
+    .footer {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      margin-top: 25px;
+      color: var(--muted);
+      font-size: 11px;
+      letter-spacing: 1.6px;
+    }
+
+    .footer-mark {
+      color: var(--cyan);
+      font-size: 16px;
+      filter: drop-shadow(0 0 8px rgba(0,212,255,.35));
+    }
+
+    .footer-line {
+      height: 1px;
+      width: 35px;
+      background: linear-gradient(90deg,transparent,rgba(46,166,255,.5));
+    }
+
+    .footer-line:last-child { transform: rotate(180deg); }
+
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 10;
+      align-items: flex-end;
+      justify-content: center;
+      padding: 18px;
+      background: rgba(0,0,0,.62);
+      backdrop-filter: blur(8px);
+    }
+
+    .modal-backdrop.open { display: flex; }
+
+    .modal {
+      width: min(100%,450px);
+      padding: 22px;
+      border-radius: 24px;
+      background: #161b22;
+      border: 1px solid rgba(46,166,255,.28);
+      box-shadow: 0 0 35px rgba(46,166,255,.15);
+      animation: rise .22s ease both;
+    }
+
+    .modal-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .modal-title { font-size: 19px; font-weight: 800; }
+
+    .close-modal {
+      width: 34px;
+      height: 34px;
+      border-radius: 11px;
+      background: #1c2430;
+      border: 1px solid var(--border);
+      color: var(--secondary);
+      font-size: 20px;
+    }
+
+    .modal-content {
+      color: var(--secondary);
+      font-size: 14px;
+      line-height: 1.6;
+      margin-top: 14px;
+    }
+
+    .modal-content p { margin: 0 0 10px; }
+    .modal-content p:last-child { margin-bottom: 0; }
+
+    .setting-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .setting-row:last-child { border-bottom: 0; }
+    .toggle { accent-color: var(--blue); width: 18px; height: 18px; }
+
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(7px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (min-width:390px) {
+      .app { padding-left: 18px; padding-right: 18px; }
+      .hero { padding: 24px 22px 18px; }
+      .hero-headline { font-size: 26px; }
+      .feature { min-height: 120px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: .01ms !important;
+        transition-duration: .01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
 </head>
 <body>
-    <h1>🔍 Поиск на Авито</h1>
+  <main class="app">
+    <header class="header">
+      <div class="brand-mark" aria-label="RIV">RIV</div>
+      <div class="brand-copy">
+        <div class="brand-title">RIV — Лучший поиск вещей</div>
+        <div class="brand-sub">
+          <span class="status-dot"></span>
+          бот · умный поиск выгодных цен
+        </div>
+      </div>
+    </header>
 
-    <div class="input-block">
-        <input
-            type="text"
-            id="urlInput"
-            placeholder="Вставьте ссылку на поиск Авито"
-        />
-        <button class="search-btn" id="searchBtn" onclick="search()">
-            Найти дешёвые
-        </button>
-    </div>
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-top">
+        <div class="hero-crown">👑</div>
+        <div class="discount">−73% · потенциальная выгода</div>
+      </div>
 
-    <div id="errorBox"></div>
-    <div id="loader" class="loader" style="display:none;">⏳ Ищу дешёвые варианты...</div>
-    <div id="grid" class="grid"></div>
+      <div class="hero-word">RIV</div>
 
-    <script>
-        const API_URL = "https://avito-parser-9q1l.onrender.com/api/search";
+      <h1 class="hero-headline" id="hero-title">
+        Находит такие же товары, но <span>дешевле</span>
+      </h1>
 
-        if (window.Telegram && window.Telegram.WebApp) {
-            window.Telegram.WebApp.ready();
-            window.Telegram.WebApp.expand();
+      <p class="hero-description">
+        Просто пришли ссылку на товар — мы найдём лучшие цены по всему интернету.
+      </p>
+
+      <div class="product-visual" aria-label="Визуал товара">
+        <span class="floating-icon float-cart" aria-hidden="true">🛒</span>
+        <span class="floating-icon float-fire" aria-hidden="true">🔥</span>
+        <img src="PLACEHOLDER" alt="product">
+      </div>
+
+      <div class="hero-perks">
+        <div class="perk"><span>⚡</span> Быстро</div>
+        <div class="perk"><span>🛡️</span> Надёжно</div>
+        <div class="perk"><span>💰</span> Экономно</div>
+      </div>
+    </section>
+
+    <form class="search-area" id="search-form">
+      <div class="link-field">
+        <div class="link-icon" aria-hidden="true">🔗</div>
+        <div class="input-wrap">
+          <input
+            id="product-url"
+            type="url"
+            inputmode="url"
+            autocomplete="url"
+            placeholder="Вставь ссылку на товар"
+            aria-label="Ссылка на товар"
+          >
+          <div class="input-hint">
+            Например: https://avito.ru/product/...
+          </div>
+        </div>
+        <button class="send-button" type="submit" aria-label="Отправить ссылку" title="Отправить">✈️</button>
+      </div>
+
+      <button class="primary-button" type="submit">
+        <span aria-hidden="true">🔍</span> Найти дешевле
+      </button>
+    </form>
+
+    <div class="message" id="message" role="status" aria-live="polite"></div>
+
+    <section class="results" id="results" aria-live="polite">
+      <div class="results-head">
+        <span>✨ Примеры более выгодных вариантов</span>
+        <span class="demo-label">ДЕМО</span>
+      </div>
+
+      <div class="result-card">
+        <div class="result-thumb">👟</div>
+        <div class="result-info">
+          <div class="result-name">Похожая модель · вариант A</div>
+          <div class="result-store">Магазин-партнёр · пример</div>
+        </div>
+        <div class="result-price">
+          7 990 ₽
+          <span class="result-old">12 990 ₽</span>
+        </div>
+      </div>
+
+      <div class="result-card">
+        <div class="result-thumb">📦</div>
+        <div class="result-info">
+          <div class="result-name">Похожая модель · вариант B</div>
+          <div class="result-store">Маркетплейс · пример</div>
+        </div>
+        <div class="result-price">
+          8 490 ₽
+          <span class="result-old">12 990 ₽</span>
+        </div>
+      </div>
+
+      <div class="message show">
+        Это демонстрационные данные интерфейса, не реальные предложения.
+        Подключи API поиска, чтобы получать актуальные цены и ссылки.
+      </div>
+    </section>
+
+    <section class="stats" aria-label="Преимущества">
+      <div class="stat">
+        <div class="stat-icon">⚡</div>
+        <div class="stat-value">10–30 сек</div>
+        <div class="stat-label">время<br>поиска</div>
+      </div>
+      <div class="stat">
+        <div class="stat-icon">🔍</div>
+        <div class="stat-value">&gt; 10M</div>
+        <div class="stat-label">товаров<br>в поиске</div>
+      </div>
+      <div class="stat">
+        <div class="stat-icon">💰</div>
+        <div class="stat-value">до 70%</div>
+        <div class="stat-label">экономии</div>
+      </div>
+      <div class="stat">
+        <div class="stat-icon">🛡️</div>
+        <div class="stat-value">100%</div>
+        <div class="stat-label">надёжные<br>магазины</div>
+      </div>
+    </section>
+
+    <div class="section-label">Возможности RIV</div>
+
+    <nav class="feature-grid" aria-label="Разделы">
+      <button class="feature" type="button" data-panel="how">
+        <span class="feature-icon">✨</span>
+        <span class="feature-text">Как это<br>работает?</span>
+        <span class="feature-arrow">›</span>
+      </button>
+
+      <button class="feature" type="button" data-panel="popular">
+        <span class="feature-icon">🔥</span>
+        <span class="feature-text">Популярные<br>товары</span>
+        <span class="feature-arrow">›</span>
+      </button>
+
+      <button class="feature" type="button" data-panel="favorites">
+        <span class="feature-icon">💛</span>
+        <span class="feature-text">Избранное</span>
+        <span class="feature-arrow">›</span>
+      </button>
+
+      <button class="feature" type="button" data-panel="settings">
+        <span class="feature-icon">⚙️</span>
+        <span class="feature-text">Настройки</span>
+        <span class="feature-arrow">›</span>
+      </button>
+    </nav>
+
+    <footer class="footer">
+      <span class="footer-line"></span>
+      <span class="footer-mark">👑</span>
+      <span>RIV · ВЫГОДНЫЕ ПОКУПКИ</span>
+      <span class="footer-line"></span>
+    </footer>
+  </main>
+
+  <div class="modal-backdrop" id="modal-backdrop"
+       role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <section class="modal">
+      <div class="modal-top">
+        <div class="modal-title" id="modal-title">Раздел</div>
+        <button class="close-modal" type="button" aria-label="Закрыть">×</button>
+      </div>
+      <div class="modal-content" id="modal-content"></div>
+    </section>
+  </div>
+
+  <script>
+    (() => {
+      const tg = window.Telegram && window.Telegram.WebApp;
+
+      if (tg) {
+        tg.ready();
+        tg.expand();
+
+        try {
+          tg.setHeaderColor('#0d1117');
+          tg.setBackgroundColor('#0d1117');
+        } catch (_) {}
+      }
+
+      const form = document.getElementById('search-form');
+      const input = document.getElementById('product-url');
+      const message = document.getElementById('message');
+      const results = document.getElementById('results');
+      const backdrop = document.getElementById('modal-backdrop');
+      const modalTitle = document.getElementById('modal-title');
+      const modalContent = document.getElementById('modal-content');
+
+      function showMessage(text, isError) {
+        message.textContent = text;
+        message.className = 'message show' + (isError ? ' error' : '');
+      }
+
+      function searchProduct(event) {
+        event.preventDefault();
+
+        const raw = input.value.trim();
+        results.classList.remove('show');
+        message.className = 'message';
+
+        if (!raw) {
+          showMessage(
+            'Сначала вставь ссылку на товар — например, https://avito.ru/product/...',
+            true
+          );
+          input.focus();
+          return;
         }
 
-        async function search() {
-            const url = document.getElementById("urlInput").value.trim();
-            const errorBox = document.getElementById("errorBox");
-            const loader = document.getElementById("loader");
-            const grid = document.getElementById("grid");
-            const btn = document.getElementById("searchBtn");
+        let parsed;
 
-            errorBox.innerHTML = "";
-            grid.innerHTML = "";
+        try {
+          parsed = new URL(raw);
 
-            if (!url) {
-                errorBox.innerHTML = '<div class="error">Вставь ссылку на Авито</div>';
-                return;
-            }
-
-            if (!url.includes("avito.ru")) {
-                errorBox.innerHTML = '<div class="error">Это не ссылка на Авито</div>';
-                return;
-            }
-
-            btn.disabled = true;
-            loader.style.display = "block";
-
-            try {
-                const response = await fetch(API_URL, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ url: url })
-                });
-
-                const data = await response.json();
-
-                if (!response.ok) {
-                    const detail = data.detail || "Ошибка сервера";
-                    throw new Error(detail);
-                }
-
-                if (!data.items || data.items.length === 0) {
-                    errorBox.innerHTML = '<div class="error">Ничего не найдено</div>';
-                    return;
-                }
-
-                data.items.forEach(item => {
-                    const card = document.createElement("a");
-                    card.href = item.url;
-                    card.target = "_blank";
-                    card.className = "card";
-
-                    let imgHtml;
-                    if (item.image) {
-                        imgHtml = `<img class="card-img" src="${item.image}" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" /><div class="card-img-placeholder" style="display:none;">📦</div>`;
-                    } else {
-                        imgHtml = `<div class="card-img-placeholder">📦</div>`;
-                    }
-
-                    card.innerHTML = `
-                        ${imgHtml}
-                        <div class="card-body">
-                            <div class="card-title">${escapeHtml(item.title)}</div>
-                            <div class="card-price">${escapeHtml(item.price)}</div>
-                        </div>
-                    `;
-
-                    grid.appendChild(card);
-                });
-
-            } catch (e) {
-                errorBox.innerHTML = `<div class="error">Ошибка: ${escapeHtml(e.message)}</div>`;
-            } finally {
-                loader.style.display = "none";
-                btn.disabled = false;
-            }
+          if (!['http:', 'https:'].includes(parsed.protocol)) {
+            throw new Error('protocol');
+          }
+        } catch (_) {
+          showMessage(
+            'Похоже, ссылка некорректная. Вставь полный адрес, начинающийся с https://',
+            true
+          );
+          input.focus();
+          return;
         }
 
-        function escapeHtml(text) {
-            const div = document.createElement("div");
-            div.textContent = text || "";
-            return div.innerHTML;
+        showMessage(
+          'Ссылка принята: ' + parsed.hostname +
+          '. Ниже показан пример того, как будут выглядеть найденные предложения.',
+          false
+        );
+
+        results.classList.add('show');
+        results.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+        if (tg && tg.HapticFeedback) {
+          try {
+            tg.HapticFeedback.notificationOccurred('success');
+          } catch (_) {}
         }
-    </script>
+      }
+
+      form.addEventListener('submit', searchProduct);
+
+      const panels = {
+        how: {
+          title: '✨ Как это работает?',
+          html: `
+            <p><strong>1.</strong> Вставь ссылку на товар из магазина или маркетплейса.</p>
+            <p><strong>2.</strong> RIV ищет похожие предложения и сравнивает цены.</p>
+            <p><strong>3.</strong> Выбирай подходящий вариант и переходи к продавцу.</p>
+            <p style="color:#6b7d8b">
+              Сейчас поиск демонстрационный. Для реальных результатов подключи backend и источники товарных данных.
+            </p>
+          `
+        },
+
+        popular: {
+          title: '🔥 Популярные товары',
+          html: `
+            <p>Подборка скоро появится здесь.</p>
+            <p>После подключения поиска здесь можно показывать популярные категории: кроссовки, смартфоны, наушники, одежда и товары для дома.</p>
+          `
+        },
+
+        favorites: {
+          title: '💛 Избранное',
+          html: `
+            <p>Пока здесь пусто.</p>
+            <p>В полной версии можно сохранять товары, отслеживать изменение цены и получать уведомления о скидках.</p>
+          `
+        },
+
+        settings: {
+          title: '⚙️ Настройки',
+          html: `
+            <div class="setting-row">
+              <span>Уведомления о снижении цены</span>
+              <input class="toggle" type="checkbox" checked
+                     aria-label="Уведомления о снижении цены">
+            </div>
+            <div class="setting-row">
+              <span>Показывать только более дешёвые варианты</span>
+              <input class="toggle" type="checkbox" checked
+                     aria-label="Только более дешёвые варианты">
+            </div>
+            <p style="color:#6b7d8b;margin-top:13px">
+              Настройки демонстрационные и пока не сохраняются.
+            </p>
+          `
+        }
+      };
+
+      function openPanel(key) {
+        const panel = panels[key];
+        if (!panel) return;
+
+        modalTitle.textContent = panel.title;
+        modalContent.innerHTML = panel.html;
+        backdrop.classList.add('open');
+        document.body.style.overflow = 'hidden';
+
+        backdrop.querySelector('.close-modal').focus();
+
+        if (tg && tg.HapticFeedback) {
+          try {
+            tg.HapticFeedback.selectionChanged();
+          } catch (_) {}
+        }
+      }
+
+      function closePanel() {
+        backdrop.classList.remove('open');
+        document.body.style.overflow = '';
+      }
+
+      document.querySelectorAll('[data-panel]').forEach(button => {
+        button.addEventListener('click', () => openPanel(button.dataset.panel));
+      });
+
+      backdrop.querySelector('.close-modal')
+        .addEventListener('click', closePanel);
+
+      backdrop.addEventListener('click', event => {
+        if (event.target === backdrop) closePanel();
+      });
+
+      document.addEventListener('keydown', event => {
+        if (event.key === 'Escape') closePanel();
+      });
+    })();
+  </script>
 </body>
 </html>
