@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Поиск на Авито</title>
+  <!-- Telegram Web App SDK -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    :root {
+      --bg-color: var(--tg-theme-bg-color, #18222d);
+      --secondary-bg-color: var(--tg-theme-secondary-bg-color, #232e3c);
+      --text-color: var(--tg-theme-text-color, #ffffff);
+      --hint-color: var(--tg-theme-hint-color, #7d8b99);
+      --link-color: var(--tg-theme-link-color, #64b5f6);
+      --button-color: var(--tg-theme-button-color, #2ea6ff);
+      --button-text-color: var(--tg-theme-button-text-color, #ffffff);
+      --error-color: #ff595a;
+      --card-border-radius: 14px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      padding: 16px;
+      font-size: 16px;
+      line-height: 1.4;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .input-field {
+      width: 100%;
+      background-color: var(--secondary-bg-color);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: var(--card-border-radius);
+      padding: 16px;
+      font-size: 16px;
+      color: var(--text-color);
+      outline: none;
+      transition: border-color 0.2s ease;
+    }
+
+    .input-field:focus {
+      border-color: var(--button-color);
+    }
+
+    .input-field::placeholder {
+      color: var(--hint-color);
+    }
+
+    .submit-btn {
+      width: 100%;
+      background-color: var(--button-color);
+      color: var(--button-text-color);
+      border: none;
+      border-radius: var(--card-border-radius);
+      padding: 16px;
+      font-size: 17px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: opacity 0.2s ease, transform 0.1s ease;
+    }
+
+    .submit-btn:active {
+      transform: scale(0.98);
+    }
+
+    .submit-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .status {
+      text-align: center;
+      font-size: 16px;
+      padding: 8px;
+    }
+
+    .status.loading {
+      color: var(--hint-color);
+      font-weight: 500;
+    }
+
+    .status.error {
+      color: var(--error-color);
+      font-weight: 600;
+      background: rgba(255, 89, 90, 0.12);
+      border-radius: var(--card-border-radius);
+      padding: 14px;
+      text-align: left;
+    }
+
+    .results {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .card {
+      background-color: var(--secondary-bg-color);
+      border-radius: var(--card-border-radius);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--link-color);
+      text-decoration: none;
+      word-break: break-word;
+    }
+
+    .card-title:hover {
+      text-decoration: underline;
+    }
+
+    .card-price {
+      font-size: 20px;
+      font-weight: 700;
+      color: #4cd964;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="form-group">
+      <input 
+        type="url" 
+        id="avitoUrl" 
+        class="input-field" 
+        placeholder="Вставьте ссылку на поиск Авито" 
+        autocomplete="off"
+        autocapitalize="off"
+      />
+      <button type="button" id="searchBtn" class="submit-btn">
+        Найти дешёвые
+      </button>
+    </div>
+
+    <div id="status" class="status" style="display: none;"></div>
+    <div id="results" class="results"></div>
+  </div>
+
+  <script>
+    const API_URL = "https://ТВОЙ-БЭКЕНД.onrender.com/api/search";
+
+    // Инициализация Telegram Web App
+    const tg = window.Telegram?.WebApp;
+    if (tg) {
+      tg.ready();
+      tg.expand();
+    }
+
+    const urlInput = document.getElementById("avitoUrl");
+    const searchBtn = document.getElementById("searchBtn");
+    const statusEl = document.getElementById("status");
+    const resultsContainer = document.getElementById("results");
+
+    function setStatus(text, type = "loading") {
+      statusEl.style.display = "block";
+      statusEl.className = `status ${type}`;
+      statusEl.textContent = text;
+    }
+
+    function clearStatus() {
+      statusEl.style.display = "none";
+      statusEl.textContent = "";
+      statusEl.className = "status";
+    }
+
+    function renderItems(items) {
+      resultsContainer.innerHTML = "";
+
+      if (!items || items.length === 0) {
+        setStatus("Ничего не найдено", "loading");
+        return;
+      }
+
+      items.forEach(item => {
+        const card = document.createElement("div");
+        card.className = "card";
+
+        const titleLink = document.createElement("a");
+        titleLink.className = "card-title";
+        titleLink.textContent = item.title || "Без названия";
+        titleLink.href = item.url;
+        titleLink.target = "_blank";
+        titleLink.rel = "noopener noreferrer";
+
+        // Открытие через API Telegram для корректной работы внутри клиента
+        titleLink.addEventListener("click", (e) => {
+          if (tg && typeof tg.openLink === "function") {
+            e.preventDefault();
+            tg.openLink(item.url);
+          }
+        });
+
+        const price = document.createElement("div");
+        price.className = "card-price";
+        price.textContent = item.price || "Цена не указана";
+
+        card.appendChild(titleLink);
+        card.appendChild(price);
+        resultsContainer.appendChild(card);
+      });
+    }
+
+    async function handleSearch() {
+      const url = urlInput.value.trim();
+
+      if (!url) {
+        setStatus("Пожалуйста, вставьте ссылку на Авито", "error");
+        return;
+      }
+
+      // Блокировка интерфейса и старт поиска
+      searchBtn.disabled = true;
+      resultsContainer.innerHTML = "";
+      setStatus("Ищу...", "loading");
+
+      try {
+        const response = await fetch(API_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ url: url })
+        });
+
+        if (!response.ok) {
+          throw new Error(`Ошибка сервера: ${response.status} ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        clearStatus();
+        renderItems(data.items);
+      } catch (err) {
+        setStatus(`Ошибка: ${err.message || "Не удалось загрузить данные"}`, "error");
+      } finally {
+        searchBtn.disabled = false;
+      }
+    }
+
+    searchBtn.addEventListener("click", handleSearch);
+
+    urlInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        handleSearch();
+      }
+    });
+  </script>
+</body>
+</html>
