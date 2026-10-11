@@ -1,282 +1,270 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Поиск на Авито</title>
-  <!-- Telegram Web App SDK -->
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <style>
-    :root {
-      --bg-color: var(--tg-theme-bg-color, #18222d);
-      --secondary-bg-color: var(--tg-theme-secondary-bg-color, #232e3c);
-      --text-color: var(--tg-theme-text-color, #ffffff);
-      --hint-color: var(--tg-theme-hint-color, #7d8b99);
-      --link-color: var(--tg-theme-link-color, #64b5f6);
-      --button-color: var(--tg-theme-button-color, #2ea6ff);
-      --button-text-color: var(--tg-theme-button-text-color, #ffffff);
-      --error-color: #ff595a;
-      --card-border-radius: 14px;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      background-color: var(--bg-color);
-      color: var(--text-color);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      padding: 16px;
-      font-size: 16px;
-      line-height: 1.4;
-      min-height: 100vh;
-    }
-
-    .container {
-      max-width: 600px;
-      margin: 0 auto;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .input-field {
-      width: 100%;
-      background-color: var(--secondary-bg-color);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: var(--card-border-radius);
-      padding: 16px;
-      font-size: 16px;
-      color: var(--text-color);
-      outline: none;
-      transition: border-color 0.2s ease;
-    }
-
-    .input-field:focus {
-      border-color: var(--button-color);
-    }
-
-    .input-field::placeholder {
-      color: var(--hint-color);
-    }
-
-    .submit-btn {
-      width: 100%;
-      background-color: var(--button-color);
-      color: var(--button-text-color);
-      border: none;
-      border-radius: var(--card-border-radius);
-      padding: 16px;
-      font-size: 17px;
-      font-weight: 600;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      transition: opacity 0.2s ease, transform 0.1s ease;
-    }
-
-    .submit-btn:active {
-      transform: scale(0.98);
-    }
-
-    .submit-btn:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
-
-    .status {
-      text-align: center;
-      font-size: 16px;
-      padding: 8px;
-    }
-
-    .status.loading {
-      color: var(--hint-color);
-      font-weight: 500;
-    }
-
-    .status.error {
-      color: var(--error-color);
-      font-weight: 600;
-      background: rgba(255, 89, 90, 0.12);
-      border-radius: var(--card-border-radius);
-      padding: 14px;
-      text-align: left;
-    }
-
-    .results {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .card {
-      background-color: var(--secondary-bg-color);
-      border-radius: var(--card-border-radius);
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-    }
-
-    .card-title {
-      font-size: 18px;
-      font-weight: 600;
-      color: var(--link-color);
-      text-decoration: none;
-      word-break: break-word;
-    }
-
-    .card-title:hover {
-      text-decoration: underline;
-    }
-
-    .card-price {
-      font-size: 20px;
-      font-weight: 700;
-      color: #4cd964;
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <div class="form-group">
-      <input 
-        type="url" 
-        id="avitoUrl" 
-        class="input-field" 
-        placeholder="Вставьте ссылку на поиск Авито" 
-        autocomplete="off"
-        autocapitalize="off"
-      />
-      <button type="button" id="searchBtn" class="submit-btn">
-        Найти дешёвые
-      </button>
-    </div>
-
-    <div id="status" class="status" style="display: none;"></div>
-    <div id="results" class="results"></div>
-  </div>
-
-  <script>
-    const API_URL = "https://avito-parser-9q1l.onrender.com/api/search";
-
-    // Инициализация Telegram Web App
-    const tg = window.Telegram?.WebApp;
-    if (tg) {
-      tg.ready();
-      tg.expand();
-    }
-
-    const urlInput = document.getElementById("avitoUrl");
-    const searchBtn = document.getElementById("searchBtn");
-    const statusEl = document.getElementById("status");
-    const resultsContainer = document.getElementById("results");
-
-    function setStatus(text, type = "loading") {
-      statusEl.style.display = "block";
-      statusEl.className = `status ${type}`;
-      statusEl.textContent = text;
-    }
-
-    function clearStatus() {
-      statusEl.style.display = "none";
-      statusEl.textContent = "";
-      statusEl.className = "status";
-    }
-
-    function renderItems(items) {
-      resultsContainer.innerHTML = "";
-
-      if (!items || items.length === 0) {
-        setStatus("Ничего не найдено", "loading");
-        return;
-      }
-
-      items.forEach(item => {
-        const card = document.createElement("div");
-        card.className = "card";
-
-        const titleLink = document.createElement("a");
-        titleLink.className = "card-title";
-        titleLink.textContent = item.title || "Без названия";
-        titleLink.href = item.url;
-        titleLink.target = "_blank";
-        titleLink.rel = "noopener noreferrer";
-
-        // Открытие через API Telegram для корректной работы внутри клиента
-        titleLink.addEventListener("click", (e) => {
-          if (tg && typeof tg.openLink === "function") {
-            e.preventDefault();
-            tg.openLink(item.url);
-          }
-        });
-
-        const price = document.createElement("div");
-        price.className = "card-price";
-        price.textContent = item.price || "Цена не указана";
-
-        card.appendChild(titleLink);
-        card.appendChild(price);
-        resultsContainer.appendChild(card);
-      });
-    }
-
-    async function handleSearch() {
-      const url = urlInput.value.trim();
-
-      if (!url) {
-        setStatus("Пожалуйста, вставьте ссылку на Авито", "error");
-        return;
-      }
-
-      // Блокировка интерфейса и старт поиска
-      searchBtn.disabled = true;
-      resultsContainer.innerHTML = "";
-      setStatus("Ищу...", "loading");
-
-      try {
-        const response = await fetch(API_URL, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({ url: url })
-        });
-
-        if (!response.ok) {
-          throw new Error(`Ошибка сервера: ${response.status} ${response.statusText}`);
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Поиск на Авито</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
-        const data = await response.json();
-        clearStatus();
-        renderItems(data.items);
-      } catch (err) {
-        setStatus(`Ошибка: ${err.message || "Не удалось загрузить данные"}`, "error");
-      } finally {
-        searchBtn.disabled = false;
-      }
-    }
+        body {
+            background: #17212b;
+            color: #fff;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            padding: 16px;
+            min-height: 100vh;
+        }
 
-    searchBtn.addEventListener("click", handleSearch);
+        h1 {
+            font-size: 20px;
+            margin-bottom: 16px;
+            color: #fff;
+        }
 
-    urlInput.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") {
-        handleSearch();
-      }
-    });
-  </script>
+        .input-block {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        input[type="text"] {
+            padding: 12px 14px;
+            border-radius: 12px;
+            border: none;
+            background: #232e3c;
+            color: #fff;
+            font-size: 15px;
+            outline: none;
+            width: 100%;
+        }
+
+        input[type="text"]::placeholder {
+            color: #7d8b99;
+        }
+
+        button.search-btn {
+            padding: 14px;
+            border-radius: 12px;
+            border: none;
+            background: #2ea6ff;
+            color: #fff;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        button.search-btn:active {
+            background: #1e8ad6;
+        }
+
+        button.search-btn:disabled {
+            background: #2a3a4a;
+            cursor: not-allowed;
+        }
+
+        .error {
+            background: #3a1f22;
+            color: #ff7a7a;
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 14px;
+            margin-bottom: 16px;
+            word-break: break-word;
+        }
+
+        .loader {
+            text-align: center;
+            color: #7d8b99;
+            padding: 20px;
+            font-size: 14px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .card {
+            background: #232e3c;
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.15s;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .card:active {
+            transform: scale(0.97);
+        }
+
+        .card-img {
+            width: 100%;
+            height: 130px;
+            object-fit: cover;
+            background: #2a3a4a;
+            display: block;
+        }
+
+        .card-img-placeholder {
+            width: 100%;
+            height: 130px;
+            background: linear-gradient(135deg, #2a3a4a 0%, #1f2a36 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #4a5a6a;
+            font-size: 32px;
+        }
+
+        .card-body {
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            flex: 1;
+        }
+
+        .card-title {
+            font-size: 13px;
+            line-height: 1.3;
+            color: #c8d4e0;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            min-height: 34px;
+        }
+
+        .card-price {
+            font-size: 16px;
+            font-weight: 700;
+            color: #4dd47a;
+            margin-top: auto;
+        }
+
+        .empty {
+            text-align: center;
+            color: #7d8b99;
+            padding: 40px 20px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 Поиск на Авито</h1>
+
+    <div class="input-block">
+        <input
+            type="text"
+            id="urlInput"
+            placeholder="Вставьте ссылку на поиск Авито"
+        />
+        <button class="search-btn" id="searchBtn" onclick="search()">
+            Найти дешёвые
+        </button>
+    </div>
+
+    <div id="errorBox"></div>
+    <div id="loader" class="loader" style="display:none;">⏳ Ищу дешёвые варианты...</div>
+    <div id="grid" class="grid"></div>
+
+    <script>
+        const API_URL = "https://avito-parser-9q1l.onrender.com/api/search";
+
+        if (window.Telegram && window.Telegram.WebApp) {
+            window.Telegram.WebApp.ready();
+            window.Telegram.WebApp.expand();
+        }
+
+        async function search() {
+            const url = document.getElementById("urlInput").value.trim();
+            const errorBox = document.getElementById("errorBox");
+            const loader = document.getElementById("loader");
+            const grid = document.getElementById("grid");
+            const btn = document.getElementById("searchBtn");
+
+            errorBox.innerHTML = "";
+            grid.innerHTML = "";
+
+            if (!url) {
+                errorBox.innerHTML = '<div class="error">Вставь ссылку на Авито</div>';
+                return;
+            }
+
+            if (!url.includes("avito.ru")) {
+                errorBox.innerHTML = '<div class="error">Это не ссылка на Авито</div>';
+                return;
+            }
+
+            btn.disabled = true;
+            loader.style.display = "block";
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ url: url })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    const detail = data.detail || "Ошибка сервера";
+                    throw new Error(detail);
+                }
+
+                if (!data.items || data.items.length === 0) {
+                    errorBox.innerHTML = '<div class="error">Ничего не найдено</div>';
+                    return;
+                }
+
+                data.items.forEach(item => {
+                    const card = document.createElement("a");
+                    card.href = item.url;
+                    card.target = "_blank";
+                    card.className = "card";
+
+                    let imgHtml;
+                    if (item.image) {
+                        imgHtml = `<img class="card-img" src="${item.image}" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" /><div class="card-img-placeholder" style="display:none;">📦</div>`;
+                    } else {
+                        imgHtml = `<div class="card-img-placeholder">📦</div>`;
+                    }
+
+                    card.innerHTML = `
+                        ${imgHtml}
+                        <div class="card-body">
+                            <div class="card-title">${escapeHtml(item.title)}</div>
+                            <div class="card-price">${escapeHtml(item.price)}</div>
+                        </div>
+                    `;
+
+                    grid.appendChild(card);
+                });
+
+            } catch (e) {
+                errorBox.innerHTML = `<div class="error">Ошибка: ${escapeHtml(e.message)}</div>`;
+            } finally {
+                loader.style.display = "none";
+                btn.disabled = false;
+            }
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement("div");
+            div.textContent = text || "";
+            return div.innerHTML;
+        }
+    </script>
 </body>
 </html>
