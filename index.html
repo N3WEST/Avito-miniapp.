@@ -3327,7 +3327,7 @@
       }
 
       if (!res.ok) {
-        const message = (data && (data.error || data.message)) || `Ошибка ${res.status}`;
+        const message = (data && (data.error || data.message || (typeof data.detail === "string" ? data.detail : Array.isArray(data.detail) ? data.detail.map(x => x.msg || JSON.stringify(x)).join("; ") : ""))) || `Ошибка ${res.status}`;
         throw new Error(message);
       }
 
@@ -3338,7 +3338,7 @@
       try {
         return await api(method, path, body);
       } catch (error) {
-        if (errMsg) toast(errMsg);
+        if (errMsg) toast(error && error.message ? error.message : errMsg);
         console.debug("API error:", error);
         return null;
       }
