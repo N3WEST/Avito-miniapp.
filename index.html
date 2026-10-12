@@ -7,32 +7,45 @@
   <meta name="description" content="RIV — находи такие же товары дешевле на Avito.">
   <title>RIV — Найти дешевле</title>
 
+  <!-- Telegram WebApp SDK -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
   <style>
+    /* ======================================================
+       RIV — ГЛОБАЛЬНЫЕ СТИЛИ И ПАЛИТРА
+       ====================================================== */
+
     :root {
       color-scheme: dark;
+
       --bg: #0d1117;
       --surface: #161b22;
       --surface-2: #1b2430;
       --surface-3: #222e3b;
+
       --accent: #2ea6ff;
       --accent-2: #00d4ff;
       --gradient: linear-gradient(115deg, #2ea6ff 0%, #00d4ff 100%);
+
       --text: #ffffff;
       --text-secondary: #c8d4e0;
       --muted: #6b7d8b;
+
       --green: #36df9b;
       --red: #ff6b7d;
       --border: rgba(160, 190, 220, 0.09);
+
       --radius: 18px;
       --radius-lg: 24px;
+
       --nav-height: 76px;
       --safe-bottom: env(safe-area-inset-bottom, 0px);
       --safe-top: env(safe-area-inset-top, 0px);
+
       --shadow: 0 10px 30px rgba(0, 0, 0, 0.24);
     }
 
+    /* Используем цвета Telegram, когда приложение запущено внутри WebApp */
     body.telegram-theme {
       --bg: var(--tg-theme-bg-color, #0d1117);
       --surface: var(--tg-theme-secondary-bg-color, #161b22);
@@ -42,9 +55,16 @@
       --accent: var(--tg-theme-link-color, #2ea6ff);
     }
 
-    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
 
-    html { min-height: 100%; background: var(--bg); scroll-behavior: smooth; }
+    html {
+      min-height: 100%;
+      background: var(--bg);
+      scroll-behavior: smooth;
+    }
 
     body {
       margin: 0;
@@ -52,17 +72,39 @@
       min-height: 100dvh;
       background: var(--bg);
       color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+        Roboto, Helvetica, Arial, sans-serif;
       font-size: 14px;
       -webkit-font-smoothing: antialiased;
       overscroll-behavior-y: contain;
     }
 
-    button, input { font: inherit; }
-    button { color: inherit; cursor: pointer; border: 0; }
-    button:focus-visible, input:focus-visible { outline: 2px solid var(--accent-2); outline-offset: 3px; }
-    button:disabled { cursor: not-allowed; opacity: 0.5; }
-    a { color: inherit; text-decoration: none; }
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      color: inherit;
+      cursor: pointer;
+      border: 0;
+    }
+
+    button:focus-visible,
+    input:focus-visible {
+      outline: 2px solid var(--accent-2);
+      outline-offset: 3px;
+    }
+
+    button:disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
 
     .app {
       width: 100%;
@@ -78,8 +120,13 @@
       padding-bottom: calc(var(--nav-height) + var(--safe-bottom) + 18px);
     }
 
-    .hidden { display: none !important; }
-    .muted { color: var(--muted); }
+    .hidden {
+      display: none !important;
+    }
+
+    .muted {
+      color: var(--muted);
+    }
 
     .gradient-text {
       color: var(--accent-2);
@@ -97,12 +144,28 @@
       text-transform: uppercase;
     }
 
-    .section-heading { font-size: 19px; font-weight: 800; letter-spacing: -0.6px; margin: 0; }
-    .section-subtitle { color: var(--muted); line-height: 1.55; font-size: 12px; margin: 7px 0 0; }
+    .section-heading {
+      font-size: 19px;
+      font-weight: 800;
+      letter-spacing: -0.6px;
+      margin: 0;
+    }
 
-    /* ВЕРХНИЕ ТАБЫ */
+    .section-subtitle {
+      color: var(--muted);
+      line-height: 1.55;
+      font-size: 12px;
+      margin: 7px 0 0;
+    }
+
+    /* ======================================================
+       ВЕРХНИЕ ТАБЫ
+       ====================================================== */
+
     .topbar {
-      position: sticky; z-index: 20; top: 0;
+      position: sticky;
+      z-index: 20;
+      top: 0;
       padding: calc(var(--safe-top) + 7px) 20px 0;
       background: rgba(13, 17, 23, 0.90);
       backdrop-filter: blur(22px);
@@ -110,65 +173,135 @@
       border-bottom: 1px solid var(--border);
     }
 
-    .brand-line { height: 49px; display: flex; align-items: center; justify-content: space-between; }
+    .brand-line {
+      height: 49px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
 
-    .brand { font-size: 28px; font-weight: 950; letter-spacing: 3px; line-height: 1; }
-    .brand-mini { display: flex; align-items: center; gap: 9px; }
+    .brand {
+      font-size: 28px;
+      font-weight: 950;
+      letter-spacing: 3px;
+      line-height: 1;
+    }
+
+    .brand-mini {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
 
     .brand-emblem {
-      width: 35px; height: 35px; display: grid; place-items: center;
-      border-radius: 12px; background: var(--gradient); color: #07141d;
-      font-weight: 950; font-size: 15px;
+      width: 35px;
+      height: 35px;
+      display: grid;
+      place-items: center;
+      border-radius: 12px;
+      background: var(--gradient);
+      color: #07141d;
+      font-weight: 950;
+      font-size: 15px;
       box-shadow: 0 0 25px rgba(0, 180, 255, 0.17);
     }
 
     .online-pill {
-      display: flex; align-items: center; gap: 6px;
-      color: var(--text-secondary); background: var(--surface);
-      border: 1px solid var(--border); border-radius: 20px;
-      padding: 8px 11px; font-size: 10px; font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-secondary);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 8px 11px;
+      font-size: 10px;
+      font-weight: 700;
     }
 
     .online-dot {
-      width: 6px; height: 6px; border-radius: 50%;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
       background: var(--green);
       box-shadow: 0 0 8px rgba(54, 223, 155, 0.7);
     }
 
-    .top-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .top-tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
 
     .top-tab {
-      min-height: 47px; position: relative;
-      background: transparent; color: var(--muted);
-      font-weight: 750; font-size: 13px;
+      min-height: 47px;
+      position: relative;
+      background: transparent;
+      color: var(--muted);
+      font-weight: 750;
+      font-size: 13px;
       transition: color 0.2s ease;
     }
 
-    .top-tab.active { color: var(--text); }
+    .top-tab.active {
+      color: var(--text);
+    }
 
     .top-tab.active::after {
-      content: ""; position: absolute;
-      left: 13%; right: 13%; bottom: 0; height: 3px;
-      border-radius: 8px 8px 0 0; background: var(--gradient);
+      content: "";
+      position: absolute;
+      left: 13%;
+      right: 13%;
+      bottom: 0;
+      height: 3px;
+      border-radius: 8px 8px 0 0;
+      background: var(--gradient);
       box-shadow: 0 0 14px rgba(46, 166, 255, 0.45);
     }
 
-    /* ЭКРАНЫ */
-    .page { padding: 23px 20px 18px; animation: page-enter 0.3s ease both; }
+    /* ======================================================
+       ОБЩИЕ ЭКРАНЫ
+       ====================================================== */
 
-    @keyframes page-enter {
-      from { opacity: 0; transform: translateY(7px); }
-      to { opacity: 1; transform: translateY(0); }
+    .page {
+      padding: 23px 20px 18px;
+      animation: page-enter 0.3s ease both;
     }
 
-    .page-title { font-size: 25px; line-height: 1.15; letter-spacing: -1px; font-weight: 850; margin: 0; }
-    .page-header { margin-bottom: 22px; }
+    @keyframes page-enter {
+      from {
+        opacity: 0;
+        transform: translateY(7px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
 
-    /* БАННЕР */
+    .page-title {
+      font-size: 25px;
+      line-height: 1.15;
+      letter-spacing: -1px;
+      font-weight: 850;
+      margin: 0;
+    }
+
+    .page-header {
+      margin-bottom: 22px;
+    }
+
+    /* ======================================================
+       ГЛАВНЫЙ БАННЕР
+       ====================================================== */
+
     .hero {
-      position: relative; overflow: hidden; min-height: 210px;
+      position: relative;
+      overflow: hidden;
+      min-height: 210px;
       border: 1px solid rgba(46, 166, 255, 0.23);
-      border-radius: 26px; padding: 20px;
+      border-radius: 26px;
+      padding: 20px;
       background:
         radial-gradient(circle at 82% 34%, rgba(0, 212, 255, 0.24), transparent 35%),
         radial-gradient(circle at 10% 110%, rgba(46, 166, 255, 0.15), transparent 50%),
@@ -178,69 +311,140 @@
     }
 
     .hero::before {
-      content: ""; position: absolute; width: 200px; height: 200px;
-      border: 1px solid rgba(0, 212, 255, 0.13); border-radius: 50%;
-      right: -70px; top: -75px;
-      box-shadow: 0 0 0 18px rgba(0, 212, 255, 0.025), 0 0 0 38px rgba(0, 212, 255, 0.025);
+      content: "";
+      position: absolute;
+      width: 200px;
+      height: 200px;
+      border: 1px solid rgba(0, 212, 255, 0.13);
+      border-radius: 50%;
+      right: -70px;
+      top: -75px;
+      box-shadow:
+        0 0 0 18px rgba(0, 212, 255, 0.025),
+        0 0 0 38px rgba(0, 212, 255, 0.025);
       pointer-events: none;
     }
 
     .hero-top {
-      display: flex; align-items: center; gap: 7px; color: #a7ecff;
-      font-size: 10px; font-weight: 800; letter-spacing: 1.5px;
-      text-transform: uppercase; position: relative; z-index: 2;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      color: #a7ecff;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      position: relative;
+      z-index: 2;
     }
 
     .hero-title {
-      font-size: 23px; font-weight: 900; line-height: 1.13;
-      letter-spacing: -0.9px; max-width: 240px;
-      margin: 19px 0 10px; position: relative; z-index: 2;
+      font-size: 23px;
+      font-weight: 900;
+      line-height: 1.13;
+      letter-spacing: -0.9px;
+      max-width: 240px;
+      margin: 19px 0 10px;
+      position: relative;
+      z-index: 2;
     }
 
     .hero-description {
-      color: #a7bdcc; font-size: 11px; line-height: 1.6;
-      max-width: 205px; position: relative; z-index: 2; margin: 0;
+      color: #a7bdcc;
+      font-size: 11px;
+      line-height: 1.6;
+      max-width: 205px;
+      position: relative;
+      z-index: 2;
+      margin: 0;
     }
 
     .hero-art {
-      position: absolute; right: 0; top: 0; width: 47%; height: 100%;
-      display: grid; place-items: center; pointer-events: none;
+      position: absolute;
+      right: 0;
+      top: 0;
+      width: 47%;
+      height: 100%;
+      display: grid;
+      place-items: center;
+      pointer-events: none;
     }
 
     .hero-ring {
-      position: absolute; width: 135px; height: 135px; border-radius: 50%;
+      position: absolute;
+      width: 135px;
+      height: 135px;
+      border-radius: 50%;
       border: 1px solid rgba(0, 212, 255, 0.30);
       background: radial-gradient(circle, rgba(46, 166, 255, 0.16), transparent 70%);
     }
 
     .sneaker-img {
-      position: relative; z-index: 1; width: 155px; height: 125px;
-      object-fit: contain; transform: rotate(-14deg);
+      position: relative;
+      z-index: 1;
+      width: 155px;
+      height: 125px;
+      object-fit: contain;
+      transform: rotate(-14deg);
       filter: drop-shadow(0 15px 13px rgba(0, 0, 0, 0.4));
     }
 
     .discount-badge {
-      position: absolute; right: 10px; top: 33px; z-index: 2;
-      border-radius: 10px; padding: 7px 10px;
-      font-size: 12px; font-weight: 950; color: #081a13;
+      position: absolute;
+      right: 10px;
+      top: 33px;
+      z-index: 2;
+      border-radius: 10px;
+      padding: 7px 10px;
+      font-size: 12px;
+      font-weight: 950;
+      color: #081a13;
       background: linear-gradient(135deg, #5bffc2, #20d99b);
       box-shadow: 0 5px 22px rgba(32, 217, 155, 0.2);
       transform: rotate(8deg);
     }
 
-    .hero-spark { position: absolute; font-size: 18px; color: #7de8ff; }
-    .spark-one { right: 28px; bottom: 38px; }
-    .spark-two { right: 130px; top: 54px; font-size: 11px; }
+    .hero-spark {
+      position: absolute;
+      font-size: 18px;
+      color: #7de8ff;
+    }
 
-    /* ПОИСК */
-    .search-section { margin-bottom: 25px; }
-    .search-label { display: block; font-size: 14px; font-weight: 800; margin-bottom: 11px; }
+    .spark-one {
+      right: 28px;
+      bottom: 38px;
+    }
+
+    .spark-two {
+      right: 130px;
+      top: 54px;
+      font-size: 11px;
+    }
+
+    /* ======================================================
+       ПОИСКОВАЯ ФОРМА
+       ====================================================== */
+
+    .search-section {
+      margin-bottom: 25px;
+    }
+
+    .search-label {
+      display: block;
+      font-size: 14px;
+      font-weight: 800;
+      margin-bottom: 11px;
+    }
 
     .input-wrap {
-      display: flex; align-items: center; gap: 8px;
-      min-height: 58px; padding: 6px 6px 6px 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 58px;
+      padding: 6px 6px 6px 14px;
       border: 1px solid rgba(137, 164, 189, 0.19);
-      border-radius: 17px; background: var(--surface);
+      border-radius: 17px;
+      background: var(--surface);
       transition: border-color 0.2s, box-shadow 0.2s;
     }
 
@@ -249,73 +453,175 @@
       box-shadow: 0 0 0 3px rgba(46, 166, 255, 0.08);
     }
 
-    .input-icon { flex-shrink: 0; color: var(--muted); width: 19px; height: 19px; }
-
-    .url-input {
-      min-width: 0; flex: 1; width: 100%; border: 0; outline: none;
-      background: transparent; color: var(--text); font-size: 12px;
+    .input-icon {
+      flex-shrink: 0;
+      color: var(--muted);
+      width: 19px;
+      height: 19px;
     }
 
-    .url-input::placeholder { color: #6b7d8b; }
+    .url-input {
+      min-width: 0;
+      flex: 1;
+      width: 100%;
+      border: 0;
+      outline: none;
+      background: transparent;
+      color: var(--text);
+      font-size: 12px;
+    }
+
+    .url-input::placeholder {
+      color: #6b7d8b;
+    }
 
     .paste-btn {
-      flex-shrink: 0; min-height: 42px; padding: 0 12px;
-      border-radius: 12px; background: #222e3b;
-      color: #8edfff; font-size: 11px; font-weight: 800;
+      flex-shrink: 0;
+      min-height: 42px;
+      padding: 0 12px;
+      border-radius: 12px;
+      background: #222e3b;
+      color: #8edfff;
+      font-size: 11px;
+      font-weight: 800;
       transition: background 0.2s;
     }
 
-    .paste-btn:active { background: #2b4053; }
+    .paste-btn:active {
+      background: #2b4053;
+    }
 
     .primary-btn {
-      display: flex; justify-content: center; align-items: center; gap: 10px;
-      width: 100%; min-height: 57px; border-radius: 17px;
-      background: var(--gradient); color: #04141f;
-      font-size: 14px; font-weight: 900; letter-spacing: -0.1px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      min-height: 57px;
+      border-radius: 17px;
+      background: var(--gradient);
+      color: #04141f;
+      font-size: 14px;
+      font-weight: 900;
+      letter-spacing: -0.1px;
       margin-top: 13px;
-      box-shadow: 0 8px 25px rgba(46, 166, 255, 0.19), inset 0 1px 0 rgba(255, 255, 255, 0.22);
+      box-shadow:
+        0 8px 25px rgba(46, 166, 255, 0.19),
+        inset 0 1px 0 rgba(255, 255, 255, 0.22);
       transition: transform 0.15s, filter 0.2s;
     }
 
-    .primary-btn:active { transform: scale(0.98); filter: brightness(0.94); }
-    .primary-btn svg { width: 20px; height: 20px; }
+    .primary-btn:active {
+      transform: scale(0.98);
+      filter: brightness(0.94);
+    }
 
-    .helper-caption { color: var(--muted); font-size: 11px; text-align: center; margin: 12px 0 0; line-height: 1.5; }
-    .form-error { color: var(--red); font-size: 12px; margin: 9px 2px 0; line-height: 1.5; }
+    .primary-btn svg {
+      width: 20px;
+      height: 20px;
+    }
 
-    /* СТАТИСТИКА */
-    .stats-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 7px; margin: 25px 0 25px; }
+    .helper-caption {
+      color: var(--muted);
+      font-size: 11px;
+      text-align: center;
+      margin: 12px 0 0;
+      line-height: 1.5;
+    }
+
+    .form-error {
+      color: var(--red);
+      font-size: 12px;
+      margin: 9px 2px 0;
+      line-height: 1.5;
+    }
+
+    /* ======================================================
+       СТАТИСТИКА
+       ====================================================== */
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 7px;
+      margin: 25px 0 25px;
+    }
 
     .stat-card {
-      min-width: 0; padding: 14px 5px 13px; text-align: center;
-      background: var(--surface); border: 1px solid var(--border); border-radius: 15px;
+      min-width: 0;
+      padding: 14px 5px 13px;
+      text-align: center;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 15px;
     }
 
-    .stat-value { font-size: clamp(12px, 3.4vw, 17px); font-weight: 900; letter-spacing: -0.6px; white-space: nowrap; }
-    .stat-label { font-size: 9px; color: var(--muted); margin-top: 6px; line-height: 1.3; }
+    .stat-value {
+      font-size: clamp(12px, 3.4vw, 17px);
+      font-weight: 900;
+      letter-spacing: -0.6px;
+      white-space: nowrap;
+    }
 
-    /* РЕЗУЛЬТАТЫ */
-    .results-section { margin-top: 25px; }
-    .results-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 15px; }
-    .results-count { color: var(--muted); font-size: 11px; margin-top: 5px; }
+    .stat-label {
+      font-size: 9px;
+      color: var(--muted);
+      margin-top: 6px;
+      line-height: 1.3;
+    }
+
+    /* ======================================================
+       СОСТОЯНИЯ ПОИСКА И РЕЗУЛЬТАТЫ
+       ====================================================== */
+
+    .results-section {
+      margin-top: 25px;
+    }
+
+    .results-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    .results-count {
+      color: var(--muted);
+      font-size: 11px;
+      margin-top: 5px;
+    }
 
     .sort-select {
-      appearance: none; -webkit-appearance: none;
-      max-width: 155px; min-height: 42px;
-      border: 1px solid var(--border); border-radius: 12px;
-      background: var(--surface); color: var(--text-secondary);
-      padding: 0 26px 0 10px; font-size: 10px; font-weight: 750;
+      appearance: none;
+      -webkit-appearance: none;
+      max-width: 155px;
+      min-height: 42px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--surface);
+      color: var(--text-secondary);
+      padding: 0 26px 0 10px;
+      font-size: 10px;
+      font-weight: 750;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7d8b' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
-      background-repeat: no-repeat; background-position: right 8px center;
+      background-repeat: no-repeat;
+      background-position: right 8px center;
     }
 
-    .product-list { display: grid; gap: 12px; }
+    .product-list {
+      display: grid;
+      gap: 12px;
+    }
 
     .product-card {
       position: relative;
-      display: grid; grid-template-columns: 105px minmax(0, 1fr);
-      gap: 13px; padding: 10px;
-      border: 1px solid var(--border); border-radius: 19px;
+      display: grid;
+      grid-template-columns: 105px minmax(0, 1fr);
+      gap: 13px;
+      padding: 10px;
+      border: 1px solid var(--border);
+      border-radius: 19px;
       background: linear-gradient(145deg, #181f28, #141a22);
       box-shadow: 0 7px 20px rgba(0, 0, 0, 0.11);
       animation: product-enter 0.4s ease both;
@@ -323,121 +629,294 @@
     }
 
     @keyframes product-enter {
-      from { opacity: 0; transform: translateY(14px); }
-      to { opacity: 1; transform: translateY(0); }
+      from {
+        opacity: 0;
+        transform: translateY(14px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     .product-photo {
-      position: relative; min-height: 135px; width: 105px;
-      border-radius: 13px; overflow: hidden; background: #202b38;
-      display: grid; place-items: center;
+      position: relative;
+      min-height: 135px;
+      width: 105px;
+      border-radius: 13px;
+      overflow: hidden;
+      background: #202b38;
+      display: grid;
+      place-items: center;
     }
 
     .product-photo img {
-      width: 100%; height: 100%; position: absolute; inset: 0;
-      object-fit: cover; color: transparent; font-size: 0;
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      inset: 0;
+      object-fit: cover;
+      color: transparent;
+      font-size: 0;
     }
 
-    .product-emoji { font-size: 43px; filter: drop-shadow(0 6px 9px rgba(0, 0, 0, 0.3)); }
+    .product-emoji {
+      font-size: 43px;
+      filter: drop-shadow(0 6px 9px rgba(0, 0, 0, 0.3));
+    }
 
     .discount-chip {
-      position: absolute; left: 5px; top: 5px; z-index: 2;
-      border-radius: 7px; background: rgba(31, 225, 153, 0.14);
+      position: absolute;
+      left: 5px;
+      top: 5px;
+      z-index: 2;
+      border-radius: 7px;
+      background: rgba(31, 225, 153, 0.14);
       border: 1px solid rgba(54, 223, 155, 0.23);
-      color: #54e8ad; padding: 4px 5px; font-size: 9px; font-weight: 900;
+      color: #54e8ad;
+      padding: 4px 5px;
+      font-size: 9px;
+      font-weight: 900;
     }
 
-    .product-content { display: flex; flex-direction: column; min-width: 0; padding: 3px 0 2px; }
+    .product-content {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      padding: 3px 0 2px;
+    }
 
     .product-name {
-      font-size: 13px; font-weight: 800; line-height: 1.4;
-      padding-right: 2px; margin: 0 0 7px; overflow-wrap: anywhere;
+      font-size: 13px;
+      font-weight: 800;
+      line-height: 1.4;
+      padding-right: 2px;
+      margin: 0 0 7px;
+      overflow-wrap: anywhere;
     }
 
-    .product-location { color: var(--muted); font-size: 10px; margin-bottom: 10px; }
+    .product-location {
+      color: var(--muted);
+      font-size: 10px;
+      margin-bottom: 10px;
+    }
 
-    .price-row { display: flex; align-items: baseline; flex-wrap: wrap; gap: 7px; margin-top: auto; }
-    .price-old { color: var(--muted); text-decoration: line-through; font-size: 10px; }
-    .price-new { color: var(--green); font-size: 17px; font-weight: 950; letter-spacing: -0.6px; }
+    .price-row {
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-top: auto;
+    }
 
-    .product-bottom { display: flex; align-items: center; gap: 7px; margin-top: 9px; }
+    .price-old {
+      color: var(--muted);
+      text-decoration: line-through;
+      font-size: 10px;
+    }
+
+    .price-new {
+      color: var(--green);
+      font-size: 17px;
+      font-weight: 950;
+      letter-spacing: -0.6px;
+    }
+
+    .product-bottom {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin-top: 9px;
+    }
 
     .open-avito {
-      display: inline-flex; align-items: center; justify-content: center; gap: 5px;
-      min-height: 36px; padding: 0 10px; border-radius: 10px;
-      background: rgba(46, 166, 255, 0.12); color: #71caff;
-      font-size: 10px; font-weight: 800; white-space: nowrap; flex: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      min-height: 36px;
+      padding: 0 10px;
+      border-radius: 10px;
+      background: rgba(46, 166, 255, 0.12);
+      color: #71caff;
+      font-size: 10px;
+      font-weight: 800;
+      white-space: nowrap;
+      flex: 1;
     }
 
-    .open-avito svg { width: 13px; height: 13px; }
+    .open-avito svg {
+      width: 13px;
+      height: 13px;
+    }
 
     .favorite-btn {
-      flex-shrink: 0; display: grid; place-items: center;
-      width: 36px; height: 36px; border-radius: 10px;
-      color: var(--muted); background: #202833;
+      flex-shrink: 0;
+      display: grid;
+      place-items: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      color: var(--muted);
+      background: #202833;
     }
 
-    .favorite-btn svg { width: 18px; height: 18px; }
-    .favorite-btn.is-favorite { color: #ffcf69; background: rgba(255, 207, 105, 0.12); }
+    .favorite-btn svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .favorite-btn.is-favorite {
+      color: #ffcf69;
+      background: rgba(255, 207, 105, 0.12);
+    }
 
     .empty-state {
-      padding: 34px 20px; text-align: center;
+      padding: 34px 20px;
+      text-align: center;
       border: 1px dashed rgba(137, 164, 189, 0.2);
-      border-radius: 18px; color: var(--muted);
+      border-radius: 18px;
+      color: var(--muted);
     }
 
-    .empty-state .empty-icon { font-size: 35px; margin-bottom: 12px; }
-    .empty-state strong { display: block; color: var(--text); font-size: 15px; margin-bottom: 7px; }
+    .empty-state .empty-icon {
+      font-size: 35px;
+      margin-bottom: 12px;
+    }
 
-    .skeleton { position: relative; overflow: hidden; background: #202833; border-radius: 9px; }
+    .empty-state strong {
+      display: block;
+      color: var(--text);
+      font-size: 15px;
+      margin-bottom: 7px;
+    }
+
+    /* Скелетоны */
+    .skeleton {
+      position: relative;
+      overflow: hidden;
+      background: #202833;
+      border-radius: 9px;
+    }
 
     .skeleton::after {
-      content: ""; position: absolute; inset: 0;
+      content: "";
+      position: absolute;
+      inset: 0;
       transform: translateX(-100%);
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.055), transparent);
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.055),
+        transparent
+      );
       animation: shimmer 1.3s infinite;
     }
 
-    @keyframes shimmer { 100% { transform: translateX(100%); } }
-
-    .skeleton-card {
-      display: grid; grid-template-columns: 105px 1fr; gap: 13px;
-      min-height: 155px; padding: 10px;
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 19px; margin-bottom: 12px;
+    @keyframes shimmer {
+      100% {
+        transform: translateX(100%);
+      }
     }
 
-    .skeleton-photo { min-height: 135px; }
-    .skeleton-lines { padding-top: 6px; display: flex; flex-direction: column; gap: 10px; }
-    .skeleton-line { height: 10px; }
-    .w-90 { width: 90%; } .w-70 { width: 70%; } .w-45 { width: 45%; } .w-55 { width: 55%; }
+    .skeleton-card {
+      display: grid;
+      grid-template-columns: 105px 1fr;
+      gap: 13px;
+      min-height: 155px;
+      padding: 10px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 19px;
+      margin-bottom: 12px;
+    }
 
-    /* СОЦСЕТИ */
+    .skeleton-photo {
+      min-height: 135px;
+    }
+
+    .skeleton-lines {
+      padding-top: 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .skeleton-line {
+      height: 10px;
+    }
+
+    .w-90 { width: 90%; }
+    .w-70 { width: 70%; }
+    .w-45 { width: 45%; }
+    .w-55 { width: 55%; }
+
+    /* ======================================================
+       СОЦСЕТИ
+       ====================================================== */
+
     .social-intro {
-      padding: 23px 19px; position: relative; overflow: hidden;
+      padding: 23px 19px;
+      position: relative;
+      overflow: hidden;
       background:
         radial-gradient(circle at 100% 0%, rgba(0, 212, 255, 0.18), transparent 45%),
         linear-gradient(140deg, #172635, #141a23);
       border: 1px solid rgba(46, 166, 255, 0.15);
-      border-radius: 22px; margin-bottom: 23px;
+      border-radius: 22px;
+      margin-bottom: 23px;
     }
 
-    .social-intro h1 { margin: 0; font-size: 23px; font-weight: 900; letter-spacing: -0.8px; line-height: 1.2; }
-    .social-intro p { margin: 9px 0 0; font-size: 12px; color: #a5b7c6; line-height: 1.6; }
+    .social-intro h1 {
+      margin: 0;
+      font-size: 23px;
+      font-weight: 900;
+      letter-spacing: -0.8px;
+      line-height: 1.2;
+    }
+
+    .social-intro p {
+      margin: 9px 0 0;
+      font-size: 12px;
+      color: #a5b7c6;
+      line-height: 1.6;
+    }
 
     .social-section-label {
-      margin: 0 0 12px; color: var(--muted); font-size: 10px;
-      letter-spacing: 1.5px; text-transform: uppercase; font-weight: 850;
+      margin: 0 0 12px;
+      color: var(--muted);
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      font-weight: 850;
     }
 
-    .social-grid-large { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-bottom: 22px; }
-    .social-grid-small { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin-bottom: 22px; }
+    .social-grid-large {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 22px;
+    }
+
+    .social-grid-small {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+      margin-bottom: 22px;
+    }
 
     .social-card {
-      position: relative; min-width: 0; min-height: 158px;
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      gap: 10px; padding: 14px 8px;
-      border: 1px solid var(--border); border-radius: 20px;
+      position: relative;
+      min-width: 0;
+      min-height: 158px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 14px 8px;
+      border: 1px solid var(--border);
+      border-radius: 20px;
       background: linear-gradient(145deg, #1a222c, #151b23);
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
       transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
@@ -445,128 +924,304 @@
     }
 
     .social-card::before {
-      content: ""; position: absolute; inset: 0;
+      content: "";
+      position: absolute;
+      inset: 0;
       background: radial-gradient(circle at 50% 0%, rgba(46, 166, 255, 0.09), transparent 65%);
-      opacity: 0; transition: opacity 0.2s;
+      opacity: 0;
+      transition: opacity 0.2s;
     }
 
-    .social-card:active { transform: scale(0.97); }
-    .social-card:active::before, .social-card:hover::before { opacity: 1; }
+    .social-card:active {
+      transform: scale(0.97);
+    }
+
+    .social-card:active::before,
+    .social-card:hover::before {
+      opacity: 1;
+    }
 
     .social-circle {
-      width: 66px; height: 66px; display: grid; place-items: center;
-      flex-shrink: 0; border-radius: 50%;
+      width: 66px;
+      height: 66px;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      border-radius: 50%;
       box-shadow: 0 8px 22px rgba(0, 0, 0, 0.25);
-      position: relative; z-index: 1;
+      position: relative;
+      z-index: 1;
     }
 
     .social-circle svg {
-      width: 31px; height: 31px; fill: none; stroke: #fff;
-      stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+      width: 31px;
+      height: 31px;
+      fill: none;
+      stroke: #fff;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
     }
 
-    .social-circle svg .fill-white { fill: #fff; stroke: none; }
-    .social-circle svg .white-stroke { stroke: #fff; }
-    .social-circle svg .fill-current { fill: currentColor; stroke: none; }
+    .social-circle svg .fill-white {
+      fill: #fff;
+      stroke: none;
+    }
 
-    .social-name { font-size: 12px; font-weight: 850; position: relative; z-index: 1; }
-    .social-count { font-size: 10px; color: var(--muted); position: relative; z-index: 1; margin-top: -6px; }
+    .social-circle svg .white-stroke {
+      stroke: #fff;
+    }
 
-    .social-grid-small .social-card { min-height: 113px; padding: 10px 3px; border-radius: 16px; gap: 7px; }
-    .social-grid-small .social-circle { width: 47px; height: 47px; }
-    .social-grid-small .social-circle svg { width: 24px; height: 24px; }
-    .social-grid-small .social-name { font-size: 10px; }
+    .social-circle svg .fill-current {
+      fill: currentColor;
+      stroke: none;
+    }
+
+    .social-name {
+      font-size: 12px;
+      font-weight: 850;
+      position: relative;
+      z-index: 1;
+    }
+
+    .social-count {
+      font-size: 10px;
+      color: var(--muted);
+      position: relative;
+      z-index: 1;
+      margin-top: -6px;
+    }
+
+    .social-grid-small .social-card {
+      min-height: 113px;
+      padding: 10px 3px;
+      border-radius: 16px;
+      gap: 7px;
+    }
+
+    .social-grid-small .social-circle {
+      width: 47px;
+      height: 47px;
+    }
+
+    .social-grid-small .social-circle svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    .social-grid-small .social-name {
+      font-size: 10px;
+    }
 
     .telegram-bg { background: #229ed9; }
     .x-bg { background: #000000; border: 1px solid #30343a; }
     .youtube-bg { background: #ff0033; }
     .vk-bg { background: #0077ff; }
-    .instagram-bg { background: radial-gradient(circle at 30% 105%, #ffd776 0%, #ff8a45 25%, #f33d77 55%, #a42ad0 80%, #5c51d9 100%); }
+    .instagram-bg {
+      background: radial-gradient(circle at 30% 105%, #ffd776 0%, #ff8a45 25%, #f33d77 55%, #a42ad0 80%, #5c51d9 100%);
+    }
     .tiktok-bg { background: #050505; border: 1px solid #353535; }
     .dzen-bg { background: #080808; border: 1px solid #353535; }
     .rutube-bg { background: #6328df; }
 
-    .social-support { margin-top: 5px; }
-
-    /* ПАНЕЛИ */
-    .panel-card {
-      padding: 19px; border: 1px solid var(--border);
-      border-radius: 19px; background: var(--surface); margin-bottom: 13px;
+    .vk-wordmark {
+      color: white;
+      font-weight: 950;
+      font-size: 18px;
+      letter-spacing: -1.2px;
     }
 
-    .panel-row { display: flex; align-items: center; gap: 13px; }
+    .social-support {
+      margin-top: 5px;
+    }
+
+    /* ======================================================
+       ИЗБРАННОЕ, УВЕДОМЛЕНИЯ, ПРОФИЛЬ, FAQ
+       ====================================================== */
+
+    .panel-card {
+      padding: 19px;
+      border: 1px solid var(--border);
+      border-radius: 19px;
+      background: var(--surface);
+      margin-bottom: 13px;
+    }
+
+    .panel-row {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+    }
 
     .panel-icon {
-      width: 46px; height: 46px; display: grid; place-items: center;
-      border-radius: 15px; background: rgba(46, 166, 255, 0.12);
-      color: #72ceff; font-size: 21px; flex-shrink: 0;
+      width: 46px;
+      height: 46px;
+      display: grid;
+      place-items: center;
+      border-radius: 15px;
+      background: rgba(46, 166, 255, 0.12);
+      color: #72ceff;
+      font-size: 21px;
+      flex-shrink: 0;
     }
 
-    .panel-row h3 { font-size: 14px; margin: 0; font-weight: 850; }
-    .panel-row p { font-size: 11px; color: var(--muted); margin: 5px 0 0; line-height: 1.5; }
+    .panel-row h3 {
+      font-size: 14px;
+      margin: 0;
+      font-weight: 850;
+    }
+
+    .panel-row p {
+      font-size: 11px;
+      color: var(--muted);
+      margin: 5px 0 0;
+      line-height: 1.5;
+    }
 
     .profile-hero {
       border: 1px solid rgba(46, 166, 255, 0.2);
       background:
         radial-gradient(circle at 100% 0%, rgba(0, 212, 255, 0.16), transparent 45%),
         linear-gradient(145deg, #172635, #151b23);
-      border-radius: 23px; padding: 23px 20px; margin-bottom: 17px;
+      border-radius: 23px;
+      padding: 23px 20px;
+      margin-bottom: 17px;
     }
 
     .profile-avatar {
-      width: 61px; height: 61px; display: grid; place-items: center;
-      border-radius: 21px; background: var(--gradient); color: #07141d;
-      font-size: 24px; font-weight: 950; margin-bottom: 15px;
+      width: 61px;
+      height: 61px;
+      display: grid;
+      place-items: center;
+      border-radius: 21px;
+      background: var(--gradient);
+      color: #07141d;
+      font-size: 24px;
+      font-weight: 950;
+      margin-bottom: 15px;
       box-shadow: 0 9px 22px rgba(46, 166, 255, 0.18);
     }
 
-    .profile-name { font-size: 21px; font-weight: 900; letter-spacing: -0.6px; margin: 0; }
+    .profile-name {
+      font-size: 21px;
+      font-weight: 900;
+      letter-spacing: -0.6px;
+      margin: 0;
+    }
 
     .profile-status {
-      display: inline-flex; align-items: center; gap: 6px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
       border: 1px solid rgba(54, 223, 155, 0.22);
       background: rgba(54, 223, 155, 0.09);
-      color: #54e8ad; padding: 7px 10px; border-radius: 10px;
-      margin-top: 11px; font-size: 10px; font-weight: 800;
+      color: #54e8ad;
+      padding: 7px 10px;
+      border-radius: 10px;
+      margin-top: 11px;
+      font-size: 10px;
+      font-weight: 800;
     }
 
     .secondary-btn {
-      display: flex; align-items: center; justify-content: center;
-      width: 100%; min-height: 49px;
-      border: 1px solid var(--border); background: var(--surface);
-      border-radius: 14px; color: var(--text);
-      font-size: 12px; font-weight: 800; gap: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      min-height: 49px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      border-radius: 14px;
+      color: var(--text);
+      font-size: 12px;
+      font-weight: 800;
+      gap: 8px;
     }
 
-    .notification-item { padding: 15px 0; border-bottom: 1px solid var(--border); display: flex; gap: 12px; }
-    .notification-item:last-child { border-bottom: 0; padding-bottom: 0; }
-    .notification-item:first-child { padding-top: 0; }
+    .notification-item {
+      padding: 15px 0;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      gap: 12px;
+    }
+
+    .notification-item:last-child {
+      border-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .notification-item:first-child {
+      padding-top: 0;
+    }
 
     .notification-bullet {
-      width: 8px; height: 8px; border-radius: 50%;
-      background: var(--accent-2); margin-top: 5px; flex-shrink: 0;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent-2);
+      margin-top: 5px;
+      flex-shrink: 0;
       box-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
     }
 
-    .notification-item strong { font-size: 12px; display: block; margin-bottom: 5px; }
-    .notification-item p { font-size: 11px; color: var(--muted); line-height: 1.6; margin: 0; }
-
-    .faq-item { border-bottom: 1px solid var(--border); }
-    .faq-item:last-child { border-bottom: 0; }
-
-    .faq-question {
-      display: flex; align-items: center; justify-content: space-between;
-      gap: 15px; width: 100%; text-align: left; padding: 17px 0;
-      background: transparent; font-size: 13px; font-weight: 800;
+    .notification-item strong {
+      font-size: 12px;
+      display: block;
+      margin-bottom: 5px;
     }
 
-    .faq-question span:last-child { color: var(--accent-2); font-size: 18px; }
-    .faq-answer { padding: 0 0 17px; font-size: 12px; line-height: 1.7; color: var(--text-secondary); }
+    .notification-item p {
+      font-size: 11px;
+      color: var(--muted);
+      line-height: 1.6;
+      margin: 0;
+    }
 
-    /* НИЖНЯЯ НАВИГАЦИЯ */
+    .faq-item {
+      border-bottom: 1px solid var(--border);
+    }
+
+    .faq-item:last-child {
+      border-bottom: 0;
+    }
+
+    .faq-question {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      width: 100%;
+      text-align: left;
+      padding: 17px 0;
+      background: transparent;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .faq-question span:last-child {
+      color: var(--accent-2);
+      font-size: 18px;
+    }
+
+    .faq-answer {
+      padding: 0 0 17px;
+      font-size: 12px;
+      line-height: 1.7;
+      color: var(--text-secondary);
+    }
+
+    /* ======================================================
+       НИЖНЯЯ НАВИГАЦИЯ
+       ====================================================== */
+
     .bottom-nav {
-      position: fixed; z-index: 40; left: 50%; transform: translateX(-50%);
-      bottom: 0; width: 100%; max-width: 560px;
+      position: fixed;
+      z-index: 40;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 0;
+      width: 100%;
+      max-width: 560px;
       padding: 8px 12px calc(7px + var(--safe-bottom));
       background: rgba(13, 17, 23, 0.94);
       backdrop-filter: blur(24px);
@@ -574,29 +1229,2106 @@
       border-top: 1px solid rgba(160, 190, 220, 0.10);
     }
 
-    .bottom-nav-inner { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 5px; }
+    .bottom-nav-inner {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 5px;
+    }
 
     .nav-item {
-      position: relative; min-width: 0; min-height: 55px;
-      border-radius: 13px; background: transparent; color: var(--muted);
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      gap: 4px; transition: color 0.2s, background 0.2s;
+      position: relative;
+      min-width: 0;
+      min-height: 55px;
+      border-radius: 13px;
+      background: transparent;
+      color: var(--muted);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      transition: color 0.2s, background 0.2s;
     }
 
     .nav-item svg {
-      width: 21px; height: 21px; stroke: currentColor; fill: none;
-      stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;
+      width: 21px;
+      height: 21px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
     }
 
-    .nav-item span { font-size: 9px; font-weight: 750; white-space: nowrap; }
-    .nav-item.active { color: #4fc5ff; background: rgba(46, 166, 255, 0.10); }
+    .nav-item span {
+      font-size: 9px;
+      font-weight: 750;
+      white-space: nowrap;
+    }
+
+    .nav-item.active {
+      color: #4fc5ff;
+      background: rgba(46, 166, 255, 0.10);
+    }
 
     .nav-item.active::after {
-      content: ""; position: absolute; width: 22px; height: 2px;
-      background: var(--gradient); top: 0; border-radius: 0 0 4px 4px;
+      content: "";
+      position: absolute;
+      width: 22px;
+      height: 2px;
+      background: var(--gradient);
+      top: 0;
+      border-radius: 0 0 4px 4px;
     }
 
     .nav-badge {
-      position: absolute; top: 4px; right: calc(50% - 23px);
-      min-width: 15px; height: 15px; border-radius: 10px;
-      background: var(--accent); color
+      position: absolute;
+      top: 4px;
+      right: calc(50% - 23px);
+      min-width: 15px;
+      height: 15px;
+      border-radius: 10px;
+      background: var(--accent);
+      color: #07141d;
+      display: grid;
+      place-items: center;
+      font-size: 9px;
+      font-weight: 900;
+    }
+
+    /* ======================================================
+       ПЛАВАЮЩИЙ БОТ-ПОМОЩНИК
+       ====================================================== */
+
+    .bot-helper {
+      position: fixed;
+      z-index: 45;
+      right: max(15px, calc((100vw - 530px) / 2));
+      bottom: calc(var(--nav-height) + var(--safe-bottom) + 12px);
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      max-width: calc(100vw - 30px);
+      animation: bot-appear 0.4s ease both;
+    }
+
+    @keyframes bot-appear {
+      from {
+        opacity: 0;
+        transform: translateY(12px) scale(0.9);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .bot-avatar-btn {
+      width: 51px;
+      height: 51px;
+      border-radius: 18px;
+      flex-shrink: 0;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(145deg, #43c5ff, #1685ef);
+      box-shadow:
+        0 7px 25px rgba(46, 166, 255, 0.32),
+        inset 0 1px 0 rgba(255, 255, 255, 0.35);
+      border: 2px solid rgba(153, 234, 255, 0.45);
+      animation: bot-bounce 3.2s ease-in-out infinite;
+    }
+
+    .bot-avatar-btn svg {
+      width: 36px;
+      height: 36px;
+    }
+
+    @keyframes bot-bounce {
+      0%, 100% { transform: translateY(0) rotate(0); }
+      20% { transform: translateY(-3px) rotate(-3deg); }
+      40% { transform: translateY(0) rotate(2deg); }
+      60% { transform: translateY(-2px) rotate(0); }
+    }
+
+    .bot-bubble {
+      max-width: 190px;
+      position: relative;
+      padding: 10px 12px;
+      border-radius: 13px 13px 3px 13px;
+      background: #f4fbff;
+      color: #152532;
+      font-size: 10px;
+      font-weight: 800;
+      line-height: 1.45;
+      box-shadow: 0 6px 24px rgba(0, 0, 0, 0.2);
+      opacity: 0;
+      transform: translateY(6px) scale(0.95);
+      pointer-events: none;
+      transition: opacity 0.35s, transform 0.35s;
+    }
+
+    .bot-bubble.visible {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      pointer-events: auto;
+    }
+
+    .bot-bubble::after {
+      content: "";
+      position: absolute;
+      right: -5px;
+      bottom: 0;
+      width: 10px;
+      height: 10px;
+      background: #f4fbff;
+      clip-path: polygon(0 0, 100% 100%, 0 100%);
+    }
+
+    /* ======================================================
+       OVERLAY И BOTTOM SHEET
+       ====================================================== */
+
+    .overlay {
+      position: fixed;
+      z-index: 100;
+      inset: 0;
+      background: rgba(1, 5, 10, 0.70);
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.25s, visibility 0.25s;
+    }
+
+    .overlay.open {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .bottom-sheet {
+      position: fixed;
+      z-index: 101;
+      left: 50%;
+      bottom: 0;
+      transform: translate(-50%, 105%);
+      width: 100%;
+      max-width: 560px;
+      max-height: 88dvh;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      padding: 10px 20px calc(24px + var(--safe-bottom));
+      border-radius: 27px 27px 0 0;
+      border: 1px solid rgba(137, 164, 189, 0.13);
+      border-bottom: 0;
+      background: #151c25;
+      box-shadow: 0 -18px 65px rgba(0, 0, 0, 0.4);
+      transition: transform 0.35s cubic-bezier(0.2, 0.85, 0.2, 1);
+    }
+
+    .bottom-sheet.open {
+      transform: translate(-50%, 0);
+    }
+
+    .sheet-handle {
+      width: 39px;
+      height: 4px;
+      border-radius: 4px;
+      background: #40505e;
+      margin: 1px auto 22px;
+      touch-action: pan-y;
+    }
+
+    .sheet-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .sheet-title {
+      font-size: 23px;
+      font-weight: 900;
+      letter-spacing: -0.8px;
+      margin: 0;
+    }
+
+    .sheet-close {
+      display: grid;
+      place-items: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 13px;
+      background: #222d39;
+      color: var(--text-secondary);
+      font-size: 22px;
+    }
+
+    .sheet-description {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.6;
+      margin: 0 0 19px;
+    }
+
+    .sheet-action {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      min-height: 58px;
+      gap: 13px;
+      padding: 10px 14px;
+      margin-bottom: 10px;
+      border: 1px solid var(--border);
+      border-radius: 15px;
+      background: #1c2530;
+      text-align: left;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .sheet-action-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      background: rgba(46, 166, 255, 0.13);
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .sheet-action-arrow {
+      margin-left: auto;
+      color: var(--muted);
+      font-size: 17px;
+    }
+
+    .sheet-action:active {
+      background: #263444;
+    }
+
+    .sheet-close-text {
+      background: transparent;
+      color: var(--muted);
+      justify-content: center;
+      border: 0;
+      margin-top: 4px;
+      min-height: 45px;
+    }
+
+    /* ======================================================
+       ТАРИФЫ
+       ====================================================== */
+
+    .plan-list {
+      display: grid;
+      gap: 11px;
+      margin: 18px 0;
+    }
+
+    .plan-option {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-height: 80px;
+      padding: 14px;
+      text-align: left;
+      border: 1px solid rgba(137, 164, 189, 0.15);
+      border-radius: 16px;
+      background: #1b2430;
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    .plan-option.selected {
+      border-color: #2ea6ff;
+      background: rgba(46, 166, 255, 0.09);
+      box-shadow: inset 0 0 0 1px rgba(46, 166, 255, 0.10);
+    }
+
+    .plan-radio {
+      width: 19px;
+      height: 19px;
+      border: 2px solid #586b7b;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+    }
+
+    .plan-option.selected .plan-radio {
+      border-color: #2ea6ff;
+    }
+
+    .plan-option.selected .plan-radio::after {
+      content: "";
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--gradient);
+    }
+
+    .plan-info {
+      flex: 1;
+    }
+
+    .plan-name {
+      display: block;
+      font-size: 13px;
+      font-weight: 850;
+    }
+
+    .plan-detail {
+      display: block;
+      margin-top: 5px;
+      font-size: 10px;
+      color: var(--muted);
+    }
+
+    .plan-price {
+      text-align: right;
+      font-size: 16px;
+      font-weight: 950;
+      white-space: nowrap;
+    }
+
+    .plan-tag {
+      display: inline-block;
+      margin-top: 4px;
+      font-size: 9px;
+      color: var(--green);
+      font-weight: 850;
+    }
+
+    .payment-note {
+      font-size: 10px;
+      line-height: 1.6;
+      color: var(--muted);
+      margin: 13px 0 0;
+      text-align: center;
+    }
+
+    /* ======================================================
+       TOAST И ПРОЧИЕ АНИМАЦИИ
+       ====================================================== */
+
+    .toast {
+      position: fixed;
+      z-index: 150;
+      left: 50%;
+      bottom: calc(var(--nav-height) + var(--safe-bottom) + 23px);
+      width: max-content;
+      max-width: calc(100vw - 35px);
+      padding: 13px 17px;
+      border-radius: 14px;
+      background: #e9f7ff;
+      color: #112332;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      font-size: 12px;
+      font-weight: 800;
+      line-height: 1.5;
+      text-align: center;
+      transform: translate(-50%, 12px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.22s, transform 0.22s;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+
+    .spin {
+      animation: spin 0.9s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .footer-note {
+      text-align: center;
+      font-size: 10px;
+      line-height: 1.7;
+      color: var(--muted);
+      padding: 20px 10px 5px;
+    }
+
+    @media (min-width: 430px) {
+      .page {
+        padding-left: 24px;
+        padding-right: 24px;
+      }
+
+      .hero {
+        min-height: 220px;
+      }
+
+      .hero-title {
+        font-size: 25px;
+      }
+
+      .product-card {
+        grid-template-columns: 120px minmax(0, 1fr);
+      }
+
+      .product-photo {
+        width: 120px;
+      }
+    }
+
+    @media (max-width: 350px) {
+      .page {
+        padding-left: 13px;
+        padding-right: 13px;
+      }
+
+      .topbar {
+        padding-left: 13px;
+        padding-right: 13px;
+      }
+
+      .product-card,
+      .skeleton-card {
+        grid-template-columns: 88px minmax(0, 1fr);
+        gap: 9px;
+      }
+
+      .product-photo {
+        width: 88px;
+        min-height: 125px;
+      }
+
+      .product-name {
+        font-size: 12px;
+      }
+
+      .social-grid-small {
+        gap: 5px;
+      }
+
+      .social-grid-small .social-name {
+        font-size: 9px;
+      }
+
+      .social-grid-small .social-circle {
+        width: 42px;
+        height: 42px;
+      }
+
+      .hero-art {
+        opacity: 0.78;
+        right: -10px;
+      }
+
+      .hero-title {
+        max-width: 205px;
+        font-size: 21px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app" id="app">
+
+    <!-- ==================================================
+         ВЕРХНЯЯ ПАНЕЛЬ И ПЕРВИЧНЫЕ ТАБЫ
+         ================================================== -->
+
+    <header class="topbar">
+      <div class="brand-line">
+        <div class="brand-mini">
+          <div class="brand-emblem">R</div>
+          <div class="brand gradient-text">RIV</div>
+        </div>
+
+        <div class="online-pill">
+          <span class="online-dot"></span>
+          Умный поиск
+        </div>
+      </div>
+
+      <div class="top-tabs">
+        <button class="top-tab active" id="top-search" data-top-tab="search">
+          🔍 Поиск
+        </button>
+        <button class="top-tab" id="top-social" data-top-tab="social">
+          📱 Соцсети
+        </button>
+      </div>
+    </header>
+
+    <main id="main-content">
+
+      <!-- ==================================================
+           ЭКРАН: ПОИСК
+           ================================================== -->
+
+      <section class="page" id="page-search">
+
+        <div class="hero">
+          <div class="hero-top">
+            <span>👑</span>
+            <span>RIV SMART SHOPPING</span>
+          </div>
+
+          <h1 class="hero-title">
+            Находит такие же товары, <span class="gradient-text">но дешевле</span>
+          </h1>
+
+          <p class="hero-description">
+            Сравнивай цены, находи выгодные предложения и экономь на покупках.
+          </p>
+
+          <div class="hero-art">
+            <div class="hero-ring"></div>
+
+            <!-- По требованию: сюда можно подставить URL изображения кроссовка -->
+            <img
+              class="sneaker-img"
+              src="PLACEHOLDER"
+              alt="product"
+              onerror="this.style.display='none'; document.getElementById('sneaker-fallback').style.display='block';"
+            >
+
+            <!-- Запасная иллюстрация, если PLACEHOLDER не заменён -->
+            <div id="sneaker-fallback" style="display:block; position:relative; z-index:1; font-size:76px; transform:rotate(-18deg); filter:drop-shadow(0 12px 12px rgba(0,0,0,.4));">
+              👟
+            </div>
+
+            <div class="discount-badge">−73%</div>
+            <span class="hero-spark spark-one">✦</span>
+            <span class="hero-spark spark-two">✧</span>
+          </div>
+        </div>
+
+        <div class="search-section">
+          <label class="search-label" for="avito-url">
+            Ссылка на товар
+          </label>
+
+          <div class="input-wrap">
+            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M10 13a5 5 0 0 0 7.07 0l3-3A5 5 0 0 0 13 2.93l-1.72 1.71"/>
+              <path d="M14 11a5 5 0 0 0-7.07 0l-3 3A5 5 0 0 0 11 21.07l1.71-1.71"/>
+            </svg>
+
+            <input
+              class="url-input"
+              type="url"
+              id="avito-url"
+              placeholder="Вставьте ссылку с Avito"
+              autocomplete="url"
+              autocapitalize="off"
+              spellcheck="false"
+              aria-label="Ссылка на товар Avito"
+            >
+
+            <button class="paste-btn" id="paste-btn" type="button">
+              Вставить
+            </button>
+          </div>
+
+          <p class="form-error hidden" id="form-error" role="alert"></p>
+
+          <button class="primary-btn" id="search-btn" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true">
+              <circle cx="10.8" cy="10.8" r="6.8"/>
+              <path d="m16 16 4.2 4.2"/>
+            </svg>
+            Найти дешевле
+          </button>
+
+          <p class="helper-caption">
+            Мы найдём похожие предложения и покажем, где выгоднее
+          </p>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-value gradient-text">10–30 сек</div>
+            <div class="stat-label">На поиск</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value gradient-text">&gt;10M</div>
+            <div class="stat-label">Потенциальных товаров</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value gradient-text">до 70%</div>
+            <div class="stat-label">Возможная экономия</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value gradient-text">100%</div>
+            <div class="stat-label">Удобство</div>
+          </div>
+        </div>
+
+        <!-- Сюда помещаются скелетоны и результаты -->
+        <section class="results-section hidden" id="results-section">
+          <div class="results-top">
+            <div>
+              <h2 class="section-heading" id="results-heading">Выгодные находки</h2>
+              <div class="results-count" id="results-count">Найденные предложения</div>
+            </div>
+
+            <select class="sort-select" id="sort-select" aria-label="Сортировка товаров">
+              <option value="cheap">Сначала дешевле</option>
+              <option value="new">Сначала новые</option>
+            </select>
+          </div>
+
+          <div id="skeleton-list" class="hidden" aria-label="Загрузка товаров">
+            <div class="skeleton-card">
+              <div class="skeleton skeleton-photo"></div>
+              <div class="skeleton-lines">
+                <div class="skeleton skeleton-line w-90"></div>
+                <div class="skeleton skeleton-line w-70"></div>
+                <div class="skeleton skeleton-line w-45" style="height:16px; margin-top:8px"></div>
+                <div class="skeleton skeleton-line w-90" style="height:32px; margin-top:auto"></div>
+              </div>
+            </div>
+            <div class="skeleton-card">
+              <div class="skeleton skeleton-photo"></div>
+              <div class="skeleton-lines">
+                <div class="skeleton skeleton-line w-70"></div>
+                <div class="skeleton skeleton-line w-90"></div>
+                <div class="skeleton skeleton-line w-55" style="height:16px; margin-top:8px"></div>
+                <div class="skeleton skeleton-line w-90" style="height:32px; margin-top:auto"></div>
+              </div>
+            </div>
+            <div class="skeleton-card">
+              <div class="skeleton skeleton-photo"></div>
+              <div class="skeleton-lines">
+                <div class="skeleton skeleton-line w-90"></div>
+                <div class="skeleton skeleton-line w-55"></div>
+                <div class="skeleton skeleton-line w-45" style="height:16px; margin-top:8px"></div>
+                <div class="skeleton skeleton-line w-90" style="height:32px; margin-top:auto"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="product-list" id="product-list"></div>
+
+          <div class="footer-note">
+            Цены и наличие уточняйте у продавца. RIV не является продавцом товаров.
+          </div>
+        </section>
+      </section>
+
+      <!-- ==================================================
+           ЭКРАН: СОЦСЕТИ
+           ================================================== -->
+
+      <section class="page hidden" id="page-social">
+        <div class="social-intro">
+          <div class="eyebrow" style="margin-bottom:12px">RIV COMMUNITY</div>
+          <h1>RIV — наши <span class="gradient-text">соцсети</span></h1>
+          <p>Следи за новинками, находками и обновлениями сервиса. Присоединяйся к нашему сообществу.</p>
+        </div>
+
+        <div class="social-section-label">Наши сообщества</div>
+
+        <div class="social-grid-large">
+
+          <!-- Telegram -->
+          <button class="social-card" data-social-url="https://t.me/riv_news" aria-label="Открыть Telegram">
+            <div class="social-circle telegram-bg">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path class="fill-white" d="M21.7 4.1 18.5 20c-.24 1.12-.91 1.4-1.84.87l-5.08-3.74-2.45 2.36c-.27.27-.5.5-1.03.5l.36-5.17 9.4-8.49c.41-.36-.09-.56-.64-.2L5.6 13.46.57 11.89c-1.1-.34-1.12-1.1.23-1.61L20.5 2.7c.91-.33 1.71.22 1.2 1.4Z"/>
+              </svg>
+            </div>
+            <div class="social-name">Telegram</div>
+            <div class="social-count">44.6M</div>
+          </button>
+
+          <!-- X -->
+          <button class="social-card" data-social-url="https://x.com/riv_app" aria-label="Открыть X">
+            <div class="social-circle x-bg">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path class="white-stroke" d="M4 4 20 20M20 4 4 20" stroke-width="2.8"/>
+              </svg>
+            </div>
+            <div class="social-name">X / Twitter</div>
+            <div class="social-count">13.3M</div>
+          </button>
+
+          <!-- YouTube -->
+          <button class="social-card" data-social-url="https://youtube.com/@riv" aria-label="Открыть YouTube">
+            <div class="social-circle youtube-bg">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path class="fill-white" d="M21.58 7.19a2.99 2.99 0 0 0-2.1-2.12C17.62 4.55 12 4.55 12 4.55s-5.62 0-7.48.52a2.99 2.99 0 0 0-2.1 2.12A31.3 31.3 0 0 0 1.9 12a31.3 31.3 0 0 0 .52 4.81 2.99 2.99 0 0 0 2.1 2.12c1.86.52 7.48.52 7.48.52s5.62 0 7.48-.52a2.99 2.99 0 0 0 2.1-2.12A31.3 31.3 0 0 0 22.1 12a31.3 31.3 0 0 0-.52-4.81ZM9.95 15.3V8.7L15.66 12l-5.71 3.3Z"/>
+              </svg>
+            </div>
+            <div class="social-name">YouTube</div>
+            <div class="social-count">35.9M</div>
+          </button>
+
+          <!-- VK -->
+          <button class="social-card" data-social-url="https://vk.com/riv" aria-label="Открыть VK">
+            <div class="social-circle vk-bg">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path class="fill-white" d="M3.2 7.3h3.2c.2 0 .4.2.5.4.8 2.4 1.8 4.3 2.5 4.3.4 0 .4-.7.4-2.2V8.3c-.1-.6-.3-.8-.9-1V6.5h4.7v.8c-.6.1-.9.4-.9 1.1v3.2c0 .5.2.7.5.7.7 0 1.9-1.9 2.8-4.5.1-.3.3-.5.6-.5h3.1c.4 0 .5.2.4.6-.5 1.8-2.2 4.2-3.4 5.7-.3.4-.3.6 0 .9 1.1 1 2.5 2.8 3.2 4.1.2.4.1.7-.4.7h-3.4c-.3 0-.5-.1-.7-.4-.7-1.1-1.5-2.2-2.1-2.8-.3-.3-.6-.5-.8-.5-.3 0-.4.2-.4.6v2.4c0 .4-.2.7-.7.7h-1.7c-3.3 0-6.9-4-8.5-10.8-.1-.5 0-.8.5-.8Z"/>
+              </svg>
+            </div>
+            <div class="social-name">VK</div>
+            <div class="social-count">Подписаться</div>
+          </button>
+        </div>
+
+        <div class="social-section-label">Также мы здесь</div>
+
+        <div class="social-grid-small">
+
+          <!-- Instagram -->
+          <button class="social-card" data-social-url="https://instagram.com/riv.app" aria-label="Открыть Instagram">
+            <div class="social-circle instagram-bg">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <rect class="white-stroke" x="3" y="3" width="18" height="18" rx="5"/>
+                <circle class="white-stroke" cx="12" cy="12" r="4"/>
+                <circle class="fill-white" cx="17.5" cy="6.8" r="1.2"/>
+              </svg>
+            </div>
+            <div class="social-name">Instagram</div>
+          </button>
+
+          <!-- TikTok -->
+          <button class="social-card" data-social-url="https://tiktok.com/@riv.app" aria-label="Открыть TikTok">
+            <div class="social-circle tiktok-bg">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M14 3v12.1a4.1 4.1 0 1 1-4-4.1" stroke="#25f4ee" stroke-width="3" fill="none"/>
+                <path d="M14 3v12.1a4.1 4.1 0 1 1-4-4.1" stroke="#fe2c55" stroke-width="3" fill="none" transform="translate(1.2 -.3)"/>
+                <path d="M14 3v12.1a4.1 4.1 0 1 1-4-4.1" stroke="#fff" stroke-width="2" fill="none"/>
+                <path d="M14 3c.2 2.7 1.7 4.4 4.5 4.6" stroke="#fff" stroke-width="2.5" fill="none"/>
+              </svg>
+            </div>
+            <div class="social-name">TikTok</div>
+          </button>
+
+          <!-- Дзен -->
+          <button class="social-card" data-social-url="https://dzen.ru" aria-label="Открыть Дзен">
+            <div class="social-circle dzen-bg">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path class="fill-white" d="M12 2C6.48 2 2 6.48 2 12c3.5 0 5.4-.5 7.1-2.2C10.8 8.1 11.4 5.5 12 2Z"/>
+                <path class="fill-white" d="M22 12c-3.5 0-5.4.5-7.1 2.2C13.2 15.9 12.6 18.5 12 22c5.52 0 10-4.48 10-10Z"/>
+                <path class="fill-white" d="M12 22c0-3.5-.5-5.4-2.2-7.1C8.1 13.2 5.5 12.6 2 12c0 5.52 4.48 10 10 10Z"/>
+                <path class="fill-white" d="M22 12c0-5.52-4.48-10-10-10 0 3.5.5 5.4 2.2 7.1C15.9 10.8 18.5 11.4 22 12Z"/>
+              </svg>
+            </div>
+            <div class="social-name">Дзен</div>
+          </button>
+
+          <!-- RuTube -->
+          <button class="social-card" data-social-url="https://rutube.ru" aria-label="Открыть RuTube">
+            <div class="social-circle rutube-bg">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path class="fill-white" d="M7 4.7c0-.9 1-1.4 1.8-.9l11 6.8c.7.5.7 1.5 0 1.9l-11 6.8c-.8.5-1.8 0-1.8-.9V4.7Z"/>
+              </svg>
+            </div>
+            <div class="social-name">RuTube</div>
+          </button>
+        </div>
+
+        <button class="primary-btn social-support" id="social-support-btn">
+          <span>💬</span> Поддержка
+        </button>
+
+        <p class="helper-caption">
+          Есть вопрос или предложение? Напиши нам — мы на связи.
+        </p>
+      </section>
+
+      <!-- ==================================================
+           ЭКРАН: ИЗБРАННОЕ
+           ================================================== -->
+
+      <section class="page hidden" id="page-favorites">
+        <div class="page-header">
+          <div class="eyebrow" style="margin-bottom:10px">YOUR COLLECTION</div>
+          <h1 class="page-title">Избранное <span class="gradient-text">☆</span></h1>
+          <p class="section-subtitle">Сохраняй интересные находки, чтобы вернуться к ним позже.</p>
+        </div>
+
+        <div id="favorites-list"></div>
+      </section>
+
+      <!-- ==================================================
+           ЭКРАН: УВЕДОМЛЕНИЯ
+           ================================================== -->
+
+      <section class="page hidden" id="page-notifications">
+        <div class="page-header">
+          <div class="eyebrow" style="margin-bottom:10px">STAY UPDATED</div>
+          <h1 class="page-title">Уведомления <span class="gradient-text">✦</span></h1>
+          <p class="section-subtitle">Новости и подсказки от RIV.</p>
+        </div>
+
+        <div class="panel-card">
+          <div class="notification-item">
+            <div class="notification-bullet"></div>
+            <div>
+              <strong>Добро пожаловать в RIV!</strong>
+              <p>Вставь ссылку на товар с Avito и попробуй найти похожие предложения по более выгодной цене.</p>
+            </div>
+          </div>
+
+          <div class="notification-item">
+            <div class="notification-bullet"></div>
+            <div>
+              <strong>Совет: сравнивай состояние</strong>
+              <p>Обрати внимание на состояние товара, комплектацию и рейтинг продавца, а не только на цену.</p>
+            </div>
+          </div>
+
+          <div class="notification-item">
+            <div class="notification-bullet"></div>
+            <div>
+              <strong>Новая функция — избранное</strong>
+              <p>Нажимай на звёздочку у товара, чтобы сохранить понравившиеся предложения.</p>
+            </div>
+          </div>
+        </div>
+
+        <p class="helper-caption">Это демонстрационные уведомления.</p>
+      </section>
+
+      <!-- ==================================================
+           ЭКРАН: ПРОФИЛЬ
+           ================================================== -->
+
+      <section class="page hidden" id="page-profile">
+        <div class="page-header">
+          <div class="eyebrow" style="margin-bottom:10px">YOUR ACCOUNT</div>
+          <h1 class="page-title">Мой <span class="gradient-text">профиль</span></h1>
+        </div>
+
+        <div class="profile-hero">
+          <div class="profile-avatar">R</div>
+          <h2 class="profile-name" id="profile-name">Пользователь RIV</h2>
+          <div class="profile-status">
+            <span>●</span>
+            <span id="profile-status-text">Базовый доступ</span>
+          </div>
+          <p class="section-subtitle" style="color:#a5b7c6; margin-top:13px">
+            Твой личный кабинет для выгодных покупок.
+          </p>
+        </div>
+
+        <div class="panel-card">
+          <div class="panel-row">
+            <div class="panel-icon">🔎</div>
+            <div>
+              <h3>Поиски</h3>
+              <p>Количество запусков в этой демоверсии: <strong id="search-total">0</strong></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel-card">
+          <div class="panel-row">
+            <div class="panel-icon">⭐</div>
+            <div>
+              <h3>Подписка RIV Premium</h3>
+              <p id="subscription-description">Открой дополнительные возможности в будущей версии сервиса.</p>
+            </div>
+          </div>
+          <button class="primary-btn" id="open-plans-btn" style="margin-top:18px">
+            ⭐ Продлить подписку
+          </button>
+        </div>
+
+        <button class="secondary-btn" id="profile-support-btn">
+          💬 Связаться с поддержкой
+        </button>
+
+        <p class="footer-note">
+          RIV — независимый сервис сравнения цен. Не связан с Avito.
+        </p>
+      </section>
+
+      <!-- ==================================================
+           ЭКРАН: FAQ
+           ================================================== -->
+
+      <section class="page hidden" id="page-faq">
+        <div class="page-header">
+          <div class="eyebrow" style="margin-bottom:10px">HELP CENTER</div>
+          <h1 class="page-title">Частые <span class="gradient-text">вопросы</span></h1>
+          <p class="section-subtitle">Короткие ответы на самые популярные вопросы.</p>
+        </div>
+
+        <div class="panel-card" id="faq-list">
+
+          <div class="faq-item">
+            <button class="faq-question" aria-expanded="false">
+              <span>Как работает поиск RIV?</span>
+              <span>+</span>
+            </button>
+            <div class="faq-answer hidden">
+              Вставь ссылку на объявление Avito. В полноценной версии сервер извлечёт характеристики товара и найдёт похожие предложения по заданным критериям. Сейчас поиск использует демонстрационные данные.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question" aria-expanded="false">
+              <span>Почему цены могут отличаться?</span>
+              <span>+</span>
+            </button>
+            <div class="faq-answer hidden">
+              Цена зависит от состояния, комплектации, региона и условий продавца. Всегда проверяй актуальную стоимость и характеристики непосредственно в объявлении.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question" aria-expanded="false">
+              <span>Как открыть объявление?</span>
+              <span>+</span>
+            </button>
+            <div class="faq-answer hidden">
+              Нажми «Открыть на Avito» в карточке результата. Ссылка откроется через Telegram, если Mini App запущен внутри Telegram.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question" aria-expanded="false">
+              <span>Как связаться с поддержкой?</span>
+              <span>+</span>
+            </button>
+            <div class="faq-answer hidden">
+              Нажми на плавающего бота или кнопку поддержки. В демоверсии используется адрес t.me/riv_support — замени его на свой реальный аккаунт поддержки, если он отличается.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question" aria-expanded="false">
+              <span>Как работает подписка?</span>
+              <span>+</span>
+            </button>
+            <div class="faq-answer hidden">
+              Сейчас тарифы и оплата демонстрационные. Для реальных платежей нужно подключить серверную проверку оплаты и соответствующий платёжный сценарий Telegram.
+            </div>
+          </div>
+        </div>
+
+        <button class="secondary-btn" id="faq-back-btn" style="margin-top:15px">
+          ← Вернуться назад
+        </button>
+      </section>
+
+    </main>
+
+    <!-- ==================================================
+         НИЖНЯЯ НАВИГАЦИЯ
+         ================================================== -->
+
+    <nav class="bottom-nav" aria-label="Основная навигация">
+      <div class="bottom-nav-inner">
+
+        <button class="nav-item active" data-page="search" aria-label="Главная">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="m3 10 9-7 9 7"/>
+            <path d="M5 9v11h14V9"/>
+            <path d="M9 20v-7h6v7"/>
+          </svg>
+          <span>Главная</span>
+        </button>
+
+        <button class="nav-item" data-page="favorites" aria-label="Избранное">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9L12 3Z"/>
+          </svg>
+          <span>Избранное</span>
+          <span class="nav-badge hidden" id="favorite-badge">0</span>
+        </button>
+
+        <button class="nav-item" data-page="notifications" aria-label="Уведомления">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/>
+            <path d="M10 21h4"/>
+          </svg>
+          <span>Уведомления</span>
+        </button>
+
+        <button class="nav-item" data-page="profile" aria-label="Профиль">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="8" r="4"/>
+            <path d="M4 21a8 8 0 0 1 16 0"/>
+          </svg>
+          <span>Профиль</span>
+        </button>
+
+      </div>
+    </nav>
+
+    <!-- ==================================================
+         ПЛАВАЮЩИЙ БОТ
+         ================================================== -->
+
+    <div class="bot-helper hidden" id="bot-helper">
+      <button class="bot-bubble" id="bot-bubble" aria-label="Открыть помощь">
+        Если нужна помощь — нажми на меня
+      </button>
+
+      <button class="bot-avatar-btn" id="bot-avatar" aria-label="Открыть помощь">
+        <!-- Авторская SVG-иконка робота -->
+        <svg viewBox="0 0 48 48" fill="none" aria-hidden="true">
+          <path d="M24 6v5" stroke="#e8faff" stroke-width="3" stroke-linecap="round"/>
+          <circle cx="24" cy="5" r="3" fill="#a8f2ff" stroke="#ffffff" stroke-width="1"/>
+          <rect x="7" y="12" width="34" height="27" rx="10" fill="#f1fbff" stroke="#b4eaff" stroke-width="2"/>
+          <path d="M7 22H3v9h5M41 22h4v9h-5" fill="#d4f3ff" stroke="#b4eaff" stroke-width="1.5" stroke-linejoin="round"/>
+          <rect x="13" y="20" width="8" height="8" rx="4" fill="#1685ef"/>
+          <rect x="27" y="20" width="8" height="8" rx="4" fill="#1685ef"/>
+          <path d="M17 33c2 2 4 3 7 3s5-1 7-3" stroke="#1685ef" stroke-width="2.4" stroke-linecap="round"/>
+          <path d="M13 15h22" stroke="#c0efff" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- ==================================================
+         ОБЩИЙ OVERLAY
+         ================================================== -->
+
+    <div class="overlay" id="overlay"></div>
+
+    <!-- ==================================================
+         BOTTOM SHEET: ПОМОЩЬ
+         ================================================== -->
+
+    <section class="bottom-sheet" id="help-sheet" role="dialog" aria-modal="true" aria-labelledby="help-title">
+      <div class="sheet-handle" data-sheet-handle></div>
+
+      <div class="sheet-header">
+        <h2 class="sheet-title" id="help-title">Помощь</h2>
+        <button class="sheet-close" data-close-sheet aria-label="Закрыть">×</button>
+      </div>
+
+      <p class="sheet-description">
+        Я помогу разобраться с поиском, результатами и работой RIV.
+      </p>
+
+      <button class="sheet-action" id="help-support-btn">
+        <span class="sheet-action-icon">💬</span>
+        <span>Написать в поддержку</span>
+        <span class="sheet-action-arrow">›</span>
+      </button>
+
+      <button class="sheet-action" id="help-faq-btn">
+        <span class="sheet-action-icon">❓</span>
+        <span>Частые вопросы (FAQ)</span>
+        <span class="sheet-action-arrow">›</span>
+      </button>
+
+      <button class="sheet-action sheet-close-text" data-close-sheet>
+        ✖ Закрыть
+      </button>
+    </section>
+
+    <!-- ==================================================
+         BOTTOM SHEET: ПОДПИСКА
+         ================================================== -->
+
+    <section class="bottom-sheet" id="plans-sheet" role="dialog" aria-modal="true" aria-labelledby="plans-title">
+      <div class="sheet-handle" data-sheet-handle></div>
+
+      <div class="sheet-header">
+        <h2 class="sheet-title" id="plans-title">RIV <span class="gradient-text">Premium</span></h2>
+        <button class="sheet-close" data-close-sheet aria-label="Закрыть">×</button>
+      </div>
+
+      <p class="sheet-description">
+        Выбери подходящий тариф. Оплата в этой версии не подключена.
+      </p>
+
+      <div class="plan-list" id="plan-list">
+        <button class="plan-option" data-plan="month" aria-pressed="false">
+          <span class="plan-radio"></span>
+          <span class="plan-info">
+            <span class="plan-name">1 месяц</span>
+            <span class="plan-detail">Попробовать Premium</span>
+          </span>
+          <span class="plan-price">
+            299 ₽
+          </span>
+        </button>
+
+        <button class="plan-option selected" data-plan="quarter" aria-pressed="true">
+          <span class="plan-radio"></span>
+          <span class="plan-info">
+            <span class="plan-name">3 месяца</span>
+            <span class="plan-detail">Выгодный выбор</span>
+          </span>
+          <span class="plan-price">
+            699 ₽
+            <span class="plan-tag">−22%</span>
+          </span>
+        </button>
+
+        <button class="plan-option" data-plan="year" aria-pressed="false">
+          <span class="plan-radio"></span>
+          <span class="plan-info">
+            <span class="plan-name">12 месяцев</span>
+            <span class="plan-detail">Максимум выгоды</span>
+          </span>
+          <span class="plan-price">
+            1 999 ₽
+            <span class="plan-tag">−44%</span>
+          </span>
+        </button>
+      </div>
+
+      <button class="primary-btn" id="pay-btn">
+        ⭐ Оплатить
+      </button>
+
+      <p class="payment-note">
+        Демонстрационные тарифы. Нажатие на кнопку не списывает деньги и не создаёт подписку.
+      </p>
+    </section>
+
+    <!-- Уведомления пользователю -->
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  </div>
+
+  <script>
+    "use strict";
+
+    /* ======================================================
+       RIV — TELEGRAM WEBAPP ИНИЦИАЛИЗАЦИЯ
+       ====================================================== */
+
+    const tg = window.Telegram && window.Telegram.WebApp
+      ? window.Telegram.WebApp
+      : null;
+
+    if (tg) {
+      // Сообщаем Telegram, что приложение готово к отображению.
+      tg.ready();
+
+      // Просим Telegram раскрыть Mini App на максимальную высоту.
+      tg.expand();
+
+      // Устанавливаем цвет системных областей.
+      try {
+        tg.setHeaderColor("#0d1117");
+        tg.setBackgroundColor("#0d1117");
+      } catch (error) {
+        console.debug("Настройка цветов Telegram недоступна:", error);
+      }
+
+      document.body.classList.add("telegram-theme");
+    }
+
+    /* ======================================================
+       СОСТОЯНИЕ ПРИЛОЖЕНИЯ
+       ====================================================== */
+
+    const state = {
+      page: "search",
+      topTab: "search",
+      searchStatus: "idle", // idle | searching | results
+      searches: 0,
+      favorites: [],
+      results: [],
+      selectedPlan: "quarter",
+      previousPage: "search",
+      subscription: {
+        active: false,
+        plan: null
+      }
+    };
+
+    const SUPPORT_URL = "https://t.me/riv_support";
+
+    // Здесь хранятся только демонстрационные данные.
+    // В production их нужно заменить ответом вашего backend API.
+    const MOCK_PRODUCTS = [
+      {
+        id: 1,
+        title: "Nike Air Max 270 — оригинальные кроссовки",
+        emoji: "👟",
+        price: 3490,
+        oldPrice: 8990,
+        location: "Москва · Сегодня",
+        date: 6,
+        url: "https://www.avito.ru/",
+        image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=400&q=80"
+      },
+      {
+        id: 2,
+        title: "Apple AirPods Pro 2, отличное состояние",
+        emoji: "🎧",
+        price: 5990,
+        oldPrice: 11990,
+        location: "Санкт-Петербург · Сегодня",
+        date: 5,
+        url: "https://www.avito.ru/",
+        image: "https://images.unsplash.com/photo-1606220945770-b5b6c2c55bf1?auto=format&fit=crop&w=400&q=80"
+      },
+      {
+        id: 3,
+        title: "PlayStation 5 Slim с одним геймпадом",
+        emoji: "🎮",
+        price: 28990,
+        oldPrice: 39990,
+        location: "Казань · Вчера",
+        date: 4,
+        url: "https://www.avito.ru/",
+        image: "https://images.unsplash.com/photo-1606813907291-d86efa9b94db?auto=format&fit=crop&w=400&q=80"
+      },
+      {
+        id: 4,
+        title: "Apple Watch Series — стильные смарт-часы",
+        emoji: "⌚",
+        price: 7990,
+        oldPrice: 14990,
+        location: "Екатеринбург · Вчера",
+        date: 3,
+        url: "https://www.avito.ru/",
+        image: "https://images.unsplash.com/photo-1434494878577-86c23bcb06b9?auto=format&fit=crop&w=400&q=80"
+      },
+      {
+        id: 5,
+        title: "JBL Charge — портативная Bluetooth-колонка",
+        emoji: "🔊",
+        price: 3490,
+        oldPrice: 6990,
+        location: "Новосибирск · 2 дня назад",
+        date: 2,
+        url: "https://www.avito.ru/",
+        image: "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?auto=format&fit=crop&w=400&q=80"
+      },
+      {
+        id: 6,
+        title: "Механическая клавиатура для рабочего места",
+        emoji: "⌨️",
+        price: 2490,
+        oldPrice: 4990,
+        location: "Нижний Новгород · 3 дня назад",
+        date: 1,
+        url: "https://www.avito.ru/",
+        image: "https://images.unsplash.com/photo-1595225476474-87563907a212?auto=format&fit=crop&w=400&q=80"
+      }
+    ];
+
+    /* ======================================================
+       УТИЛИТЫ
+       ====================================================== */
+
+    const $ = (selector, root = document) => root.querySelector(selector);
+    const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
+
+    let toastTimer = null;
+    let searchTimer = null;
+    let bubbleTimers = [];
+    let touchStartY = 0;
+    let currentSheet = null;
+
+    function haptic(style = "light") {
+      // Haptic Feedback доступен только в поддерживаемых версиях Telegram.
+      try {
+        if (tg && tg.HapticFeedback) {
+          tg.HapticFeedback.impactOccurred(style);
+        }
+      } catch (error) {
+        // В обычном браузере виброотклик просто пропускается.
+      }
+    }
+
+    function toast(message) {
+      const el = $("#toast");
+
+      el.textContent = message;
+      el.classList.add("show");
+
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        el.classList.remove("show");
+      }, 2600);
+    }
+
+    function formatPrice(value) {
+      return new Intl.NumberFormat("ru-RU").format(value) + " ₽";
+    }
+
+    function escapeHTML(value) {
+      return String(value).replace(/[&<>"']/g, char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      })[char]);
+    }
+
+    function discountPercent(oldPrice, newPrice) {
+      if (!oldPrice || oldPrice <= 0) return 0;
+      return Math.max(0, Math.round((1 - newPrice / oldPrice) * 100));
+    }
+
+    /* ======================================================
+       TELEGRAM OPENLINK
+       ====================================================== */
+
+    function openExternal(url) {
+      haptic("light");
+
+      try {
+        const parsed = new URL(url);
+
+        // Разрешаем только внешние ссылки с безопасными протоколами.
+        if (!["https:", "http:"].includes(parsed.protocol)) {
+          toast("Некорректная ссылка");
+          return;
+        }
+
+        if (tg && typeof tg.openLink === "function") {
+          tg.openLink(parsed.href);
+        } else {
+          window.open(parsed.href, "_blank", "noopener,noreferrer");
+        }
+      } catch (error) {
+        toast("Не удалось открыть ссылку");
+      }
+    }
+
+    function openSupport() {
+      closeSheet();
+      openExternal(SUPPORT_URL);
+    }
+
+    /* ======================================================
+       ПЕРЕКЛЮЧЕНИЕ ЭКРАНОВ
+       ====================================================== */
+
+    const pageIds = {
+      search: "page-search",
+      social: "page-social",
+      favorites: "page-favorites",
+      notifications: "page-notifications",
+      profile: "page-profile",
+      faq: "page-faq"
+    };
+
+    function setTopTab(tab) {
+      state.topTab = tab;
+
+      $$("[data-top-tab]").forEach(button => {
+        button.classList.toggle("active", button.dataset.topTab === tab);
+      });
+    }
+
+    function renderNavigation() {
+      // FAQ открывается как внутренний экран без отдельной нижней вкладки.
+      $$("[data-page]").forEach(button => {
+        button.classList.toggle("active", button.dataset.page === state.page);
+      });
+
+      $("#favorite-badge").textContent = String(state.favorites.length);
+      $("#favorite-badge").classList.toggle("hidden", state.favorites.length === 0);
+    }
+
+    function showPage(page, options = {}) {
+      if (!pageIds[page]) return;
+
+      haptic("light");
+
+      // Сохраняем предыдущий экран, чтобы можно было вернуться из FAQ.
+      if (page !== "faq") {
+        state.previousPage = page;
+      }
+
+      state.page = page;
+
+      Object.entries(pageIds).forEach(([key, id]) => {
+        $("#" + id).classList.toggle("hidden", key !== page);
+      });
+
+      if (page === "search" || page === "social") {
+        setTopTab(page);
+      } else if (page === "faq") {
+        // При открытии FAQ верхние табы сохраняют предыдущий выбор.
+      } else {
+        // Вторичные экраны не должны оставлять визуально активным таб соцсетей.
+        setTopTab("search");
+      }
+
+      renderNavigation();
+      updateBotVisibility();
+
+      if (page === "favorites") {
+        renderFavorites();
+      }
+
+      if (!options.keepScroll) {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    }
+
+    $$("[data-top-tab]").forEach(button => {
+      button.addEventListener("click", () => {
+        showPage(button.dataset.topTab);
+      });
+    });
+
+    $$("[data-page]").forEach(button => {
+      button.addEventListener("click", () => {
+        showPage(button.dataset.page);
+      });
+    });
+
+    /* ======================================================
+       ПОЛЕ ВВОДА И ВСТАВКА ИЗ БУФЕРА
+       ====================================================== */
+
+    $("#paste-btn").addEventListener("click", async () => {
+      haptic("light");
+
+      const input = $("#avito-url");
+
+      try {
+        // Clipboard API работает в защищённом контексте
+        // и может требовать дополнительного разрешения.
+        if (navigator.clipboard && navigator.clipboard.readText) {
+          const text = await navigator.clipboard.readText();
+
+          if (text.trim()) {
+            input.value = text.trim();
+            input.dispatchEvent(new Event("input", { bubbles: true }));
+            $("#form-error").classList.add("hidden");
+            toast("Ссылка вставлена");
+            input.focus();
+            return;
+          }
+
+          toast("Буфер обмена пуст");
+        } else {
+          input.focus();
+          toast("Вставь ссылку через меню буфера обмена");
+        }
+      } catch (error) {
+        // Telegram WebView может запретить чтение буфера.
+        // Пользователь всё ещё может вставить текст вручную.
+        input.focus();
+        toast("Разреши буфер обмена или вставь ссылку вручную");
+      }
+    });
+
+    $("#avito-url").addEventListener("input", () => {
+      $("#form-error").classList.add("hidden");
+    });
+
+    function isValidAvitoURL(value) {
+      try {
+        const url = new URL(value);
+
+        return (
+          url.protocol === "https:" &&
+          (
+            url.hostname === "avito.ru" ||
+            url.hostname.endsWith(".avito.ru")
+          )
+        );
+      } catch (error) {
+        return false;
+      }
+    }
+
+    /* ======================================================
+       ПОИСК
+       ====================================================== */
+
+    function startSearch() {
+      haptic("medium");
+
+      const input = $("#avito-url");
+      const url = input.value.trim();
+      const error = $("#form-error");
+
+      if (!url) {
+        error.textContent = "Вставь ссылку на товар с Avito.";
+        error.classList.remove("hidden");
+        input.focus();
+        haptic("light");
+        return;
+      }
+
+      if (!isValidAvitoURL(url)) {
+        error.textContent = "Проверь ссылку. Нужен адрес объявления на avito.ru.";
+        error.classList.remove("hidden");
+        input.focus();
+        haptic("light");
+        return;
+      }
+
+      error.classList.add("hidden");
+
+      clearTimeout(searchTimer);
+
+      state.searchStatus = "searching";
+      state.searches += 1;
+      $("#search-total").textContent = String(state.searches);
+
+      showPage("search", { keepScroll: true });
+
+      const resultsSection = $("#results-section");
+      resultsSection.classList.remove("hidden");
+
+      $("#results-heading").textContent = "Ищем выгодные предложения";
+      $("#results-count").textContent = "Сравниваем похожие товары…";
+
+      $("#product-list").innerHTML = "";
+      $("#skeleton-list").classList.remove("hidden");
+
+      const searchButton = $("#search-btn");
+      searchButton.disabled = true;
+      searchButton.innerHTML = `
+        <svg class="spin" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2.3" aria-hidden="true">
+          <circle cx="12" cy="12" r="9" stroke-opacity=".25"/>
+          <path d="M21 12a9 9 0 0 0-9-9"/>
+        </svg>
+        Ищем аналоги…
+      `;
+
+      updateBotVisibility();
+
+      // В демонстрации задержка имитирует работу сервера.
+      // Реальная реализация должна вызывать backend API здесь.
+      searchTimer = setTimeout(() => {
+        state.results = MOCK_PRODUCTS.map(product => ({ ...product }));
+
+        // В демонстрационных карточках ссылки ведут на Avito.
+        // Для production здесь должны быть реальные URL найденных объявлений.
+        state.searchStatus = "results";
+
+        $("#skeleton-list").classList.add("hidden");
+        $("#results-heading").textContent = "Выгодные находки";
+        $("#results-count").textContent =
+          `Найдено предложений: ${state.results.length}`;
+
+        renderProducts(state.results);
+        restoreSearchButton();
+        updateBotVisibility();
+
+        haptic("success");
+        toast("Поиск завершён");
+      }, 2400);
+    }
+
+    function restoreSearchButton() {
+      const button = $("#search-btn");
+
+      button.disabled = false;
+      button.innerHTML = `
+        <svg viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2.2"
+          stroke-linecap="round" aria-hidden="true">
+          <circle cx="10.8" cy="10.8" r="6.8"/>
+          <path d="m16 16 4.2 4.2"/>
+        </svg>
+        Найти дешевле
+      `;
+    }
+
+    $("#search-btn").addEventListener("click", startSearch);
+
+    $("#avito-url").addEventListener("keydown", event => {
+      if (event.key === "Enter") {
+        startSearch();
+      }
+    });
+
+    /* ======================================================
+       КАРТОЧКИ ТОВАРОВ
+       ====================================================== */
+
+    function productCardHTML(product, index = 0) {
+      const isFavorite = state.favorites.some(item => item.id === product.id);
+      const discount = discountPercent(product.oldPrice, product.price);
+
+      return `
+        <article class="product-card" style="animation-delay:${Math.min(index * 55, 300)}ms">
+          <div class="product-photo">
+            <div class="product-emoji">${escapeHTML(product.emoji)}</div>
+
+            <img
+              src="${escapeHTML(product.image)}"
+              alt="${escapeHTML(product.title)}"
+              loading="lazy"
+              onerror="this.style.display='none'"
+            >
+
+            <span class="discount-chip">−${discount}%</span>
+          </div>
+
+          <div class="product-content">
+            <h3 class="product-name">${escapeHTML(product.title)}</h3>
+
+            <div class="product-location">
+              📍 ${escapeHTML(product.location)}
+            </div>
+
+            <div class="price-row">
+              <span class="price-old">${formatPrice(product.oldPrice)}</span>
+              <span class="price-new">${formatPrice(product.price)}</span>
+            </div>
+
+            <div class="product-bottom">
+              <button
+                class="open-avito"
+                data-open-product="${product.id}"
+                type="button"
+              >
+                Открыть на Avito
+                <svg viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round"
+                  aria-hidden="true">
+                  <path d="M14 3h7v7"/>
+                  <path d="M10 14 21 3"/>
+                  <path d="M19 13v7H4V5h7"/>
+                </svg>
+              </button>
+
+              <button
+                class="favorite-btn ${isFavorite ? "is-favorite" : ""}"
+                data-favorite="${product.id}"
+                type="button"
+                aria-label="${isFavorite ? "Удалить из избранного" : "Добавить в избранное"}"
+                aria-pressed="${isFavorite}"
+              >
+                <svg viewBox="0 0 24 24"
+                  fill="${isFavorite ? "currentColor" : "none"}"
+                  stroke="currentColor" stroke-width="1.9"
+                  stroke-linejoin="round" aria-hidden="true">
+                  <path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9L12 3Z"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </article>
+      `;
+    }
+
+    function renderProducts(products) {
+      const container = $("#product-list");
+
+      if (!products.length) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">🔎</div>
+            <strong>Пока ничего не найдено</strong>
+            Попробуй изменить сортировку или выполнить новый поиск.
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = products.map(productCardHTML).join("");
+    }
+
+    function sortedProducts(products) {
+      const sort = $("#sort-select").value;
+      const sorted = [...products];
+
+      if (sort === "new") {
+        sorted.sort((a, b) => b.date - a.date);
+      } else {
+        sorted.sort((a, b) => a.price - b.price);
+      }
+
+      return sorted;
+    }
+
+    $("#sort-select").addEventListener("change", () => {
+      haptic("light");
+
+      if (state.searchStatus === "results") {
+        renderProducts(sortedProducts(state.results));
+      }
+    });
+
+    /* ======================================================
+       ИЗБРАННОЕ
+       ====================================================== */
+
+    function toggleFavorite(id) {
+      haptic("light");
+
+      const product = state.results.find(item => item.id === id)
+        || MOCK_PRODUCTS.find(item => item.id === id);
+
+      if (!product) return;
+
+      const index = state.favorites.findIndex(item => item.id === id);
+
+      if (index >= 0) {
+        state.favorites.splice(index, 1);
+        toast("Удалено из избранного");
+      } else {
+        state.favorites.push({ ...product });
+        toast("Добавлено в избранное ⭐");
+      }
+
+      // Обновляем карточки в текущем списке и счётчик навигации.
+      if (state.searchStatus === "results") {
+        renderProducts(sortedProducts(state.results));
+      }
+
+      renderFavorites();
+      renderNavigation();
+    }
+
+    function renderFavorites() {
+      const container = $("#favorites-list");
+
+      if (!state.favorites.length) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">⭐</div>
+            <strong>Здесь пока пусто</strong>
+            Сохраняй товары с помощью звёздочки в карточке результата.
+            <button class="primary-btn" id="favorites-search-btn" style="margin-top:18px">
+              🔍 Перейти к поиску
+            </button>
+          </div>
+        `;
+
+        const button = $("#favorites-search-btn");
+
+        if (button) {
+          button.addEventListener("click", () => showPage("search"));
+        }
+
+        return;
+      }
+
+      container.innerHTML = `
+        <div class="product-list">
+          ${state.favorites.map(productCardHTML).join("")}
+        </div>
+      `;
+    }
+
+    /* ======================================================
+       ОБРАБОТЧИКИ КАРТОЧЕК
+       ====================================================== */
+
+    document.addEventListener("click", event => {
+      const favoriteButton = event.target.closest("[data-favorite]");
+
+      if (favoriteButton) {
+        toggleFavorite(Number(favoriteButton.dataset.favorite));
+        return;
+      }
+
+      const openButton = event.target.closest("[data-open-product]");
+
+      if (openButton) {
+        const id = Number(openButton.dataset.openProduct);
+        const product = state.results.find(item => item.id === id)
+          || state.favorites.find(item => item.id === id)
+          || MOCK_PRODUCTS.find(item => item.id === id);
+
+        if (product) {
+          openExternal(product.url);
+        }
+      }
+    });
+
+    /* ======================================================
+       СОЦСЕТИ
+       ====================================================== */
+
+    $$("[data-social-url]").forEach(button => {
+      button.addEventListener("click", () => {
+        openExternal(button.dataset.socialUrl);
+      });
+    });
+
+    $("#social-support-btn").addEventListener("click", openSupport);
+    $("#profile-support-btn").addEventListener("click", openSupport);
+
+    /* ======================================================
+       BOT HELPER: ПОЯВЛЕНИЕ ТОЛЬКО ВО ВРЕМЯ ПОИСКА
+       ====================================================== */
+
+    function clearBubbleTimers() {
+      bubbleTimers.forEach(timer => clearTimeout(timer));
+      bubbleTimers = [];
+    }
+
+    function hideBubble() {
+      $("#bot-bubble").classList.remove("visible");
+    }
+
+    function scheduleBubbleCycle() {
+      clearBubbleTimers();
+      hideBubble();
+
+      // Первая подсказка появляется через 1,5 секунды.
+      const first = setTimeout(() => {
+        if (state.searchStatus !== "searching" || state.page !== "search") {
+          return;
+        }
+
+        $("#bot-bubble").classList.add("visible");
+
+        // Подсказка видна около 5 секунд.
+        const hide = setTimeout(() => {
+          hideBubble();
+        }, 5000);
+
+        bubbleTimers.push(hide);
+
+        // Следующее появление через 20 секунд.
+        const repeat = setTimeout(() => {
+          scheduleBubbleCycle();
+        }, 20000);
+
+        bubbleTimers.push(repeat);
+      }, 1500);
+
+      bubbleTimers.push(first);
+    }
+
+    function updateBotVisibility() {
+      const helper = $("#bot-helper");
+
+      const shouldShow =
+        state.page === "search" &&
+        state.searchStatus === "searching";
+
+      helper.classList.toggle("hidden", !shouldShow);
+
+      if (shouldShow) {
+        scheduleBubbleCycle();
+      } else {
+        clearBubbleTimers();
+        hideBubble();
+      }
+    }
+
+    $("#bot-avatar").addEventListener("click", () => {
+      haptic("light");
+      openSheet("help-sheet");
+    });
+
+    $("#bot-bubble").addEventListener("click", () => {
+      haptic("light");
+      openSheet("help-sheet");
+    });
+
+    /* ======================================================
+       BOTTOM SHEET: УНИВЕРСАЛЬНОЕ УПРАВЛЕНИЕ
+       ====================================================== */
+
+    const overlay = $("#overlay");
+
+    function openSheet(id) {
+      haptic("light");
+
+      closeSheet(false);
+
+      currentSheet = $("#" + id);
+
+      overlay.classList.add("open");
+      currentSheet.classList.add("open");
+
+      document.body.style.overflow = "hidden";
+
+      // Сохраняем доступность для клавиатуры и скринридера.
+      currentSheet.setAttribute("aria-hidden", "false");
+    }
+
+    function closeSheet(withHaptic = true) {
+      if (withHaptic) haptic("light");
+
+      overlay.classList.remove("open");
+
+      $$(".bottom-sheet").forEach(sheet => {
+        sheet.classList.remove("open");
+        sheet.setAttribute("aria-hidden", "true");
+      });
+
+      document.body.style.overflow = "";
+
+      currentSheet = null;
+    }
+
+    overlay.addEventListener("click", () => closeSheet());
+
+    $$("[data-close-sheet]").forEach(button => {
+      button.addEventListener("click", () => closeSheet());
+    });
+
+    // Закрытие свайпом вниз.
+    $$(".bottom-sheet").forEach(sheet => {
+      sheet.addEventListener("touchstart", event => {
+        touchStartY = event.touches[0].clientY;
+      }, { passive: true });
+
+      sheet.addEventListener("touchend", event => {
+        const touchEndY = event.changedTouches[0].clientY;
+        const delta = touchEndY - touchStartY;
+
+        // Свайп закрывает панель только в направлении вниз.
+        if (delta > 100 && sheet.scrollTop <= 0) {
+          closeSheet();
+        }
+      }, { passive: true });
+    });
+
+    // Закрытие клавишей Escape в браузере.
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape" && currentSheet) {
+        closeSheet();
+      }
+    });
+
+    /* ======================================================
+       ДЕЙСТВИЯ В ПАНЕЛИ ПОМОЩИ
+       ====================================================== */
+
+    $("#help-support-btn").addEventListener("click", openSupport);
+
+    $("#help-faq-btn").addEventListener("click", () => {
+      closeSheet();
+      showPage("faq");
+    });
+
+    $("#faq-back-btn").addEventListener("click", () => {
+      showPage(state.previousPage || "search");
+    });
+
+    // Раскрывающиеся ответы FAQ.
+    $$(".faq-question").forEach(button => {
+      button.addEventListener("click", () => {
+        haptic("light");
+
+        const answer = button.nextElementSibling;
+        const isOpen = !answer.classList.contains("hidden");
+
+        answer.classList.toggle("hidden", isOpen);
+        button.setAttribute("aria-expanded", String(!isOpen));
+
+        const indicator = button.querySelector("span:last-child");
+        indicator.textContent = isOpen ? "+" : "−";
+      });
+    });
+
+    /* ======================================================
+       ПОДПИСКА И ТАРИФЫ
+       ====================================================== */
+
+    $("#open-plans-btn").addEventListener("click", () => {
+      openSheet("plans-sheet");
+    });
+
+    const planInfo = {
+      month: {
+        name: "1 месяц",
+        price: 299
+      },
+      quarter: {
+        name: "3 месяца",
+        price: 699
+      },
+      year: {
+        name: "12 месяцев",
+        price: 1999
+      }
+    };
+
+    function selectPlan(plan) {
+      if (!planInfo[plan]) return;
+
+      haptic("light");
+      state.selectedPlan = plan;
+
+      $$("[data-plan]").forEach(button => {
+        const selected = button.dataset.plan === plan;
+
+        button.classList.toggle("selected", selected);
+        button.setAttribute("aria-pressed", String(selected));
+      });
+    }
+
+    $$("[data-plan]").forEach(button => {
+      button.addEventListener("click", () => {
+        selectPlan(button.dataset.plan);
+      });
+    });
+
+    $("#pay-btn").addEventListener("click", () => {
+      haptic("medium");
+
+      const plan = planInfo[state.selectedPlan];
+
+      if (!plan) return;
+
+      // Важно: это только демонстрационный обработчик.
+      // Никакой платёж не создаётся и подписка не активируется.
+      toast(`Выбран тариф «${plan.name}» за ${formatPrice(plan.price)}. Оплата пока не подключена.`);
+    });
+
+    /* ======================================================
+       ПОЛЬЗОВАТЕЛЬ TELEGRAM
+       ====================================================== */
+
+    function initializeProfile() {
+      if (!tg || !tg.initDataUnsafe || !tg.initDataUnsafe.user) {
+        $("#profile-name").textContent = "Пользователь RIV";
+        return;
+      }
+
+      const user = tg.initDataUnsafe.user;
+
+      // Эти данные используем только для отображения.
+      // Сервер обязан проверять tg.initData при реальной авторизации.
+      const displayName = [user.first_name, user.last_name]
+        .filter(Boolean)
+        .join(" ");
+
+      $("#profile-name").textContent = displayName || "Пользователь RIV";
+    }
+
+    /* ======================================================
+       ПЕРВИЧНЫЙ ЗАПУСК
+       ====================================================== */
+
+    function initializeApp() {
+      initializeProfile();
+
+      renderNavigation();
+      renderFavorites();
+      updateBotVisibility();
+
+      // Устанавливаем начальный экран поиска.
+      showPage("search", { keepScroll: true });
+
+      // Устанавливаем выбранный демонстрационный тариф.
+      selectPlan("quarter");
+
+      // Начальное состояние панелей — закрыто.
+      $$(".bottom-sheet").forEach(sheet => {
+        sheet.setAttribute("aria-hidden", "true");
+      });
+    }
+
+    initializeApp();
+  </script>
+</body>
+</html>
