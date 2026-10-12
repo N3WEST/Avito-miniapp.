@@ -1723,10 +1723,535 @@
         transition-duration: 0.01ms !important;
       }
     }
-  </style>
-</head>
 
-<body>
+    /* ======================================================
+       RIV v2 — ДОПОЛНИТЕЛЬНЫЕ СТИЛИ
+       (добавлены поверх существующих, ничего старого не удалено
+       и не переопределено, кроме сетки нижней навигации —
+       это обязательно, т.к. вкладок стало 5 вместо 4)
+       ====================================================== */
+
+    .bottom-nav-inner {
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+
+    .hero-photo-btn {
+      position: absolute;
+      left: 16px;
+      bottom: 16px;
+      z-index: 3;
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      display: grid;
+      place-items: center;
+      font-size: 18px;
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      color: #fff;
+    }
+
+    .hero-photo-btn:active {
+      transform: scale(0.94);
+    }
+
+    .chips-row {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 6px;
+      margin-bottom: 14px;
+      scrollbar-width: none;
+    }
+
+    .chips-row::-webkit-scrollbar {
+      display: none;
+    }
+
+    .chip {
+      flex-shrink: 0;
+      padding: 9px 15px;
+      border-radius: 20px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      font-size: 11px;
+      font-weight: 750;
+      white-space: nowrap;
+      transition: background 0.2s, color 0.2s, border-color 0.2s;
+    }
+
+    .chip.active {
+      background: var(--gradient);
+      color: #04141f;
+      border-color: transparent;
+    }
+
+    .filters-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 13px 14px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      margin-bottom: 15px;
+    }
+
+    .toggle-row span {
+      font-size: 12px;
+      font-weight: 750;
+    }
+
+    .toggle {
+      width: 44px;
+      height: 26px;
+      border-radius: 14px;
+      background: #2a3542;
+      position: relative;
+      flex-shrink: 0;
+      transition: background 0.2s;
+    }
+
+    .toggle::after {
+      content: "";
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #fff;
+      top: 3px;
+      left: 3px;
+      transition: left 0.2s;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    }
+
+    .toggle.on {
+      background: var(--gradient);
+    }
+
+    .toggle.on::after {
+      left: 21px;
+    }
+
+    .showcase-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .showcase-card {
+      position: relative;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: linear-gradient(145deg, #181f28, #141a22);
+      box-shadow: 0 7px 20px rgba(0, 0, 0, 0.11);
+      overflow: hidden;
+      animation: product-enter 0.4s ease both;
+    }
+
+    .showcase-inner {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .showcase-photo {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      background: #202b38;
+      overflow: hidden;
+    }
+
+    .showcase-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .showcase-photo-empty {
+      width: 100%;
+      height: 100%;
+      display: grid;
+      place-items: center;
+      font-size: 34px;
+    }
+
+    .showcase-badge-discount {
+      position: absolute;
+      left: 6px;
+      top: 6px;
+      z-index: 2;
+      background: rgba(31, 225, 153, 0.16);
+      border: 1px solid rgba(54, 223, 155, 0.35);
+      color: #54e8ad;
+      padding: 4px 7px;
+      border-radius: 8px;
+      font-size: 10px;
+      font-weight: 900;
+    }
+
+    .showcase-badge-time {
+      position: absolute;
+      right: 6px;
+      top: 6px;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(0, 0, 0, 0.55);
+      color: #fff;
+      padding: 4px 7px;
+      border-radius: 8px;
+      font-size: 9px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .showcase-badge-time .new-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #ff6b7d;
+      box-shadow: 0 0 7px rgba(255, 107, 125, 0.8);
+      flex-shrink: 0;
+    }
+
+    .showcase-fav {
+      position: absolute;
+      right: 6px;
+      bottom: 6px;
+      z-index: 2;
+      width: 30px;
+      height: 30px;
+      border-radius: 9px;
+      display: grid;
+      place-items: center;
+      background: rgba(0, 0, 0, 0.5);
+      color: #fff;
+    }
+
+    .showcase-fav.is-favorite {
+      color: #ffcf69;
+      background: rgba(255, 207, 105, 0.22);
+    }
+
+    .showcase-fav svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .showcase-body {
+      padding: 9px 10px 12px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    .showcase-name {
+      font-size: 12px;
+      font-weight: 800;
+      line-height: 1.35;
+      margin: 0 0 7px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      min-height: 32px;
+    }
+
+    .showcase-price {
+      color: var(--green);
+      font-size: 16px;
+      font-weight: 950;
+      letter-spacing: -0.4px;
+    }
+
+    .showcase-avg {
+      color: var(--muted);
+      font-size: 10px;
+      margin-top: 3px;
+    }
+
+    .showcase-city {
+      color: var(--muted);
+      font-size: 10px;
+      margin-top: 6px;
+    }
+
+    .showcase-card.locked .showcase-inner {
+      filter: blur(7px);
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .lock-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 5;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      text-align: center;
+      padding: 10px;
+      background: rgba(13, 17, 23, 0.45);
+    }
+
+    .lock-overlay-icon {
+      font-size: 22px;
+    }
+
+    .lock-overlay button {
+      min-height: 34px;
+      padding: 0 12px;
+      border-radius: 10px;
+      background: var(--gradient);
+      color: #04141f;
+      font-size: 10px;
+      font-weight: 900;
+    }
+
+    .search-card {
+      padding: 16px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: var(--surface);
+      margin-bottom: 12px;
+    }
+
+    .search-card-title {
+      font-size: 13px;
+      font-weight: 850;
+      margin: 0 0 9px;
+      overflow-wrap: anywhere;
+    }
+
+    .search-card-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .search-card-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 10px;
+      font-weight: 800;
+      padding: 4px 9px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+
+    .status-active {
+      color: #54e8ad;
+      background: rgba(54, 223, 155, 0.1);
+      border: 1px solid rgba(54, 223, 155, 0.2);
+    }
+
+    .status-paused {
+      color: #ffcf69;
+      background: rgba(255, 207, 105, 0.1);
+      border: 1px solid rgba(255, 207, 105, 0.2);
+    }
+
+    .status-expired {
+      color: var(--muted);
+      background: rgba(107, 125, 139, 0.12);
+      border: 1px solid var(--border);
+    }
+
+    .search-card-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .search-card-actions button {
+      flex: 1;
+      min-height: 40px;
+      border-radius: 11px;
+      background: #202833;
+      color: var(--text-secondary);
+      font-size: 10px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+    }
+
+    .search-card-actions button.danger {
+      background: rgba(255, 107, 125, 0.12);
+      color: #ff8d9b;
+    }
+
+    .search-card-actions button.accent {
+      background: rgba(46, 166, 255, 0.14);
+      color: #71caff;
+    }
+
+    .duration-row {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 7px;
+      margin: 15px 0;
+    }
+
+    .duration-chip {
+      padding: 11px 4px;
+      text-align: center;
+      border-radius: 12px;
+      background: #1b2430;
+      border: 1px solid rgba(137, 164, 189, 0.15);
+      font-size: 10px;
+      font-weight: 800;
+      color: var(--text-secondary);
+    }
+
+    .duration-chip .duration-price {
+      display: block;
+      margin-top: 4px;
+      font-size: 11px;
+      color: var(--text);
+      font-weight: 900;
+    }
+
+    .duration-chip.selected {
+      border-color: #2ea6ff;
+      background: rgba(46, 166, 255, 0.1);
+      color: #fff;
+    }
+
+    .promo-row {
+      display: flex;
+      gap: 8px;
+      margin: 15px 0;
+    }
+
+    .promo-row input {
+      flex: 1;
+      min-height: 46px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      padding: 0 13px;
+      color: var(--text);
+      font-size: 12px;
+      outline: none;
+    }
+
+    .promo-row input::placeholder {
+      color: var(--muted);
+    }
+
+    .promo-row button {
+      min-height: 46px;
+      padding: 0 16px;
+      border-radius: 12px;
+      background: #222e3b;
+      color: #8edfff;
+      font-weight: 800;
+      font-size: 11px;
+      flex-shrink: 0;
+    }
+
+    .referral-box {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #1b2430;
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      padding: 11px 13px;
+      margin-top: 13px;
+    }
+
+    .referral-box span {
+      flex: 1;
+      min-width: 0;
+      font-size: 11px;
+      color: var(--text-secondary);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .referral-box button {
+      flex-shrink: 0;
+      min-height: 36px;
+      padding: 0 11px;
+      border-radius: 9px;
+      background: #222e3b;
+      color: #8edfff;
+      font-size: 10px;
+      font-weight: 800;
+    }
+
+    .photo-drop {
+      border: 1.5px dashed rgba(137, 164, 189, 0.3);
+      border-radius: 16px;
+      padding: 30px 15px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 12px;
+      margin-bottom: 15px;
+      position: relative;
+    }
+
+    .photo-drop input[type="file"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    .photo-preview {
+      width: 100%;
+      max-height: 220px;
+      object-fit: contain;
+      border-radius: 14px;
+      margin-bottom: 15px;
+      display: none;
+    }
+
+    .showcase-skeleton-card {
+      border-radius: 18px;
+      overflow: hidden;
+      background: var(--surface);
+      border: 1px solid var(--border);
+    }
+
+    .showcase-skeleton-photo {
+      width: 100%;
+      aspect-ratio: 1/1;
+    }
+
+    .showcase-skeleton-lines {
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+  </style>
+</head><body>
   <div class="app" id="app">
 
     <!-- ==================================================
@@ -1759,7 +2284,7 @@
     <main id="main-content">
 
       <!-- ==================================================
-           ЭКРАН: ПОИСК
+           ЭКРАН: ГЛАВНАЯ / ПОИСК
            ================================================== -->
 
       <section class="page" id="page-search">
@@ -1781,7 +2306,6 @@
           <div class="hero-art">
             <div class="hero-ring"></div>
 
-            <!-- По требованию: сюда можно подставить URL изображения кроссовка -->
             <img
               class="sneaker-img"
               src="PLACEHOLDER"
@@ -1789,7 +2313,6 @@
               onerror="this.style.display='none'; document.getElementById('sneaker-fallback').style.display='block';"
             >
 
-            <!-- Запасная иллюстрация, если PLACEHOLDER не заменён -->
             <div id="sneaker-fallback" style="display:block; position:relative; z-index:1; font-size:76px; transform:rotate(-18deg); filter:drop-shadow(0 12px 12px rgba(0,0,0,.4));">
               👟
             </div>
@@ -1798,6 +2321,10 @@
             <span class="hero-spark spark-one">✦</span>
             <span class="hero-spark spark-two">✧</span>
           </div>
+
+          <button class="hero-photo-btn" id="hero-photo-btn" type="button" aria-label="Поиск по фото">
+            📷
+          </button>
         </div>
 
         <div class="search-section">
@@ -1842,6 +2369,29 @@
           </p>
         </div>
 
+        <!-- Блок "Мои активные поиски" -->
+        <div class="search-section" id="active-searches-section">
+          <div class="results-top" style="margin-bottom:12px">
+            <div>
+              <h2 class="section-heading">Мои активные поиски</h2>
+              <div class="results-count" id="active-searches-count">Загрузка…</div>
+            </div>
+          </div>
+
+          <div id="active-searches-skeleton">
+            <div class="skeleton search-card" style="min-height:120px"></div>
+            <div class="skeleton search-card" style="min-height:120px"></div>
+          </div>
+
+          <div id="active-searches-list"></div>
+
+          <div class="empty-state hidden" id="active-searches-empty">
+            <div class="empty-icon">🔍</div>
+            <strong>Активных поисков пока нет</strong>
+            Вставь ссылку на товар выше и нажми «Найти дешевле».
+          </div>
+        </div>
+
         <div class="stats-grid">
           <div class="stat-card">
             <div class="stat-value gradient-text">10–30 сек</div>
@@ -1861,7 +2411,7 @@
           </div>
         </div>
 
-        <!-- Сюда помещаются скелетоны и результаты -->
+        <!-- Результаты конкретного поиска (открывается кнопкой "Товары") -->
         <section class="results-section hidden" id="results-section">
           <div class="results-top">
             <div>
@@ -1891,15 +2441,6 @@
                 <div class="skeleton skeleton-line w-70"></div>
                 <div class="skeleton skeleton-line w-90"></div>
                 <div class="skeleton skeleton-line w-55" style="height:16px; margin-top:8px"></div>
-                <div class="skeleton skeleton-line w-90" style="height:32px; margin-top:auto"></div>
-              </div>
-            </div>
-            <div class="skeleton-card">
-              <div class="skeleton skeleton-photo"></div>
-              <div class="skeleton-lines">
-                <div class="skeleton skeleton-line w-90"></div>
-                <div class="skeleton skeleton-line w-55"></div>
-                <div class="skeleton skeleton-line w-45" style="height:16px; margin-top:8px"></div>
                 <div class="skeleton skeleton-line w-90" style="height:32px; margin-top:auto"></div>
               </div>
             </div>
@@ -1937,14 +2478,10 @@
             <div class="social-name">Telegram</div>
           </button>
 
-          <!-- VK -->
-          <button class="social-card" data-social-url="https://vk.com/riv" aria-label="Открыть VK">
-            <div class="social-circle vk-bg">
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path class="fill-white" d="M3.2 7.3h3.2c.2 0 .4.2.5.4.8 2.4 1.8 4.3 2.5 4.3.4 0 .4-.7.4-2.2V8.3c-.1-.6-.3-.8-.9-1V6.5h4.7v.8c-.6.1-.9.4-.9 1.1v3.2c0 .5.2.7.5.7.7 0 1.9-1.9 2.8-4.5.1-.3.3-.5.6-.5h3.1c.4 0 .5.2.4.6-.5 1.8-2.2 4.2-3.4 5.7-.3.4-.3.6 0 .9 1.1 1 2.5 2.8 3.2 4.1.2.4.1.7-.4.7h-3.4c-.3 0-.5-.1-.7-.4-.7-1.1-1.5-2.2-2.1-2.8-.3-.3-.6-.5-.8-.5-.3 0-.4.2-.4.6v2.4c0 .4-.2.7-.7.7h-1.7c-3.3 0-6.9-4-8.5-10.8-.1-.5 0-.8.5-.8Z"/>
-              </svg>
-            </div>
-            <div class="social-name">VK</div>
+          <!-- Avito -->
+          <button class="social-card" data-social-url="https://www.avito.ru" aria-label="Открыть Avito">
+            <div class="social-circle" style="background:#fff;color:#00aaff;font-size:27px;font-weight:950;">a</div>
+            <div class="social-name">Avito</div>
           </button>
 
           <!-- TikTok -->
@@ -1958,12 +2495,6 @@
               </svg>
             </div>
             <div class="social-name">TikTok</div>
-          </button>
-
-          <!-- Avito -->
-          <button class="social-card" data-social-url="https://www.avito.ru" aria-label="Открыть Avito">
-            <div class="social-circle" style="background:#fff;color:#00aaff;font-size:27px;font-weight:950;">a</div>
-            <div class="social-name">Avito</div>
           </button>
         </div>
 
@@ -1987,47 +2518,118 @@
           <p class="section-subtitle">Сохраняй интересные находки, чтобы вернуться к ним позже.</p>
         </div>
 
+        <div id="favorites-skeleton" class="showcase-grid hidden">
+          <div class="showcase-skeleton-card">
+            <div class="skeleton showcase-skeleton-photo"></div>
+            <div class="showcase-skeleton-lines">
+              <div class="skeleton skeleton-line w-90"></div>
+              <div class="skeleton skeleton-line w-55"></div>
+            </div>
+          </div>
+          <div class="showcase-skeleton-card">
+            <div class="skeleton showcase-skeleton-photo"></div>
+            <div class="showcase-skeleton-lines">
+              <div class="skeleton skeleton-line w-70"></div>
+              <div class="skeleton skeleton-line w-45"></div>
+            </div>
+          </div>
+        </div>
+
         <div id="favorites-list"></div>
       </section>
 
       <!-- ==================================================
-           ЭКРАН: УВЕДОМЛЕНИЯ
+           ЭКРАН: ВИТРИНА (НОВЫЙ)
            ================================================== -->
 
-      <section class="page hidden" id="page-notifications">
+      <section class="page hidden" id="page-showcase">
         <div class="page-header">
-          <div class="eyebrow" style="margin-bottom:10px">STAY UPDATED</div>
-          <h1 class="page-title">Уведомления <span class="gradient-text">✦</span></h1>
-          <p class="section-subtitle">Новости и подсказки от RIV.</p>
+          <div class="eyebrow" style="margin-bottom:10px">ВСЕ НАХОДКИ</div>
+          <h1 class="page-title">🔥 Витрина</h1>
+          <p class="section-subtitle">Все находки по твоим поискам — в одной ленте.</p>
         </div>
 
-        <div class="panel-card">
-          <div class="notification-item">
-            <div class="notification-bullet"></div>
-            <div>
-              <strong>Добро пожаловать в RIV!</strong>
-              <p>Вставь ссылку на товар с Avito и попробуй найти похожие предложения по более выгодной цене.</p>
+        <div class="chips-row" id="showcase-chips">
+          <button class="chip active" data-showcase-filter="all" type="button">Все</button>
+        </div>
+
+        <div class="filters-bar">
+          <select class="sort-select" id="showcase-sort" aria-label="Сортировка витрины" style="max-width:100%; flex:1">
+            <option value="new">Свежее</option>
+            <option value="discount">Выгодное</option>
+            <option value="cheap">Дешевле</option>
+          </select>
+        </div>
+
+        <div class="toggle-row">
+          <span>📍 Только мои города</span>
+          <div class="toggle" id="showcase-city-toggle" role="switch" aria-checked="false"></div>
+        </div>
+
+        <div class="showcase-grid hidden" id="showcase-skeleton">
+          <div class="showcase-skeleton-card">
+            <div class="skeleton showcase-skeleton-photo"></div>
+            <div class="showcase-skeleton-lines">
+              <div class="skeleton skeleton-line w-90"></div>
+              <div class="skeleton skeleton-line w-55"></div>
             </div>
           </div>
-
-          <div class="notification-item">
-            <div class="notification-bullet"></div>
-            <div>
-              <strong>Совет: сравнивай состояние</strong>
-              <p>Обрати внимание на состояние товара, комплектацию и рейтинг продавца, а не только на цену.</p>
+          <div class="showcase-skeleton-card">
+            <div class="skeleton showcase-skeleton-photo"></div>
+            <div class="showcase-skeleton-lines">
+              <div class="skeleton skeleton-line w-70"></div>
+              <div class="skeleton skeleton-line w-45"></div>
             </div>
           </div>
-
-          <div class="notification-item">
-            <div class="notification-bullet"></div>
-            <div>
-              <strong>Новая функция — избранное</strong>
-              <p>Нажимай на звёздочку у товара, чтобы сохранить понравившиеся предложения.</p>
+          <div class="showcase-skeleton-card">
+            <div class="skeleton showcase-skeleton-photo"></div>
+            <div class="showcase-skeleton-lines">
+              <div class="skeleton skeleton-line w-90"></div>
+              <div class="skeleton skeleton-line w-55"></div>
+            </div>
+          </div>
+          <div class="showcase-skeleton-card">
+            <div class="skeleton showcase-skeleton-photo"></div>
+            <div class="showcase-skeleton-lines">
+              <div class="skeleton skeleton-line w-70"></div>
+              <div class="skeleton skeleton-line w-45"></div>
             </div>
           </div>
         </div>
 
-        <p class="helper-caption">Это демонстрационные уведомления.</p>
+        <div class="showcase-grid" id="showcase-grid"></div>
+
+        <div class="empty-state hidden" id="showcase-empty">
+          <div class="empty-icon">🔥</div>
+          <strong>Витрина пока пуста</strong>
+          Запусти поиск на главной — находки появятся здесь.
+        </div>
+      </section>
+
+      <!-- ==================================================
+           ЭКРАН: ИСТОРИЯ (НОВЫЙ)
+           ================================================== -->
+
+      <section class="page hidden" id="page-history">
+        <div class="page-header">
+          <div class="eyebrow" style="margin-bottom:10px">ВСЕ ЗАПУСКИ</div>
+          <h1 class="page-title">📜 История</h1>
+          <p class="section-subtitle">Все твои поиски, включая завершённые.</p>
+        </div>
+
+        <div id="history-skeleton">
+          <div class="skeleton search-card" style="min-height:140px"></div>
+          <div class="skeleton search-card" style="min-height:140px"></div>
+          <div class="skeleton search-card" style="min-height:140px"></div>
+        </div>
+
+        <div id="history-list"></div>
+
+        <div class="empty-state hidden" id="history-empty">
+          <div class="empty-icon">📜</div>
+          <strong>История пуста</strong>
+          Здесь появятся все твои поиски после первого запуска.
+        </div>
       </section>
 
       <!-- ==================================================
@@ -2041,11 +2643,11 @@
         </div>
 
         <div class="profile-hero">
-          <div class="profile-avatar">R</div>
+          <div class="profile-avatar" id="profile-avatar">R</div>
           <h2 class="profile-name" id="profile-name">Пользователь RIV</h2>
           <div class="profile-status">
             <span>●</span>
-            <span id="profile-status-text">Базовый доступ</span>
+            <span id="profile-status-text">Загрузка…</span>
           </div>
           <p class="section-subtitle" style="color:#a5b7c6; margin-top:13px">
             Твой личный кабинет для выгодных покупок.
@@ -2057,7 +2659,7 @@
             <div class="panel-icon">🔎</div>
             <div>
               <h3>Поиски</h3>
-              <p>Количество запусков в этой демоверсии: <strong id="search-total">0</strong></p>
+              <p>Активных поисков: <strong id="search-total">0</strong></p>
             </div>
           </div>
         </div>
@@ -2066,12 +2668,31 @@
           <div class="panel-row">
             <div class="panel-icon">⭐</div>
             <div>
-              <h3>Подписка RIV Premium</h3>
-              <p id="subscription-description">Открой дополнительные возможности в будущей версии сервиса.</p>
+              <h3 id="profile-plan-name">Тариф: Free</h3>
+              <p id="profile-plan-expiry">Подписка не активна</p>
             </div>
           </div>
           <button class="primary-btn" id="open-plans-btn" style="margin-top:18px">
-            ⭐ Продлить подписку
+            ⭐ Оформить подписку
+          </button>
+        </div>
+
+        <div class="panel-card">
+          <div class="panel-row">
+            <div class="panel-icon">🎁</div>
+            <div>
+              <h3>Приведи друга</h3>
+              <p>Поделись ссылкой с другом и получи бонус.</p>
+            </div>
+          </div>
+
+          <div class="referral-box">
+            <span id="referral-link">https://t.me/RIV_DROP_bot</span>
+            <button id="referral-copy-btn" type="button">Копировать</button>
+          </div>
+
+          <button class="secondary-btn" id="referral-share-btn" style="margin-top:10px">
+            📤 Отправить другу в Telegram
           </button>
         </div>
 
@@ -2103,7 +2724,7 @@
               <span>+</span>
             </button>
             <div class="faq-answer hidden">
-              Вставь ссылку на объявление Avito. В полноценной версии сервер извлечёт характеристики товара и найдёт похожие предложения по заданным критериям. Сейчас поиск использует демонстрационные данные.
+              Вставь ссылку на объявление Avito. Сервер найдёт похожие предложения по заданным критериям и будет отслеживать новые находки в течение срока действия поиска.
             </div>
           </div>
 
@@ -2123,7 +2744,7 @@
               <span>+</span>
             </button>
             <div class="faq-answer hidden">
-              Нажми «Открыть на Avito» в карточке результата. Ссылка откроется через Telegram, если Mini App запущен внутри Telegram.
+              Нажми на карточку товара — ссылка откроется через Telegram.
             </div>
           </div>
 
@@ -2133,7 +2754,7 @@
               <span>+</span>
             </button>
             <div class="faq-answer hidden">
-              Нажми на плавающего бота или кнопку поддержки. В демоверсии используется адрес t.me/riv_support — замени его на свой реальный аккаунт поддержки, если он отличается.
+              Нажми на плавающего бота или кнопку поддержки в профиле/соцсетях.
             </div>
           </div>
 
@@ -2143,7 +2764,7 @@
               <span>+</span>
             </button>
             <div class="faq-answer hidden">
-              Сейчас тарифы и оплата демонстрационные. Для реальных платежей нужно подключить серверную проверку оплаты и соответствующий платёжный сценарий Telegram.
+              Подписка открывает больше одновременных поисков, увеличенный срок отслеживания, избранное и поиск по фото. Оплата проходит через СБП.
             </div>
           </div>
         </div>
@@ -2156,7 +2777,7 @@
     </main>
 
     <!-- ==================================================
-         НИЖНЯЯ НАВИГАЦИЯ
+         НИЖНЯЯ НАВИГАЦИЯ (5 ВКЛАДОК)
          ================================================== -->
 
     <nav class="bottom-nav" aria-label="Основная навигация">
@@ -2179,12 +2800,20 @@
           <span class="nav-badge hidden" id="favorite-badge">0</span>
         </button>
 
-        <button class="nav-item" data-page="notifications" aria-label="Уведомления">
+        <button class="nav-item" data-page="showcase" aria-label="Витрина">
           <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/>
-            <path d="M10 21h4"/>
+            <path d="M12 2c1 3-3 4-3 7a3 3 0 0 0 6 0c0-1-1-2-1-2 2 1 3 3 3 5a5 5 0 0 1-10 0c0-4 3-5 5-10Z"/>
           </svg>
-          <span>Уведомления</span>
+          <span>Витрина</span>
+        </button>
+
+        <button class="nav-item" data-page="history" aria-label="История">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="13" r="8"/>
+            <path d="M12 9v4l3 2"/>
+            <path d="M9 2h6"/>
+          </svg>
+          <span>История</span>
         </button>
 
         <button class="nav-item" data-page="profile" aria-label="Профиль">
@@ -2208,7 +2837,6 @@
       </button>
 
       <button class="bot-avatar-btn" id="bot-avatar" aria-label="Открыть помощь">
-        <!-- Авторская SVG-иконка робота -->
         <svg viewBox="0 0 48 48" fill="none" aria-hidden="true">
           <path d="M24 6v5" stroke="#e8faff" stroke-width="3" stroke-linecap="round"/>
           <circle cx="24" cy="5" r="3" fill="#a8f2ff" stroke="#ffffff" stroke-width="1"/>
@@ -2274,79 +2902,155 @@
       </div>
 
       <p class="sheet-description">
-        Выбери подходящий тариф. Оплата в этой версии не подключена.
+        Выбери подходящий тариф и срок действия.
       </p>
 
       <div class="plan-list" id="plan-list">
-        <button class="plan-option" data-plan="month" aria-pressed="false">
+        <button class="plan-option" data-plan="standart" aria-pressed="false">
           <span class="plan-radio"></span>
           <span class="plan-info">
-            <span class="plan-name">1 месяц</span>
-            <span class="plan-detail">Попробовать Premium</span>
+            <span class="plan-name">Стандарт</span>
+            <span class="plan-detail">1 поиск · 12 часов</span>
           </span>
-          <span class="plan-price">
-            299 ₽
-          </span>
+          <span class="plan-price">199 ₽</span>
         </button>
 
-        <button class="plan-option selected" data-plan="quarter" aria-pressed="true">
+        <button class="plan-option" data-plan="premium" aria-pressed="false">
           <span class="plan-radio"></span>
           <span class="plan-info">
-            <span class="plan-name">3 месяца</span>
-            <span class="plan-detail">Выгодный выбор</span>
+            <span class="plan-name">Премиум</span>
+            <span class="plan-detail">2 поиска · 24 часа · ✅ Избранное</span>
           </span>
-          <span class="plan-price">
-            699 ₽
-            <span class="plan-tag">−22%</span>
-          </span>
+          <span class="plan-price">399 ₽</span>
         </button>
 
-        <button class="plan-option" data-plan="year" aria-pressed="false">
+        <button class="plan-option selected" data-plan="premium_plus" aria-pressed="true">
           <span class="plan-radio"></span>
           <span class="plan-info">
-            <span class="plan-name">12 месяцев</span>
-            <span class="plan-detail">Максимум выгоды</span>
+            <span class="plan-name">Премиум Плюс</span>
+            <span class="plan-detail">3 поиска · 48 часов · ✅ Избранное · ✅ Поиск по фото</span>
           </span>
-          <span class="plan-price">
-            1 999 ₽
-            <span class="plan-tag">−44%</span>
-          </span>
+          <span class="plan-price">899 ₽</span>
         </button>
       </div>
 
+      <div class="eyebrow" style="margin:4px 0 10px">Срок подписки</div>
+
+      <div class="duration-row" id="duration-row">
+        <button class="duration-chip" data-duration="1" type="button">
+          1 день
+          <span class="duration-price">—</span>
+        </button>
+        <button class="duration-chip" data-duration="7" type="button">
+          1 неделя
+          <span class="duration-price">—</span>
+        </button>
+        <button class="duration-chip selected" data-duration="30" type="button">
+          1 месяц
+          <span class="duration-price">—</span>
+        </button>
+        <button class="duration-chip" data-duration="60" type="button">
+          2 месяца
+          <span class="duration-price">—</span>
+        </button>
+      </div>
+
+      <div class="promo-row">
+        <input type="text" id="promo-input" placeholder="Промокод" autocapitalize="off" spellcheck="false">
+        <button id="promo-apply-btn" type="button">Применить</button>
+      </div>
+
       <button class="primary-btn" id="pay-btn">
-        ⭐ Оплатить
+        ⭐ Оплатить через СБП — 899 ₽
       </button>
 
       <p class="payment-note">
-        Демонстрационные тарифы. Нажатие на кнопку не списывает деньги и не создаёт подписку.
+        Нажимая «Оплатить», ты будешь перенаправлен на страницу безопасной оплаты ЮKassa.
       </p>
+    </section>
+
+    <!-- ==================================================
+         BOTTOM SHEET: ПОИСК ПО ФОТО
+         ================================================== -->
+
+    <section class="bottom-sheet" id="photo-sheet" role="dialog" aria-modal="true" aria-labelledby="photo-title">
+      <div class="sheet-handle" data-sheet-handle></div>
+
+      <div class="sheet-header">
+        <h2 class="sheet-title" id="photo-title">📷 Поиск по фото</h2>
+        <button class="sheet-close" data-close-sheet aria-label="Закрыть">×</button>
+      </div>
+
+      <p class="sheet-description">
+        Загрузи фото товара — мы найдём похожие предложения на Avito.
+      </p>
+
+      <div id="photo-locked" class="hidden">
+        <div class="empty-state">
+          <div class="empty-icon">🔒</div>
+          <strong>Доступно в Премиум Плюс</strong>
+          Оформи подписку Премиум Плюс, чтобы искать товары по фотографии.
+        </div>
+        <button class="primary-btn" id="photo-upgrade-btn" style="margin-top:15px">
+          ⭐ Оформить Премиум Плюс
+        </button>
+      </div>
+
+      <div id="photo-unlocked" class="hidden">
+        <div class="photo-drop" id="photo-drop">
+          <input type="file" accept="image/*" id="photo-input">
+          <div>📷 Нажми, чтобы выбрать фото из галереи</div>
+        </div>
+
+        <img id="photo-preview" class="photo-preview" alt="Предпросмотр фото">
+
+        <button class="primary-btn" id="photo-search-btn">
+          🔍 Найти похожие
+        </button>
+
+        <div id="photo-skeleton" class="showcase-grid hidden" style="margin-top:18px">
+          <div class="showcase-skeleton-card">
+            <div class="skeleton showcase-skeleton-photo"></div>
+            <div class="showcase-skeleton-lines">
+              <div class="skeleton skeleton-line w-90"></div>
+              <div class="skeleton skeleton-line w-55"></div>
+            </div>
+          </div>
+          <div class="showcase-skeleton-card">
+            <div class="skeleton showcase-skeleton-photo"></div>
+            <div class="showcase-skeleton-lines">
+              <div class="skeleton skeleton-line w-70"></div>
+              <div class="skeleton skeleton-line w-45"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="showcase-grid" id="photo-results" style="margin-top:18px"></div>
+      </div>
     </section>
 
     <!-- Уведомления пользователю -->
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-  </div>
-
-  <script>
+  </div>  <script>
     "use strict";
 
     /* ======================================================
-       RIV — TELEGRAM WEBAPP ИНИЦИАЛИЗАЦИЯ
+       RIV — КОНФИГ И TELEGRAM WEBAPP ИНИЦИАЛИЗАЦИЯ
        ====================================================== */
+
+    const API_BASE = "https://avito-parser-9q1l.onrender.com";
+    const SUPPORT_URL = "https://t.me/riv_support";
+    const REFERRAL_URL = "https://t.me/RIV_DROP_bot";
 
     const tg = window.Telegram && window.Telegram.WebApp
       ? window.Telegram.WebApp
       : null;
 
     if (tg) {
-      // Сообщаем Telegram, что приложение готово к отображению.
       tg.ready();
-
-      // Просим Telegram раскрыть Mini App на максимальную высоту.
       tg.expand();
 
-      // Устанавливаем цвет системных областей.
       try {
         tg.setHeaderColor("#0d1117");
         tg.setBackgroundColor("#0d1117");
@@ -2357,6 +3061,27 @@
       document.body.classList.add("telegram-theme");
     }
 
+    let TELEGRAM_ID = null;
+
+    function getTelegramId() {
+      try {
+        if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.id) {
+          return tg.initDataUnsafe.user.id;
+        }
+      } catch (error) {
+        console.debug(error);
+      }
+      return null;
+    }
+
+    function getUsername() {
+      try {
+        return (tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.username) || "";
+      } catch (error) {
+        return "";
+      }
+    }
+
     /* ======================================================
        СОСТОЯНИЕ ПРИЛОЖЕНИЯ
        ====================================================== */
@@ -2364,89 +3089,67 @@
     const state = {
       page: "search",
       topTab: "search",
-      searchStatus: "idle", // idle | searching | results
-      searches: 0,
-      favorites: [],
-      results: [],
-      selectedPlan: "quarter",
       previousPage: "search",
+
+      searchStatus: "idle", // idle | searching
+
+      searches: [],          // активные поиски (GET /api/search/list)
+      historySearches: [],   // те же данные для экрана истории
+
+      currentResultsSearchId: null,
+      currentResultsItems: [],
+
+      favorites: [],              // GET /api/favorites/list
+      favoriteIds: new Set(),     // Set<item_id>
+
+      showcaseItems: [],
+      showcaseFilter: "all",
+      showcaseSort: "new",
+      showcaseCityOnly: false,
+
       subscription: {
-        active: false,
-        plan: null
+        plan: "free",
+        is_paid: false,
+        plan_expires_at: null
+      },
+
+      selectedPlan: "premium_plus",
+      selectedDuration: 30,
+      promoDiscount: 0,
+
+      photoBase64: null
+    };
+
+    const PLANS = {
+      standart: {
+        name: "Стандарт",
+        prices: { 1: 29, 7: 99, 30: 199, 60: 349 }
+      },
+      premium: {
+        name: "Премиум",
+        prices: { 1: 59, 7: 199, 30: 399, 60: 699 }
+      },
+      premium_plus: {
+        name: "Премиум Плюс",
+        prices: { 1: 129, 7: 399, 30: 899, 60: 1599 }
       }
     };
 
-    const SUPPORT_URL = "https://t.me/riv_support";
+    const PROMO_CODES = {
+      RIV10: 0.10,
+      RIV20: 0.20
+    };
 
-    // Здесь хранятся только демонстрационные данные.
-    // В production их нужно заменить ответом вашего backend API.
-    const MOCK_PRODUCTS = [
-      {
-        id: 1,
-        title: "Nike Air Max 270 — оригинальные кроссовки",
-        emoji: "👟",
-        price: 3490,
-        oldPrice: 8990,
-        location: "Москва · Сегодня",
-        date: 6,
-        url: "https://www.avito.ru/",
-        image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=400&q=80"
-      },
-      {
-        id: 2,
-        title: "Apple AirPods Pro 2, отличное состояние",
-        emoji: "🎧",
-        price: 5990,
-        oldPrice: 11990,
-        location: "Санкт-Петербург · Сегодня",
-        date: 5,
-        url: "https://www.avito.ru/",
-        image: "https://images.unsplash.com/photo-1606220945770-b5b6c2c55bf1?auto=format&fit=crop&w=400&q=80"
-      },
-      {
-        id: 3,
-        title: "PlayStation 5 Slim с одним геймпадом",
-        emoji: "🎮",
-        price: 28990,
-        oldPrice: 39990,
-        location: "Казань · Вчера",
-        date: 4,
-        url: "https://www.avito.ru/",
-        image: "https://images.unsplash.com/photo-1606813907291-d86efa9b94db?auto=format&fit=crop&w=400&q=80"
-      },
-      {
-        id: 4,
-        title: "Apple Watch Series — стильные смарт-часы",
-        emoji: "⌚",
-        price: 7990,
-        oldPrice: 14990,
-        location: "Екатеринбург · Вчера",
-        date: 3,
-        url: "https://www.avito.ru/",
-        image: "https://images.unsplash.com/photo-1434494878577-86c23bcb06b9?auto=format&fit=crop&w=400&q=80"
-      },
-      {
-        id: 5,
-        title: "JBL Charge — портативная Bluetooth-колонка",
-        emoji: "🔊",
-        price: 3490,
-        oldPrice: 6990,
-        location: "Новосибирск · 2 дня назад",
-        date: 2,
-        url: "https://www.avito.ru/",
-        image: "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?auto=format&fit=crop&w=400&q=80"
-      },
-      {
-        id: 6,
-        title: "Механическая клавиатура для рабочего места",
-        emoji: "⌨️",
-        price: 2490,
-        oldPrice: 4990,
-        location: "Нижний Новгород · 3 дня назад",
-        date: 1,
-        url: "https://www.avito.ru/",
-        image: "https://images.unsplash.com/photo-1595225476474-87563907a212?auto=format&fit=crop&w=400&q=80"
-      }
+    const RU_CITIES = [
+      "Москва", "Санкт-Петербург", "Новосибирск", "Екатеринбург", "Казань",
+      "Нижний Новгород", "Челябинск", "Самара", "Омск", "Ростов-на-Дону",
+      "Уфа", "Красноярск", "Воронеж", "Пермь", "Волгоград", "Краснодар",
+      "Саратов", "Тюмень", "Тольятти", "Ижевск", "Барнаул", "Ульяновск",
+      "Иркутск", "Хабаровск", "Ярославль", "Владивосток", "Махачкала",
+      "Томск", "Оренбург", "Кемерово", "Новокузнецк", "Рязань", "Астрахань",
+      "Пенза", "Липецк", "Киров", "Чебоксары", "Калининград", "Тула",
+      "Курск", "Сочи", "Ставрополь", "Улан-Удэ", "Тверь", "Магнитогорск",
+      "Иваново", "Брянск", "Белгород", "Сургут", "Владимир", "Чита"
     ];
 
     /* ======================================================
@@ -2457,13 +3160,11 @@
     const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 
     let toastTimer = null;
-    let searchTimer = null;
     let bubbleTimers = [];
     let touchStartY = 0;
     let currentSheet = null;
 
     function haptic(style = "light") {
-      // Haptic Feedback доступен только в поддерживаемых версиях Telegram.
       try {
         if (tg && tg.HapticFeedback) {
           tg.HapticFeedback.impactOccurred(style);
@@ -2475,22 +3176,22 @@
 
     function toast(message) {
       const el = $("#toast");
-
       el.textContent = message;
       el.classList.add("show");
 
       clearTimeout(toastTimer);
       toastTimer = setTimeout(() => {
         el.classList.remove("show");
-      }, 2600);
+      }, 2800);
     }
 
     function formatPrice(value) {
-      return new Intl.NumberFormat("ru-RU").format(value) + " ₽";
+      const n = Number(value) || 0;
+      return new Intl.NumberFormat("ru-RU").format(n) + " ₽";
     }
 
     function escapeHTML(value) {
-      return String(value).replace(/[&<>"']/g, char => ({
+      return String(value ?? "").replace(/[&<>"']/g, char => ({
         "&": "&amp;",
         "<": "&lt;",
         ">": "&gt;",
@@ -2499,9 +3200,105 @@
       })[char]);
     }
 
-    function discountPercent(oldPrice, newPrice) {
-      if (!oldPrice || oldPrice <= 0) return 0;
-      return Math.max(0, Math.round((1 - newPrice / oldPrice) * 100));
+    function truncate(str, len) {
+      if (!str) return "";
+      return str.length > len ? str.slice(0, len) + "…" : str;
+    }
+
+    function pluralize(n, one, few, many) {
+      const mod10 = n % 10;
+      const mod100 = n % 100;
+
+      if (mod10 === 1 && mod100 !== 11) return one;
+      if ([2, 3, 4].includes(mod10) && ![12, 13, 14].includes(mod100)) return few;
+      return many;
+    }
+
+    function getInitials(name) {
+      if (!name) return "R";
+      const parts = name.trim().split(/\s+/).filter(Boolean);
+      if (!parts.length) return "R";
+      if (parts.length === 1) return parts[0][0].toUpperCase();
+      return (parts[0][0] + parts[1][0]).toUpperCase();
+    }
+
+    function timeAgo(iso) {
+      if (!iso) return "";
+
+      const date = new Date(iso);
+      if (Number.isNaN(date.getTime())) return "";
+
+      const diffMs = Date.now() - date.getTime();
+      const minutes = Math.max(0, Math.floor(diffMs / 60000));
+
+      if (minutes < 1) return "только что";
+      if (minutes < 60) return `${minutes} мин`;
+
+      const hours = Math.floor(minutes / 60);
+      const remMinutes = minutes % 60;
+
+      if (hours < 24) {
+        return remMinutes > 0 ? `${hours} ч ${remMinutes} мин` : `${hours} ч`;
+      }
+
+      const days = Math.floor(hours / 24);
+      return `${days} ${pluralize(days, "день", "дня", "дней")}`;
+    }
+
+    function extractCity(title) {
+      if (!title) return "";
+
+      for (const city of RU_CITIES) {
+        const re = new RegExp(`(^|[^а-яё])${city}([^а-яё]|$)`, "i");
+        if (re.test(title)) return city;
+      }
+
+      const match = title.match(/[·,]\s*([A-ZА-ЯЁ][а-яёa-z\-]{2,})\s*$/);
+      return match ? match[1] : "";
+    }
+
+    function discountPercentFor(item) {
+      if (!item.avgPrice || item.avgPrice <= 0) return 0;
+      return Math.max(0, Math.round((1 - item.price / item.avgPrice) * 100));
+    }
+
+    /* ======================================================
+       API ОБЁРТКА
+       ====================================================== */
+
+    async function api(method, path, body) {
+      const opts = { method, headers: {} };
+
+      if (body !== undefined) {
+        opts.headers["Content-Type"] = "application/json";
+        opts.body = JSON.stringify(body);
+      }
+
+      const res = await fetch(API_BASE + path, opts);
+
+      let data = null;
+      try {
+        data = await res.json();
+      } catch (error) {
+        data = null;
+      }
+
+      if (!res.ok) {
+        const message = (data && (data.error || data.message)) || `Ошибка ${res.status}`;
+        throw new Error(message);
+      }
+
+      return data;
+    }
+
+    async function safeApi(method, path, body, errMsg) {
+      try {
+        return await api(method, path, body);
+      } catch (error) {
+        if (errMsg) toast(errMsg);
+        console.debug("API error:", error);
+        return null;
+      }
     }
 
     /* ======================================================
@@ -2514,7 +3311,6 @@
       try {
         const parsed = new URL(url);
 
-        // Разрешаем только внешние ссылки с безопасными протоколами.
         if (!["https:", "http:"].includes(parsed.protocol)) {
           toast("Некорректная ссылка");
           return;
@@ -2543,7 +3339,8 @@
       search: "page-search",
       social: "page-social",
       favorites: "page-favorites",
-      notifications: "page-notifications",
+      showcase: "page-showcase",
+      history: "page-history",
       profile: "page-profile",
       faq: "page-faq"
     };
@@ -2557,13 +3354,14 @@
     }
 
     function renderNavigation() {
-      // FAQ открывается как внутренний экран без отдельной нижней вкладки.
       $$("[data-page]").forEach(button => {
         button.classList.toggle("active", button.dataset.page === state.page);
       });
 
-      $("#favorite-badge").textContent = String(state.favorites.length);
-      $("#favorite-badge").classList.toggle("hidden", state.favorites.length === 0);
+      const count = state.favoriteIds ? state.favoriteIds.size : 0;
+      const badge = $("#favorite-badge");
+      badge.textContent = String(count);
+      badge.classList.toggle("hidden", count === 0);
     }
 
     function showPage(page, options = {}) {
@@ -2571,7 +3369,6 @@
 
       haptic("light");
 
-      // Сохраняем предыдущий экран, чтобы можно было вернуться из FAQ.
       if (page !== "faq") {
         state.previousPage = page;
       }
@@ -2584,19 +3381,18 @@
 
       if (page === "search" || page === "social") {
         setTopTab(page);
-      } else if (page === "faq") {
-        // При открытии FAQ верхние табы сохраняют предыдущий выбор.
-      } else {
-        // Вторичные экраны не должны оставлять визуально активным таб соцсетей.
+      } else if (page !== "faq") {
         setTopTab("search");
       }
 
       renderNavigation();
       updateBotVisibility();
 
-      if (page === "favorites") {
-        renderFavorites();
-      }
+      if (page === "favorites") loadFavorites();
+      if (page === "showcase") loadShowcase();
+      if (page === "history") loadHistory();
+      if (page === "profile") loadProfile();
+      if (page === "search") loadActiveSearches();
 
       if (!options.keepScroll) {
         window.scrollTo({ top: 0, behavior: "smooth" });
@@ -2616,23 +3412,31 @@
     });
 
     /* ======================================================
-       ПОЛЕ ВВОДА И ВСТАВКА ИЗ БУФЕРА
+       ВАЛИДАЦИЯ ССЫЛКИ И ВСТАВКА ИЗ БУФЕРА
        ====================================================== */
+
+    function isValidAvitoURL(value) {
+      try {
+        const url = new URL(value);
+        return (
+          url.protocol === "https:" &&
+          (url.hostname === "avito.ru" || url.hostname.endsWith(".avito.ru"))
+        );
+      } catch (error) {
+        return false;
+      }
+    }
 
     $("#paste-btn").addEventListener("click", async () => {
       haptic("light");
-
       const input = $("#avito-url");
 
       try {
-        // Clipboard API работает в защищённом контексте
-        // и может требовать дополнительного разрешения.
         if (navigator.clipboard && navigator.clipboard.readText) {
           const text = await navigator.clipboard.readText();
 
           if (text.trim()) {
             input.value = text.trim();
-            input.dispatchEvent(new Event("input", { bubbles: true }));
             $("#form-error").classList.add("hidden");
             toast("Ссылка вставлена");
             input.focus();
@@ -2645,8 +3449,6 @@
           toast("Вставь ссылку через меню буфера обмена");
         }
       } catch (error) {
-        // Telegram WebView может запретить чтение буфера.
-        // Пользователь всё ещё может вставить текст вручную.
         input.focus();
         toast("Разреши буфер обмена или вставь ссылку вручную");
       }
@@ -2656,28 +3458,35 @@
       $("#form-error").classList.add("hidden");
     });
 
-    function isValidAvitoURL(value) {
-      try {
-        const url = new URL(value);
-
-        return (
-          url.protocol === "https:" &&
-          (
-            url.hostname === "avito.ru" ||
-            url.hostname.endsWith(".avito.ru")
-          )
-        );
-      } catch (error) {
-        return false;
-      }
-    }
+    $("#avito-url").addEventListener("keydown", event => {
+      if (event.key === "Enter") startSearch();
+    });
 
     /* ======================================================
-       ПОИСК
+       ГЛАВНАЯ: СОЗДАНИЕ ПОИСКА
        ====================================================== */
 
-    function startSearch() {
+    function restoreSearchButton() {
+      const button = $("#search-btn");
+      button.disabled = false;
+      button.innerHTML = `
+        <svg viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2.2"
+          stroke-linecap="round" aria-hidden="true">
+          <circle cx="10.8" cy="10.8" r="6.8"/>
+          <path d="m16 16 4.2 4.2"/>
+        </svg>
+        Найти дешевле
+      `;
+    }
+
+    async function startSearch() {
       haptic("medium");
+
+      if (!TELEGRAM_ID) {
+        toast("Открой через бота");
+        return;
+      }
 
       const input = $("#avito-url");
       const url = input.value.trim();
@@ -2701,123 +3510,241 @@
 
       error.classList.add("hidden");
 
-      clearTimeout(searchTimer);
-
-      state.searchStatus = "searching";
-      state.searches += 1;
-      $("#search-total").textContent = String(state.searches);
-
-      showPage("search", { keepScroll: true });
-
-      const resultsSection = $("#results-section");
-      resultsSection.classList.remove("hidden");
-
-      $("#results-heading").textContent = "Ищем выгодные предложения";
-      $("#results-count").textContent = "Сравниваем похожие товары…";
-
-      $("#product-list").innerHTML = "";
-      $("#skeleton-list").classList.remove("hidden");
-
-      const searchButton = $("#search-btn");
-      searchButton.disabled = true;
-      searchButton.innerHTML = `
+      const btn = $("#search-btn");
+      btn.disabled = true;
+      btn.innerHTML = `
         <svg class="spin" viewBox="0 0 24 24" fill="none"
           stroke="currentColor" stroke-width="2.3" aria-hidden="true">
           <circle cx="12" cy="12" r="9" stroke-opacity=".25"/>
           <path d="M21 12a9 9 0 0 0-9-9"/>
         </svg>
-        Ищем аналоги…
+        Создаём поиск…
       `;
 
+      state.searchStatus = "searching";
       updateBotVisibility();
 
-      // В демонстрации задержка имитирует работу сервера.
-      // Реальная реализация должна вызывать backend API здесь.
-      searchTimer = setTimeout(() => {
-        state.results = MOCK_PRODUCTS.map(product => ({ ...product }));
+      const res = await safeApi("POST", "/api/search/create", {
+        telegram_id: TELEGRAM_ID,
+        username: getUsername(),
+        url,
+        region: "",
+        max_price: null,
+        filters: {}
+      }, "Не удалось создать поиск");
 
-        // В демонстрационных карточках ссылки ведут на Avito.
-        // Для production здесь должны быть реальные URL найденных объявлений.
-        state.searchStatus = "results";
+      state.searchStatus = "idle";
+      updateBotVisibility();
+      restoreSearchButton();
 
-        $("#skeleton-list").classList.add("hidden");
-        $("#results-heading").textContent = "Выгодные находки";
-        $("#results-count").textContent =
-          `Найдено предложений: ${state.results.length}`;
-
-        renderProducts(state.results);
-        restoreSearchButton();
-        updateBotVisibility();
-
+      if (res && res.search) {
+        toast("✅ Поиск создан!");
+        input.value = "";
         haptic("success");
-        toast("Поиск завершён");
-      }, 2400);
-    }
-
-    function restoreSearchButton() {
-      const button = $("#search-btn");
-
-      button.disabled = false;
-      button.innerHTML = `
-        <svg viewBox="0 0 24 24" fill="none"
-          stroke="currentColor" stroke-width="2.2"
-          stroke-linecap="round" aria-hidden="true">
-          <circle cx="10.8" cy="10.8" r="6.8"/>
-          <path d="m16 16 4.2 4.2"/>
-        </svg>
-        Найти дешевле
-      `;
+        await loadActiveSearches();
+      }
     }
 
     $("#search-btn").addEventListener("click", startSearch);
 
-    $("#avito-url").addEventListener("keydown", event => {
-      if (event.key === "Enter") {
-        startSearch();
-      }
-    });
-
     /* ======================================================
-       КАРТОЧКИ ТОВАРОВ
+       ГЛАВНАЯ: МОИ АКТИВНЫЕ ПОИСКИ
        ====================================================== */
 
-    function productCardHTML(product, index = 0) {
-      const isFavorite = state.favorites.some(item => item.id === product.id);
-      const discount = discountPercent(product.oldPrice, product.price);
+    function searchStatusInfo(search) {
+      const now = Date.now();
+      const expiresAt = search.expires_at ? new Date(search.expires_at).getTime() : null;
+      const isExpired = expiresAt !== null && now > expiresAt;
+
+      if (isExpired) {
+        return { label: "Истёк", cls: "status-expired", remainingHours: 0, expired: true };
+      }
+
+      if (!search.is_active) {
+        return {
+          label: "На паузе",
+          cls: "status-paused",
+          remainingHours: expiresAt ? Math.max(0, Math.round((expiresAt - now) / 3600000)) : null,
+          expired: false
+        };
+      }
+
+      return {
+        label: "Активен",
+        cls: "status-active",
+        remainingHours: expiresAt ? Math.max(0, Math.round((expiresAt - now) / 3600000)) : null,
+        expired: false
+      };
+    }
+
+    function searchCardHTML(search) {
+      const info = searchStatusInfo(search);
+      const remainingText = info.remainingHours !== null
+        ? `⏰ Осталось ${info.remainingHours} ч.`
+        : "⏰ —";
+
+      return `
+        <div class="search-card" data-search-card="${search.id}">
+          <span class="search-card-status ${info.cls}">${info.label}</span>
+          <h3 class="search-card-title">${escapeHTML(search.title || "Без названия")}</h3>
+          <div class="search-card-meta">
+            <span>${remainingText}</span>
+            <span>📦 Найдено: ${search.found_count ?? 0}</span>
+          </div>
+          <div class="search-card-actions">
+            <button class="accent" data-action="items" data-search-id="${search.id}" type="button">
+              📋 Товары
+            </button>
+            <button data-action="toggle" data-search-id="${search.id}" data-active="${search.is_active}" type="button">
+              ${search.is_active ? "⏸ Пауза" : "▶️ Пуск"}
+            </button>
+            <button class="danger" data-action="delete" data-search-id="${search.id}" type="button">
+              🗑 Удалить
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    async function loadActiveSearches() {
+      if (!TELEGRAM_ID) {
+        $("#active-searches-skeleton").classList.add("hidden");
+        $("#active-searches-empty").classList.remove("hidden");
+        $("#active-searches-count").textContent = "Недоступно без Telegram";
+        return;
+      }
+
+      $("#active-searches-skeleton").classList.remove("hidden");
+      $("#active-searches-list").innerHTML = "";
+      $("#active-searches-empty").classList.add("hidden");
+
+      const data = await safeApi("GET", `/api/search/list?telegram_id=${TELEGRAM_ID}`, undefined, "Не удалось загрузить поиски");
+      $("#active-searches-skeleton").classList.add("hidden");
+
+      state.searches = (data && data.searches) || [];
+
+      if (!state.searches.length) {
+        $("#active-searches-empty").classList.remove("hidden");
+        $("#active-searches-count").textContent = "0 активных поисков";
+        $("#search-total").textContent = "0";
+        return;
+      }
+
+      $("#active-searches-count").textContent =
+        `${state.searches.length} ${pluralize(state.searches.length, "поиск", "поиска", "поисков")}`;
+      $("#search-total").textContent = String(state.searches.length);
+
+      $("#active-searches-list").innerHTML = state.searches.map(searchCardHTML).join("");
+    }
+
+    async function toggleSearchPause(id, isActive) {
+      haptic("light");
+      const endpoint = isActive ? "pause" : "resume";
+
+      const res = await safeApi(
+        "POST",
+        `/api/search/${id}/${endpoint}?telegram_id=${TELEGRAM_ID}`,
+        undefined,
+        "Не удалось изменить статус поиска"
+      );
+
+      if (res !== null) {
+        toast(isActive ? "⏸ Поиск на паузе" : "▶️ Поиск возобновлён");
+        await loadActiveSearches();
+        if (state.page === "history") await loadHistory();
+      }
+    }
+
+    async function deleteSearch(id) {
+      haptic("light");
+
+      const doDelete = async () => {
+        const res = await safeApi(
+          "DELETE",
+          `/api/search/${id}?telegram_id=${TELEGRAM_ID}`,
+          undefined,
+          "Не удалось удалить поиск"
+        );
+
+        if (res !== null) {
+          toast("🗑 Поиск удалён");
+          await loadActiveSearches();
+          if (state.page === "history") await loadHistory();
+
+          if (state.currentResultsSearchId === id) {
+            $("#results-section").classList.add("hidden");
+            state.currentResultsSearchId = null;
+          }
+        }
+      };
+
+      if (tg && typeof tg.showConfirm === "function") {
+        tg.showConfirm("Удалить этот поиск?", ok => {
+          if (ok) doDelete();
+        });
+      } else if (window.confirm("Удалить этот поиск?")) {
+        doDelete();
+      }
+    }
+
+    async function repeatSearch(id) {
+      const search = state.historySearches.find(s => s.id === id)
+        || state.searches.find(s => s.id === id);
+
+      if (!search) {
+        toast("Не удалось найти данные поиска");
+        return;
+      }
+
+      haptic("medium");
+
+      const res = await safeApi("POST", "/api/search/create", {
+        telegram_id: TELEGRAM_ID,
+        username: getUsername(),
+        url: search.url,
+        region: search.region || "",
+        max_price: search.max_price ?? null,
+        filters: {}
+      }, "Не удалось создать поиск");
+
+      if (res && res.search) {
+        toast("✅ Поиск создан!");
+        await loadActiveSearches();
+        await loadHistory();
+        showPage("search");
+      }
+    }
+
+    /* ======================================================
+       ГЛАВНАЯ: ПРОСМОТР ТОВАРОВ КОНКРЕТНОГО ПОИСКА
+       ====================================================== */
+
+    function resultItemCardHTML(item, index = 0) {
+      const isFav = state.favoriteIds.has(item.id);
+      const city = extractCity(item.title) || "—";
 
       return `
         <article class="product-card" style="animation-delay:${Math.min(index * 55, 300)}ms">
           <div class="product-photo">
-            <div class="product-emoji">${escapeHTML(product.emoji)}</div>
-
-            <img
-              src="${escapeHTML(product.image)}"
-              alt="${escapeHTML(product.title)}"
-              loading="lazy"
-              onerror="this.style.display='none'"
-            >
-
-            <span class="discount-chip">−${discount}%</span>
+            ${item.image
+              ? `<img src="${escapeHTML(item.image)}" alt="${escapeHTML(item.title)}" loading="lazy" onerror="this.style.display='none'">`
+              : `<div class="product-emoji">📦</div>`
+            }
           </div>
 
           <div class="product-content">
-            <h3 class="product-name">${escapeHTML(product.title)}</h3>
+            <h3 class="product-name">${escapeHTML(item.title)}</h3>
 
             <div class="product-location">
-              📍 ${escapeHTML(product.location)}
+              📍 ${escapeHTML(city)} · ${timeAgo(item.found_at)}
             </div>
 
             <div class="price-row">
-              <span class="price-old">${formatPrice(product.oldPrice)}</span>
-              <span class="price-new">${formatPrice(product.price)}</span>
+              <span class="price-new">${formatPrice(item.price)}</span>
             </div>
 
             <div class="product-bottom">
-              <button
-                class="open-avito"
-                data-open-product="${product.id}"
-                type="button"
-              >
+              <button class="open-avito" data-open-url="${escapeHTML(item.url)}" type="button">
                 Открыть на Avito
                 <svg viewBox="0 0 24 24" fill="none"
                   stroke="currentColor" stroke-width="2"
@@ -2830,14 +3757,14 @@
               </button>
 
               <button
-                class="favorite-btn ${isFavorite ? "is-favorite" : ""}"
-                data-favorite="${product.id}"
+                class="favorite-btn ${isFav ? "is-favorite" : ""}"
+                data-favorite-item="${item.id}"
                 type="button"
-                aria-label="${isFavorite ? "Удалить из избранного" : "Добавить в избранное"}"
-                aria-pressed="${isFavorite}"
+                aria-pressed="${isFav}"
+                aria-label="${isFav ? "Удалить из избранного" : "Добавить в избранное"}"
               >
                 <svg viewBox="0 0 24 24"
-                  fill="${isFavorite ? "currentColor" : "none"}"
+                  fill="${isFav ? "currentColor" : "none"}"
                   stroke="currentColor" stroke-width="1.9"
                   stroke-linejoin="round" aria-hidden="true">
                   <path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9L12 3Z"/>
@@ -2849,29 +3776,12 @@
       `;
     }
 
-    function renderProducts(products) {
-      const container = $("#product-list");
-
-      if (!products.length) {
-        container.innerHTML = `
-          <div class="empty-state">
-            <div class="empty-icon">🔎</div>
-            <strong>Пока ничего не найдено</strong>
-            Попробуй изменить сортировку или выполнить новый поиск.
-          </div>
-        `;
-        return;
-      }
-
-      container.innerHTML = products.map(productCardHTML).join("");
-    }
-
-    function sortedProducts(products) {
+    function sortResultItems(items) {
       const sort = $("#sort-select").value;
-      const sorted = [...products];
+      const sorted = [...items];
 
       if (sort === "new") {
-        sorted.sort((a, b) => b.date - a.date);
+        sorted.sort((a, b) => new Date(b.found_at) - new Date(a.found_at));
       } else {
         sorted.sort((a, b) => a.price - b.price);
       }
@@ -2879,99 +3789,500 @@
       return sorted;
     }
 
+    function renderResultsProducts(items) {
+      const container = $("#product-list");
+
+      if (!items.length) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">🔎</div>
+            <strong>Пока ничего не найдено</strong>
+            Поиск ещё обрабатывается — загляни чуть позже.
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = sortResultItems(items).map(resultItemCardHTML).join("");
+    }
+
     $("#sort-select").addEventListener("change", () => {
       haptic("light");
-
-      if (state.searchStatus === "results") {
-        renderProducts(sortedProducts(state.results));
-      }
+      renderResultsProducts(state.currentResultsItems);
     });
+
+    async function openSearchItems(searchId) {
+      if (!TELEGRAM_ID) {
+        toast("Открой через бота");
+        return;
+      }
+
+      const search = state.searches.find(s => s.id === searchId)
+        || state.historySearches.find(s => s.id === searchId);
+
+      state.currentResultsSearchId = searchId;
+
+      const section = $("#results-section");
+      section.classList.remove("hidden");
+
+      $("#results-heading").textContent = search ? `Товары: ${search.title}` : "Товары";
+      $("#results-count").textContent = "Загрузка…";
+      $("#skeleton-list").classList.remove("hidden");
+      $("#product-list").innerHTML = "";
+
+      section.scrollIntoView({ behavior: "smooth", block: "start" });
+
+      const data = await safeApi(
+        "GET",
+        `/api/search/${searchId}/items?telegram_id=${TELEGRAM_ID}&limit=100`,
+        undefined,
+        "Не удалось загрузить товары"
+      );
+
+      $("#skeleton-list").classList.add("hidden");
+
+      const items = (data && data.items) || [];
+      state.currentResultsItems = items;
+
+      $("#results-count").textContent = `Найдено предложений: ${items.length}`;
+      renderResultsProducts(items);
+    }
 
     /* ======================================================
        ИЗБРАННОЕ
        ====================================================== */
 
-    function toggleFavorite(id) {
-      haptic("light");
-
-      const product = state.results.find(item => item.id === id)
-        || MOCK_PRODUCTS.find(item => item.id === id);
-
-      if (!product) return;
-
-      const index = state.favorites.findIndex(item => item.id === id);
-
-      if (index >= 0) {
-        state.favorites.splice(index, 1);
-        toast("Удалено из избранного");
-      } else {
-        state.favorites.push({ ...product });
-        toast("Добавлено в избранное ⭐");
-      }
-
-      // Обновляем карточки в текущем списке и счётчик навигации.
-      if (state.searchStatus === "results") {
-        renderProducts(sortedProducts(state.results));
-      }
-
-      renderFavorites();
-      renderNavigation();
-    }
-
-    function renderFavorites() {
-      const container = $("#favorites-list");
-
-      if (!state.favorites.length) {
-        container.innerHTML = `
-          <div class="empty-state">
-            <div class="empty-icon">⭐</div>
-            <strong>Здесь пока пусто</strong>
-            Сохраняй товары с помощью звёздочки в карточке результата.
-            <button class="primary-btn" id="favorites-search-btn" style="margin-top:18px">
-              🔍 Перейти к поиску
-            </button>
-          </div>
-        `;
-
-        const button = $("#favorites-search-btn");
-
-        if (button) {
-          button.addEventListener("click", () => showPage("search"));
-        }
-
-        return;
-      }
-
-      container.innerHTML = `
-        <div class="product-list">
-          ${state.favorites.map(productCardHTML).join("")}
+    function emptyFavoritesHTML() {
+      return `
+        <div class="empty-state">
+          <div class="empty-icon">⭐</div>
+          <strong>Здесь пока пусто</strong>
+          Сохраняй товары звёздочкой в витрине или результатах поиска.
+          <button class="primary-btn" id="favorites-search-btn" style="margin-top:18px">
+            🔍 Перейти к поиску
+          </button>
         </div>
       `;
     }
 
-    /* ======================================================
-       ОБРАБОТЧИКИ КАРТОЧЕК
-       ====================================================== */
+    function bindFavoritesEmptyButton() {
+      const btn = $("#favorites-search-btn");
+      if (btn) btn.addEventListener("click", () => showPage("search"));
+    }
 
-    document.addEventListener("click", event => {
-      const favoriteButton = event.target.closest("[data-favorite]");
-
-      if (favoriteButton) {
-        toggleFavorite(Number(favoriteButton.dataset.favorite));
+    async function loadFavorites() {
+      if (!TELEGRAM_ID) {
+        $("#favorites-skeleton").classList.add("hidden");
+        $("#favorites-list").innerHTML = emptyFavoritesHTML();
+        bindFavoritesEmptyButton();
         return;
       }
 
-      const openButton = event.target.closest("[data-open-product]");
+      $("#favorites-skeleton").classList.remove("hidden");
+      $("#favorites-list").innerHTML = "";
 
-      if (openButton) {
-        const id = Number(openButton.dataset.openProduct);
-        const product = state.results.find(item => item.id === id)
-          || state.favorites.find(item => item.id === id)
-          || MOCK_PRODUCTS.find(item => item.id === id);
+      const data = await safeApi(
+        "GET",
+        `/api/favorites/list?telegram_id=${TELEGRAM_ID}`,
+        undefined,
+        "Не удалось загрузить избранное"
+      );
 
-        if (product) {
-          openExternal(product.url);
+      $("#favorites-skeleton").classList.add("hidden");
+
+      const items = (data && data.items) || [];
+      state.favorites = items;
+      state.favoriteIds = new Set(items.map(i => i.item_id));
+
+      renderNavigation();
+
+      if (!items.length) {
+        $("#favorites-list").innerHTML = emptyFavoritesHTML();
+        bindFavoritesEmptyButton();
+        return;
+      }
+
+      const cards = items.map((it, i) => showcaseCardHTML({
+        id: it.item_id,
+        title: it.title,
+        price: it.price,
+        url: it.url,
+        image: it.image,
+        found_at: it.added_at,
+        is_new: false,
+        avgPrice: null,
+        searchId: null
+      }, i, false)).join("");
+
+      $("#favorites-list").innerHTML = `<div class="showcase-grid">${cards}</div>`;
+    }
+
+    async function toggleFavoriteItem(itemId) {
+      haptic("light");
+
+      if (!TELEGRAM_ID) {
+        toast("Открой через бота");
+        return;
+      }
+
+      const isFav = state.favoriteIds.has(itemId);
+
+      if (isFav) {
+        // Backend не предоставляет отдельного эндпоинта удаления —
+        // убираем из избранного локально (оптимистичное обновление UI).
+        state.favoriteIds.delete(itemId);
+        state.favorites = state.favorites.filter(f => f.item_id !== itemId);
+        toast("Удалено из избранного");
+      } else {
+        const res = await safeApi("POST", "/api/favorites/add", {
+          telegram_id: TELEGRAM_ID,
+          item_id: itemId
+        }, "Не удалось добавить в избранное");
+
+        if (!res) return;
+
+        state.favoriteIds.add(itemId);
+        toast("Добавлено в избранное ⭐");
+      }
+
+      renderNavigation();
+
+      if (state.page === "favorites") loadFavorites();
+      if (state.page === "showcase") renderShowcase();
+      if (state.currentResultsItems && state.currentResultsItems.length) {
+        renderResultsProducts(state.currentResultsItems);
+      }
+    }
+
+    /* ======================================================
+       ВИТРИНА
+       ====================================================== */
+
+    function showcaseCardHTML(item, index, locked) {
+      const discount = discountPercentFor(item);
+      const city = extractCity(item.title);
+      const isFav = state.favoriteIds.has(item.id);
+      const timeStr = timeAgo(item.found_at);
+
+      const lockOverlay = locked ? `
+        <div class="lock-overlay">
+          <div class="lock-overlay-icon">🔒</div>
+          <button type="button" data-open-plans>Оформить подписку</button>
+        </div>
+      ` : "";
+
+      return `
+        <article class="showcase-card ${locked ? "locked" : ""}" style="animation-delay:${Math.min(index * 45, 300)}ms">
+          ${lockOverlay}
+          <div class="showcase-inner" ${locked ? "" : `data-card-url="${escapeHTML(item.url || "")}"`}>
+            <div class="showcase-photo">
+              ${item.image
+                ? `<img src="${escapeHTML(item.image)}" alt="${escapeHTML(item.title)}" loading="lazy" onerror="this.style.display='none'">`
+                : `<div class="showcase-photo-empty">📦</div>`
+              }
+
+              ${discount > 0 ? `<span class="showcase-badge-discount">−${discount}%</span>` : ""}
+
+              <span class="showcase-badge-time">
+                ${item.is_new ? '<span class="new-dot"></span>' : ""}
+                ${timeStr}
+              </span>
+
+              <button
+                class="showcase-fav ${isFav ? "is-favorite" : ""}"
+                data-favorite-item="${item.id}"
+                type="button"
+                aria-label="Избранное"
+              >
+                <svg viewBox="0 0 24 24"
+                  fill="${isFav ? "currentColor" : "none"}"
+                  stroke="currentColor" stroke-width="1.9"
+                  stroke-linejoin="round" aria-hidden="true">
+                  <path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9L12 3Z"/>
+                </svg>
+              </button>
+            </div>
+
+            <div class="showcase-body">
+              <h3 class="showcase-name">${escapeHTML(item.title)}</h3>
+              <div class="showcase-price">${formatPrice(item.price)}</div>
+              ${item.avgPrice ? `<div class="showcase-avg">средняя ${formatPrice(item.avgPrice)}</div>` : ""}
+              ${city ? `<div class="showcase-city">📍 ${escapeHTML(city)}</div>` : ""}
+            </div>
+          </div>
+        </article>
+      `;
+    }
+
+    function renderShowcaseChips(searches) {
+      const container = $("#showcase-chips");
+
+      const chips = [
+        `<button class="chip ${state.showcaseFilter === "all" ? "active" : ""}" data-showcase-filter="all" type="button">Все</button>`
+      ].concat(searches.map(s => `
+        <button class="chip ${String(state.showcaseFilter) === String(s.id) ? "active" : ""}" data-showcase-filter="${s.id}" type="button">
+          ${escapeHTML(truncate(s.title || "Поиск", 16))}
+        </button>
+      `));
+
+      container.innerHTML = chips.join("");
+    }
+
+    function applyShowcaseFilters() {
+      let items = [...state.showcaseItems];
+
+      if (state.showcaseFilter !== "all") {
+        items = items.filter(it => String(it.searchId) === String(state.showcaseFilter));
+      }
+
+      if (state.showcaseCityOnly) {
+        const myRegions = new Set(
+          state.searches.map(s => (s.region || "").toLowerCase()).filter(Boolean)
+        );
+
+        items = items.filter(it => {
+          const city = extractCity(it.title);
+          return city && myRegions.has(city.toLowerCase());
+        });
+      }
+
+      if (state.showcaseSort === "new") {
+        items.sort((a, b) => new Date(b.found_at) - new Date(a.found_at));
+      } else if (state.showcaseSort === "discount") {
+        items.sort((a, b) => discountPercentFor(b) - discountPercentFor(a));
+      } else if (state.showcaseSort === "cheap") {
+        items.sort((a, b) => a.price - b.price);
+      }
+
+      return items;
+    }
+
+    function renderShowcase() {
+      const items = applyShowcaseFilters();
+      const grid = $("#showcase-grid");
+
+      if (!items.length) {
+        grid.innerHTML = "";
+        $("#showcase-empty").classList.remove("hidden");
+        return;
+      }
+
+      $("#showcase-empty").classList.add("hidden");
+
+      const isFree = state.subscription.plan === "free";
+
+      grid.innerHTML = items.map((item, index) => {
+        const locked = isFree && index >= 5;
+        return showcaseCardHTML(item, index, locked);
+      }).join("");
+    }
+
+    async function loadShowcase() {
+      if (!TELEGRAM_ID) {
+        $("#showcase-skeleton").classList.add("hidden");
+        $("#showcase-grid").innerHTML = "";
+        $("#showcase-empty").classList.remove("hidden");
+        return;
+      }
+
+      $("#showcase-skeleton").classList.remove("hidden");
+      $("#showcase-grid").innerHTML = "";
+      $("#showcase-empty").classList.add("hidden");
+
+      const listData = await safeApi(
+        "GET",
+        `/api/search/list?telegram_id=${TELEGRAM_ID}`,
+        undefined,
+        "Не удалось загрузить поиски"
+      );
+
+      const searches = (listData && listData.searches) || [];
+      state.searches = searches;
+
+      const allItems = [];
+
+      for (const search of searches) {
+        const itemsData = await safeApi(
+          "GET",
+          `/api/search/${search.id}/items?telegram_id=${TELEGRAM_ID}&limit=100`,
+          undefined,
+          null
+        );
+
+        const items = (itemsData && itemsData.items) || [];
+        if (!items.length) continue;
+
+        const avgPrice = Math.round(
+          items.reduce((sum, it) => sum + (Number(it.price) || 0), 0) / items.length
+        );
+
+        items.forEach(it => {
+          allItems.push({
+            ...it,
+            searchId: search.id,
+            searchTitle: search.title,
+            searchRegion: search.region,
+            avgPrice
+          });
+        });
+      }
+
+      allItems.sort((a, b) => new Date(b.found_at) - new Date(a.found_at));
+      state.showcaseItems = allItems;
+
+      $("#showcase-skeleton").classList.add("hidden");
+
+      renderShowcaseChips(searches);
+      renderShowcase();
+    }
+
+    function openShowcaseForSearch(id) {
+      showPage("showcase");
+
+      const applyFilter = (attempt = 0) => {
+        const chip = document.querySelector(`[data-showcase-filter="${id}"]`);
+
+        if (chip) {
+          state.showcaseFilter = String(id);
+          $$("#showcase-chips .chip").forEach(c => c.classList.remove("active"));
+          chip.classList.add("active");
+          renderShowcase();
+        } else if (attempt < 10) {
+          setTimeout(() => applyFilter(attempt + 1), 250);
         }
+      };
+
+      setTimeout(() => applyFilter(), 350);
+    }
+
+    $("#showcase-chips").addEventListener("click", event => {
+      const chip = event.target.closest("[data-showcase-filter]");
+      if (!chip) return;
+
+      haptic("light");
+      state.showcaseFilter = chip.dataset.showcaseFilter;
+
+      $$("#showcase-chips .chip").forEach(c => c.classList.toggle("active", c === chip));
+      renderShowcase();
+    });
+
+    $("#showcase-sort").addEventListener("change", () => {
+      haptic("light");
+      state.showcaseSort = $("#showcase-sort").value;
+      renderShowcase();
+    });
+
+    $("#showcase-city-toggle").addEventListener("click", () => {
+      haptic("light");
+      state.showcaseCityOnly = !state.showcaseCityOnly;
+
+      const el = $("#showcase-city-toggle");
+      el.classList.toggle("on", state.showcaseCityOnly);
+      el.setAttribute("aria-checked", String(state.showcaseCityOnly));
+
+      renderShowcase();
+    });
+
+    /* ======================================================
+       ИСТОРИЯ
+       ====================================================== */
+
+    function historyCardHTML(search) {
+      const info = searchStatusInfo(search);
+      const createdDate = search.created_at
+        ? new Date(search.created_at).toLocaleDateString("ru-RU")
+        : "—";
+
+      return `
+        <div class="search-card">
+          <span class="search-card-status ${info.cls}">${info.label}</span>
+          <h3 class="search-card-title">${escapeHTML(search.title || "Без названия")}</h3>
+          <div class="search-card-meta">
+            <span>🗓 ${createdDate}</span>
+            <span>📦 Найдено: ${search.found_count ?? 0}</span>
+          </div>
+          <div class="search-card-actions">
+            <button class="accent" data-action="open-showcase" data-search-id="${search.id}" type="button">
+              📂 Открыть товары
+            </button>
+            <button data-action="repeat" data-search-id="${search.id}" type="button">
+              🔁 Повторить поиск
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    async function loadHistory() {
+      if (!TELEGRAM_ID) {
+        $("#history-skeleton").classList.add("hidden");
+        $("#history-empty").classList.remove("hidden");
+        return;
+      }
+
+      $("#history-skeleton").classList.remove("hidden");
+      $("#history-list").innerHTML = "";
+      $("#history-empty").classList.add("hidden");
+
+      const data = await safeApi(
+        "GET",
+        `/api/search/list?telegram_id=${TELEGRAM_ID}`,
+        undefined,
+        "Не удалось загрузить историю"
+      );
+
+      $("#history-skeleton").classList.add("hidden");
+
+      const searches = (data && data.searches) || [];
+      state.historySearches = searches;
+
+      if (!searches.length) {
+        $("#history-empty").classList.remove("hidden");
+        return;
+      }
+
+      $("#history-list").innerHTML = searches.map(historyCardHTML).join("");
+    }
+
+    /* ======================================================
+       ДЕЛЕГИРОВАНИЕ КЛИКОВ: КАРТОЧКИ И ДЕЙСТВИЯ
+       ====================================================== */
+
+    document.addEventListener("click", event => {
+      const openPlansBtn = event.target.closest("[data-open-plans]");
+      if (openPlansBtn) {
+        openSheet("plans-sheet");
+        return;
+      }
+
+      const favItemBtn = event.target.closest("[data-favorite-item]");
+      if (favItemBtn) {
+        toggleFavoriteItem(Number(favItemBtn.dataset.favoriteItem));
+        return;
+      }
+
+      const openUrlBtn = event.target.closest("[data-open-url]");
+      if (openUrlBtn) {
+        openExternal(openUrlBtn.dataset.openUrl);
+        return;
+      }
+
+      const cardUrl = event.target.closest("[data-card-url]");
+      if (cardUrl && cardUrl.dataset.cardUrl) {
+        openExternal(cardUrl.dataset.cardUrl);
+        return;
+      }
+
+      const actionBtn = event.target.closest("[data-action]");
+      if (actionBtn) {
+        const id = Number(actionBtn.dataset.searchId);
+        const action = actionBtn.dataset.action;
+
+        if (action === "items") { openSearchItems(id); return; }
+        if (action === "toggle") { toggleSearchPause(id, actionBtn.dataset.active === "true"); return; }
+        if (action === "delete") { deleteSearch(id); return; }
+        if (action === "repeat") { repeatSearch(id); return; }
+        if (action === "open-showcase") { openShowcaseForSearch(id); return; }
       }
     });
 
@@ -2989,7 +4300,7 @@
     $("#profile-support-btn").addEventListener("click", openSupport);
 
     /* ======================================================
-       BOT HELPER: ПОЯВЛЕНИЕ ТОЛЬКО ВО ВРЕМЯ ПОИСКА
+       BOT HELPER
        ====================================================== */
 
     function clearBubbleTimers() {
@@ -3005,26 +4316,15 @@
       clearBubbleTimers();
       hideBubble();
 
-      // Первая подсказка появляется через 1,5 секунды.
       const first = setTimeout(() => {
-        if (state.searchStatus !== "searching" || state.page !== "search") {
-          return;
-        }
+        if (state.searchStatus !== "searching" || state.page !== "search") return;
 
         $("#bot-bubble").classList.add("visible");
 
-        // Подсказка видна около 5 секунд.
-        const hide = setTimeout(() => {
-          hideBubble();
-        }, 5000);
-
+        const hide = setTimeout(() => hideBubble(), 5000);
         bubbleTimers.push(hide);
 
-        // Следующее появление через 20 секунд.
-        const repeat = setTimeout(() => {
-          scheduleBubbleCycle();
-        }, 20000);
-
+        const repeat = setTimeout(() => scheduleBubbleCycle(), 20000);
         bubbleTimers.push(repeat);
       }, 1500);
 
@@ -3033,10 +4333,7 @@
 
     function updateBotVisibility() {
       const helper = $("#bot-helper");
-
-      const shouldShow =
-        state.page === "search" &&
-        state.searchStatus === "searching";
+      const shouldShow = state.page === "search" && state.searchStatus === "searching";
 
       helper.classList.toggle("hidden", !shouldShow);
 
@@ -3066,17 +4363,12 @@
 
     function openSheet(id) {
       haptic("light");
-
       closeSheet(false);
 
       currentSheet = $("#" + id);
-
       overlay.classList.add("open");
       currentSheet.classList.add("open");
-
       document.body.style.overflow = "hidden";
-
-      // Сохраняем доступность для клавиатуры и скринридера.
       currentSheet.setAttribute("aria-hidden", "false");
     }
 
@@ -3091,7 +4383,6 @@
       });
 
       document.body.style.overflow = "";
-
       currentSheet = null;
     }
 
@@ -3101,7 +4392,6 @@
       button.addEventListener("click", () => closeSheet());
     });
 
-    // Закрытие свайпом вниз.
     $$(".bottom-sheet").forEach(sheet => {
       sheet.addEventListener("touchstart", event => {
         touchStartY = event.touches[0].clientY;
@@ -3111,14 +4401,12 @@
         const touchEndY = event.changedTouches[0].clientY;
         const delta = touchEndY - touchStartY;
 
-        // Свайп закрывает панель только в направлении вниз.
         if (delta > 100 && sheet.scrollTop <= 0) {
           closeSheet();
         }
       }, { passive: true });
     });
 
-    // Закрытие клавишей Escape в браузере.
     document.addEventListener("keydown", event => {
       if (event.key === "Escape" && currentSheet) {
         closeSheet();
@@ -3126,7 +4414,7 @@
     });
 
     /* ======================================================
-       ДЕЙСТВИЯ В ПАНЕЛИ ПОМОЩИ
+       ПОМОЩЬ / FAQ
        ====================================================== */
 
     $("#help-support-btn").addEventListener("click", openSupport);
@@ -3140,7 +4428,6 @@
       showPage(state.previousPage || "search");
     });
 
-    // Раскрывающиеся ответы FAQ.
     $$(".faq-question").forEach(button => {
       button.addEventListener("click", () => {
         haptic("light");
@@ -3164,95 +4451,319 @@
       openSheet("plans-sheet");
     });
 
-    const planInfo = {
-      month: {
-        name: "1 месяц",
-        price: 299
-      },
-      quarter: {
-        name: "3 месяца",
-        price: 699
-      },
-      year: {
-        name: "12 месяцев",
-        price: 1999
+    function updateDurationPrices() {
+      const plan = PLANS[state.selectedPlan];
+
+      $$("[data-duration]").forEach(btn => {
+        const d = Number(btn.dataset.duration);
+        const priceEl = btn.querySelector(".duration-price");
+        if (priceEl && plan.prices[d] !== undefined) {
+          priceEl.textContent = formatPrice(plan.prices[d]);
+        }
+      });
+    }
+
+    function currentAmount() {
+      const plan = PLANS[state.selectedPlan];
+      let amount = plan.prices[state.selectedDuration] ?? 0;
+
+      if (state.promoDiscount) {
+        amount = Math.round(amount * (1 - state.promoDiscount));
       }
-    };
+
+      return amount;
+    }
+
+    function updatePayButton() {
+      $("#pay-btn").textContent = `⭐ Оплатить через СБП — ${formatPrice(currentAmount())}`;
+    }
 
     function selectPlan(plan) {
-      if (!planInfo[plan]) return;
+      if (!PLANS[plan]) return;
 
       haptic("light");
       state.selectedPlan = plan;
 
       $$("[data-plan]").forEach(button => {
         const selected = button.dataset.plan === plan;
-
         button.classList.toggle("selected", selected);
         button.setAttribute("aria-pressed", String(selected));
       });
+
+      updateDurationPrices();
+      updatePayButton();
+    }
+
+    function selectDuration(duration) {
+      haptic("light");
+      state.selectedDuration = duration;
+
+      $$("[data-duration]").forEach(button => {
+        button.classList.toggle("selected", Number(button.dataset.duration) === duration);
+      });
+
+      updatePayButton();
     }
 
     $$("[data-plan]").forEach(button => {
-      button.addEventListener("click", () => {
-        selectPlan(button.dataset.plan);
-      });
+      button.addEventListener("click", () => selectPlan(button.dataset.plan));
     });
 
-    $("#pay-btn").addEventListener("click", () => {
+    $$("[data-duration]").forEach(button => {
+      button.addEventListener("click", () => selectDuration(Number(button.dataset.duration)));
+    });
+
+    $("#promo-apply-btn").addEventListener("click", () => {
+      haptic("light");
+      const code = $("#promo-input").value.trim().toUpperCase();
+
+      if (!code) {
+        toast("Введи промокод");
+        return;
+      }
+
+      if (PROMO_CODES[code] !== undefined) {
+        state.promoDiscount = PROMO_CODES[code];
+        toast(`✅ Промокод применён: −${Math.round(PROMO_CODES[code] * 100)}%`);
+      } else {
+        state.promoDiscount = 0;
+        toast("❌ Промокод не найден");
+      }
+
+      updatePayButton();
+    });
+
+    $("#pay-btn").addEventListener("click", async () => {
       haptic("medium");
 
-      const plan = planInfo[state.selectedPlan];
+      if (!TELEGRAM_ID) {
+        toast("Открой через бота");
+        return;
+      }
 
-      if (!plan) return;
+      const btn = $("#pay-btn");
+      btn.disabled = true;
+      btn.textContent = "Создаём платёж…";
 
-      // Важно: это только демонстрационный обработчик.
-      // Никакой платёж не создаётся и подписка не активируется.
-      toast(`Выбран тариф «${plan.name}» за ${formatPrice(plan.price)}. Оплата пока не подключена.`);
+      const res = await safeApi("POST", "/api/payment/create", {
+        telegram_id: TELEGRAM_ID,
+        plan: state.selectedPlan,
+        duration: state.selectedDuration
+      }, "Не удалось создать платёж");
+
+      btn.disabled = false;
+      updatePayButton();
+
+      if (res && res.confirmation_url) {
+        closeSheet();
+        openExternal(res.confirmation_url);
+      }
     });
 
     /* ======================================================
-       ПОЛЬЗОВАТЕЛЬ TELEGRAM
+       ПОИСК ПО ФОТО
        ====================================================== */
 
-    function initializeProfile() {
+    $("#hero-photo-btn").addEventListener("click", () => {
+      haptic("light");
+      openSheet("photo-sheet");
+
+      if (state.subscription.plan === "premium_plus") {
+        $("#photo-locked").classList.add("hidden");
+        $("#photo-unlocked").classList.remove("hidden");
+      } else {
+        $("#photo-locked").classList.remove("hidden");
+        $("#photo-unlocked").classList.add("hidden");
+      }
+    });
+
+    $("#photo-upgrade-btn").addEventListener("click", () => {
+      closeSheet();
+      setTimeout(() => {
+        openSheet("plans-sheet");
+        selectPlan("premium_plus");
+      }, 300);
+    });
+
+    $("#photo-input").addEventListener("change", event => {
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+
+      reader.onload = () => {
+        state.photoBase64 = reader.result;
+        const preview = $("#photo-preview");
+        preview.src = reader.result;
+        preview.style.display = "block";
+      };
+
+      reader.readAsDataURL(file);
+    });
+
+    $("#photo-search-btn").addEventListener("click", async () => {
+      haptic("medium");
+
+      if (!TELEGRAM_ID) {
+        toast("Открой через бота");
+        return;
+      }
+
+      if (!state.photoBase64) {
+        toast("Сначала выбери фото");
+        return;
+      }
+
+      $("#photo-skeleton").classList.remove("hidden");
+      $("#photo-results").innerHTML = "";
+
+      try {
+        const res = await api("POST", "/api/search/photo", {
+          telegram_id: TELEGRAM_ID,
+          image_base64: state.photoBase64
+        });
+
+        $("#photo-skeleton").classList.add("hidden");
+
+        const items = (res && res.items) || [];
+
+        if (!items.length) {
+          $("#photo-results").innerHTML = `
+            <div class="empty-state">
+              <div class="empty-icon">📷</div>
+              <strong>Ничего не найдено</strong>
+              Попробуй другое фото.
+            </div>
+          `;
+          return;
+        }
+
+        const avgPrice = Math.round(
+          items.reduce((sum, it) => sum + (Number(it.price) || 0), 0) / items.length
+        );
+
+        $("#photo-results").innerHTML = items
+          .map((it, i) => showcaseCardHTML({ ...it, avgPrice }, i, false))
+          .join("");
+      } catch (error) {
+        $("#photo-skeleton").classList.add("hidden");
+        toast("Функция в разработке");
+      }
+    });
+
+    /* ======================================================
+       ПРОФИЛЬ
+       ====================================================== */
+
+    function initializeProfileBasic() {
       if (!tg || !tg.initDataUnsafe || !tg.initDataUnsafe.user) {
         $("#profile-name").textContent = "Пользователь RIV";
+        $("#profile-avatar").textContent = "R";
         return;
       }
 
       const user = tg.initDataUnsafe.user;
+      const displayName = [user.first_name, user.last_name].filter(Boolean).join(" ") || "Пользователь RIV";
 
-      // Эти данные используем только для отображения.
-      // Сервер обязан проверять tg.initData при реальной авторизации.
-      const displayName = [user.first_name, user.last_name]
-        .filter(Boolean)
-        .join(" ");
-
-      $("#profile-name").textContent = displayName || "Пользователь RIV";
+      $("#profile-name").textContent = displayName;
+      $("#profile-avatar").textContent = getInitials(displayName);
     }
+
+    const PLAN_NAMES = {
+      free: "Free",
+      standart: "Стандарт",
+      premium: "Премиум",
+      premium_plus: "Премиум Плюс"
+    };
+
+    async function loadProfile() {
+      initializeProfileBasic();
+
+      if (!TELEGRAM_ID) {
+        $("#profile-status-text").textContent = "Открой через бота";
+        return;
+      }
+
+      $("#profile-status-text").textContent = "Загрузка…";
+
+      const data = await safeApi(
+        "GET",
+        `/api/subscription/status?telegram_id=${TELEGRAM_ID}`,
+        undefined,
+        "Не удалось загрузить подписку"
+      );
+
+      const sub = data || { plan: "free", is_paid: false, plan_expires_at: null };
+      state.subscription = sub;
+
+      const planLabel = PLAN_NAMES[sub.plan] || "Free";
+
+      $("#profile-plan-name").textContent = `Тариф: ${planLabel}`;
+      $("#profile-status-text").textContent = sub.is_paid ? `${planLabel} активен` : "Бесплатный доступ";
+
+      if (sub.plan_expires_at) {
+        const date = new Date(sub.plan_expires_at).toLocaleDateString("ru-RU");
+        $("#profile-plan-expiry").textContent = `Действует до ${date}`;
+      } else {
+        $("#profile-plan-expiry").textContent = "Подписка не активна";
+      }
+
+      $("#search-total").textContent = String(state.searches.length);
+
+      if (state.page === "showcase") renderShowcase();
+    }
+
+    $("#referral-link").textContent = REFERRAL_URL;
+
+    $("#referral-copy-btn").addEventListener("click", async () => {
+      haptic("light");
+
+      try {
+        await navigator.clipboard.writeText(REFERRAL_URL);
+        toast("Ссылка скопирована");
+      } catch (error) {
+        toast("Не удалось скопировать ссылку");
+      }
+    });
+
+    $("#referral-share-btn").addEventListener("click", () => {
+      haptic("light");
+
+      const shareUrl =
+        `https://t.me/share/url?url=${encodeURIComponent(REFERRAL_URL)}` +
+        `&text=${encodeURIComponent("Нашёл крутой сервис для поиска выгодных товаров на Avito!")}`;
+
+      openExternal(shareUrl);
+    });
 
     /* ======================================================
        ПЕРВИЧНЫЙ ЗАПУСК
        ====================================================== */
 
     function initializeApp() {
-      initializeProfile();
+      TELEGRAM_ID = getTelegramId();
 
+      if (!TELEGRAM_ID) {
+        toast("Открой через бота");
+      }
+
+      initializeProfileBasic();
       renderNavigation();
-      renderFavorites();
       updateBotVisibility();
 
-      // Устанавливаем начальный экран поиска.
-      showPage("search", { keepScroll: true });
+      selectPlan("premium_plus");
+      selectDuration(30);
 
-      // Устанавливаем выбранный демонстрационный тариф.
-      selectPlan("quarter");
-
-      // Начальное состояние панелей — закрыто.
       $$(".bottom-sheet").forEach(sheet => {
         sheet.setAttribute("aria-hidden", "true");
       });
+
+      showPage("search", { keepScroll: true });
+
+      // Подписка нужна и в профиле, и для блокировок витрины/фото-поиска —
+      // подгружаем её заранее.
+      loadProfile();
+      loadFavorites();
     }
 
     initializeApp();
