@@ -2539,22 +2539,60 @@
       </section>
 
       <!-- ==================================================
-           ЭКРАН: ВИТРИНА (НОВЫЙ)
+           ЭКРАН: ВИТРИНА — ПОИСК ПО КАТЕГОРИЯМ
            ================================================== -->
-
       <section class="page hidden" id="page-showcase">
         <div class="page-header">
-          <div class="eyebrow" style="margin-bottom:10px">ВСЕ НАХОДКИ</div>
+          <div class="eyebrow" style="margin-bottom:10px">КАТАЛОГ ВЫГОДНЫХ НАХОДОК</div>
           <h1 class="page-title">🔥 Витрина</h1>
-          <p class="section-subtitle">Все находки по твоим поискам — в одной ленте.</p>
+          <p class="section-subtitle">Выбери категорию и задай фильтры — RIV найдёт предложения на Avito.</p>
+        </div>
+        <div class="chips-row" id="category-chips">
+          <button class="chip active" data-category="phones" type="button">📱 Телефоны</button>
+          <button class="chip" data-category="clothes" type="button">👕 Одежда</button>
+          <button class="chip" data-category="laptops" type="button">💻 Ноутбуки</button>
+          <button class="chip" data-category="games" type="button">🎮 Игры</button>
+          <button class="chip" data-category="shoes" type="button">👟 Обувь</button>
+        </div>
+        <div id="category-filter-form"></div>
+        <button class="primary-btn" id="category-search-btn" type="button">🔍 Найти выгодные</button>
+        <p class="helper-caption">Поиск создаётся в твоих активных поисках. Новые находки появятся во вкладке «Уведомления».</p>
+        <div class="results-top" style="margin-top:22px">
+          <div><h2 class="section-heading">Результаты поиска</h2><div class="results-count" id="category-results-count">Выбери фильтры и нажми «Найти»</div></div>
+        </div>
+        <div class="showcase-grid" id="category-results-grid"></div>
+        <div class="empty-state" id="category-results-empty" style="margin-top:12px">
+          <div class="empty-icon">🔎</div><strong>Пока нет результатов</strong>
+          Настрой фильтры и нажми «Найти выгодные».
+        </div>
+      </section>
+
+      <!-- ==================================================
+           ЭКРАН: УВЕДОМЛЕНИЯ
+           ================================================== -->
+
+      <section class="page hidden" id="page-notifications">
+        <div class="page-header">
+          <div class="eyebrow" style="margin-bottom:10px">НОВЫЕ НАХОДКИ</div>
+          <h1 class="page-title">🔔 Уведомления</h1>
+          <p class="section-subtitle">Находки по активным поискам обновляются автоматически.</p>
         </div>
 
-        <div class="chips-row" id="showcase-chips">
-          <button class="chip active" data-showcase-filter="all" type="button">Все</button>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px">
+          <div class="chips-row" id="notifications-time-chips" style="margin-bottom:0;flex:1">
+            <button class="chip active" data-time-filter="all" type="button">Все</button>
+            <button class="chip" data-time-filter="12" type="button">12 часов</button>
+            <button class="chip" data-time-filter="24" type="button">24 часа</button>
+            <button class="chip" data-time-filter="48" type="button">48 часов</button>
+          </div>
+          <button class="chip" id="notifications-favorites-btn" type="button" aria-label="Открыть избранное">⭐</button>
+        </div>
+        <div class="chips-row" id="notifications-search-chips">
+          <button class="chip active" data-notification-search-filter="all" type="button">Все</button>
         </div>
 
         <div class="filters-bar">
-          <select class="sort-select" id="showcase-sort" aria-label="Сортировка витрины" style="max-width:100%; flex:1">
+          <select class="sort-select" id="notifications-sort" aria-label="Сортировка уведомлений" style="max-width:100%; flex:1">
             <option value="new">Свежее</option>
             <option value="discount">Выгодное</option>
             <option value="cheap">Дешевле</option>
@@ -2563,10 +2601,10 @@
 
         <div class="toggle-row">
           <span>📍 Только мои города</span>
-          <div class="toggle" id="showcase-city-toggle" role="switch" aria-checked="false"></div>
+          <div class="toggle" id="notifications-city-toggle" role="switch" aria-checked="false"></div>
         </div>
 
-        <div class="showcase-grid hidden" id="showcase-skeleton">
+        <div class="showcase-grid hidden" id="notifications-skeleton">
           <div class="showcase-skeleton-card">
             <div class="skeleton showcase-skeleton-photo"></div>
             <div class="showcase-skeleton-lines">
@@ -2597,12 +2635,12 @@
           </div>
         </div>
 
-        <div class="showcase-grid" id="showcase-grid"></div>
+        <div class="showcase-grid" id="notifications-grid"></div>
 
-        <div class="empty-state hidden" id="showcase-empty">
+        <div class="empty-state hidden" id="notifications-empty">
           <div class="empty-icon">🔥</div>
-          <strong>Витрина пока пуста</strong>
-          Запусти поиск на главной — находки появятся здесь.
+          <strong>Уведомлений пока нет</strong>
+          Когда активные поиски найдут товары, они появятся здесь.
         </div>
       </section>
 
@@ -2642,6 +2680,7 @@
           <h1 class="page-title">Мой <span class="gradient-text">профиль</span></h1>
         </div>
 
+        <div style="display:flex;justify-content:flex-end;margin-bottom:10px"><button class="chip" id="profile-favorites-btn" type="button" aria-label="Открыть избранное">⭐ Избранное</button></div>
         <div class="profile-hero">
           <div class="profile-avatar" id="profile-avatar">R</div>
           <h2 class="profile-name" id="profile-name">Пользователь RIV</h2>
@@ -2792,19 +2831,20 @@
           <span>Главная</span>
         </button>
 
-        <button class="nav-item" data-page="favorites" aria-label="Избранное">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9L12 3Z"/>
-          </svg>
-          <span>Избранное</span>
-          <span class="nav-badge hidden" id="favorite-badge">0</span>
-        </button>
-
         <button class="nav-item" data-page="showcase" aria-label="Витрина">
           <svg viewBox="0 0 24 24" aria-hidden="true">
             <path d="M12 2c1 3-3 4-3 7a3 3 0 0 0 6 0c0-1-1-2-1-2 2 1 3 3 3 5a5 5 0 0 1-10 0c0-4 3-5 5-10Z"/>
           </svg>
           <span>Витрина</span>
+        </button>
+
+        <button class="nav-item" data-page="notifications" aria-label="Уведомления">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/>
+            <path d="M10 21h4"/>
+          </svg>
+          <span>Уведомления</span>
+          <span class="nav-badge hidden" id="notifications-badge">0</span>
         </button>
 
         <button class="nav-item" data-page="history" aria-label="История">
@@ -3106,6 +3146,9 @@
       showcaseFilter: "all",
       showcaseSort: "new",
       showcaseCityOnly: false,
+      notificationTimeFilter: "all",
+      category: "phones",
+      categoryResults: [],
 
       subscription: {
         plan: "free",
@@ -3340,6 +3383,7 @@
       social: "page-social",
       favorites: "page-favorites",
       showcase: "page-showcase",
+      notifications: "page-notifications",
       history: "page-history",
       profile: "page-profile",
       faq: "page-faq"
@@ -3358,10 +3402,12 @@
         button.classList.toggle("active", button.dataset.page === state.page);
       });
 
-      const count = state.favoriteIds ? state.favoriteIds.size : 0;
-      const badge = $("#favorite-badge");
-      badge.textContent = String(count);
-      badge.classList.toggle("hidden", count === 0);
+      const count = (state.showcaseItems || []).filter(item => item.is_new === true).length;
+      const badge = $("#notifications-badge");
+      if (badge) {
+        badge.textContent = String(count > 99 ? "99+" : count);
+        badge.classList.toggle("hidden", count === 0);
+      }
     }
 
     function showPage(page, options = {}) {
@@ -3389,7 +3435,7 @@
       updateBotVisibility();
 
       if (page === "favorites") loadFavorites();
-      if (page === "showcase") loadShowcase();
+      if (page === "notifications") loadShowcase();
       if (page === "history") loadHistory();
       if (page === "profile") loadProfile();
       if (page === "search") loadActiveSearches();
@@ -3948,7 +3994,7 @@
       renderNavigation();
 
       if (state.page === "favorites") loadFavorites();
-      if (state.page === "showcase") renderShowcase();
+      if (state.page === "notifications") renderShowcase();
       if (state.currentResultsItems && state.currentResultsItems.length) {
         renderResultsProducts(state.currentResultsItems);
       }
@@ -3960,7 +4006,7 @@
 
     function showcaseCardHTML(item, index, locked) {
       const discount = discountPercentFor(item);
-      const city = extractCity(item.title);
+      const city = item.city || item.location || extractCity(item.title);
       const isFav = state.favoriteIds.has(item.id);
       const timeStr = timeAgo(item.found_at);
 
@@ -3984,8 +4030,7 @@
               ${discount > 0 ? `<span class="showcase-badge-discount">−${discount}%</span>` : ""}
 
               <span class="showcase-badge-time">
-                ${item.is_new ? '<span class="new-dot"></span>' : ""}
-                ${timeStr}
+                ${item.is_new ? '<span class="new-dot"></span>NEW · ' : ""}${timeStr}
               </span>
 
               <button
@@ -4015,12 +4060,12 @@
     }
 
     function renderShowcaseChips(searches) {
-      const container = $("#showcase-chips");
+      const container = $("#notifications-search-chips");
 
       const chips = [
-        `<button class="chip ${state.showcaseFilter === "all" ? "active" : ""}" data-showcase-filter="all" type="button">Все</button>`
+        `<button class="chip ${state.showcaseFilter === "all" ? "active" : ""}" data-notification-search-filter="all" type="button">Все</button>`
       ].concat(searches.map(s => `
-        <button class="chip ${String(state.showcaseFilter) === String(s.id) ? "active" : ""}" data-showcase-filter="${s.id}" type="button">
+        <button class="chip ${String(state.showcaseFilter) === String(s.id) ? "active" : ""}" data-notification-search-filter="${s.id}" type="button">
           ${escapeHTML(truncate(s.title || "Поиск", 16))}
         </button>
       `));
@@ -4033,6 +4078,11 @@
 
       if (state.showcaseFilter !== "all") {
         items = items.filter(it => String(it.searchId) === String(state.showcaseFilter));
+      }
+
+      if (state.notificationTimeFilter !== "all") {
+        const cutoff = Date.now() - Number(state.notificationTimeFilter) * 3600000;
+        items = items.filter(it => it.found_at && new Date(it.found_at).getTime() >= cutoff);
       }
 
       if (state.showcaseCityOnly) {
@@ -4059,35 +4109,36 @@
 
     function renderShowcase() {
       const items = applyShowcaseFilters();
-      const grid = $("#showcase-grid");
+      const grid = $("#notifications-grid");
 
       if (!items.length) {
         grid.innerHTML = "";
-        $("#showcase-empty").classList.remove("hidden");
+        $("#notifications-empty").classList.remove("hidden");
         return;
       }
 
-      $("#showcase-empty").classList.add("hidden");
+      $("#notifications-empty").classList.add("hidden");
 
-      const isFree = state.subscription.plan === "free";
+      const limits = { free: 5, standart: 10, premium: 20, premium_plus: Infinity };
+      const limit = limits[state.subscription.plan] ?? 5;
 
       grid.innerHTML = items.map((item, index) => {
-        const locked = isFree && index >= 5;
+        const locked = index >= limit;
         return showcaseCardHTML(item, index, locked);
       }).join("");
     }
 
     async function loadShowcase() {
       if (!TELEGRAM_ID) {
-        $("#showcase-skeleton").classList.add("hidden");
-        $("#showcase-grid").innerHTML = "";
-        $("#showcase-empty").classList.remove("hidden");
+        $("#notifications-skeleton").classList.add("hidden");
+        $("#notifications-grid").innerHTML = "";
+        $("#notifications-empty").classList.remove("hidden");
         return;
       }
 
-      $("#showcase-skeleton").classList.remove("hidden");
-      $("#showcase-grid").innerHTML = "";
-      $("#showcase-empty").classList.add("hidden");
+      $("#notifications-skeleton").classList.remove("hidden");
+      $("#notifications-grid").innerHTML = "";
+      $("#notifications-empty").classList.add("hidden");
 
       const listData = await safeApi(
         "GET",
@@ -4130,21 +4181,22 @@
       allItems.sort((a, b) => new Date(b.found_at) - new Date(a.found_at));
       state.showcaseItems = allItems;
 
-      $("#showcase-skeleton").classList.add("hidden");
+      $("#notifications-skeleton").classList.add("hidden");
 
       renderShowcaseChips(searches);
       renderShowcase();
+      renderNavigation();
     }
 
     function openShowcaseForSearch(id) {
-      showPage("showcase");
+      showPage("notifications");
 
       const applyFilter = (attempt = 0) => {
-        const chip = document.querySelector(`[data-showcase-filter="${id}"]`);
+        const chip = document.querySelector(`[data-notification-search-filter="${id}"]`);
 
         if (chip) {
           state.showcaseFilter = String(id);
-          $$("#showcase-chips .chip").forEach(c => c.classList.remove("active"));
+          $$("#notifications-search-chips .chip").forEach(c => c.classList.remove("active"));
           chip.classList.add("active");
           renderShowcase();
         } else if (attempt < 10) {
@@ -4155,33 +4207,187 @@
       setTimeout(() => applyFilter(), 350);
     }
 
-    $("#showcase-chips").addEventListener("click", event => {
-      const chip = event.target.closest("[data-showcase-filter]");
+    $("#notifications-search-chips").addEventListener("click", event => {
+      const chip = event.target.closest("[data-notification-search-filter]");
       if (!chip) return;
 
       haptic("light");
-      state.showcaseFilter = chip.dataset.showcaseFilter;
+      state.showcaseFilter = chip.dataset.notificationSearchFilter;
 
-      $$("#showcase-chips .chip").forEach(c => c.classList.toggle("active", c === chip));
+      $$("#notifications-search-chips .chip").forEach(c => c.classList.toggle("active", c === chip));
       renderShowcase();
     });
 
-    $("#showcase-sort").addEventListener("change", () => {
+    $("#notifications-sort").addEventListener("change", () => {
       haptic("light");
-      state.showcaseSort = $("#showcase-sort").value;
+      state.showcaseSort = $("#notifications-sort").value;
       renderShowcase();
     });
 
-    $("#showcase-city-toggle").addEventListener("click", () => {
+    $("#notifications-city-toggle").addEventListener("click", () => {
       haptic("light");
       state.showcaseCityOnly = !state.showcaseCityOnly;
 
-      const el = $("#showcase-city-toggle");
+      const el = $("#notifications-city-toggle");
       el.classList.toggle("on", state.showcaseCityOnly);
       el.setAttribute("aria-checked", String(state.showcaseCityOnly));
 
       renderShowcase();
     });
+
+    /* ======================================================
+       ВИТРИНА: КАТЕГОРИЙНЫЕ ФИЛЬТРЫ И ПОИСК
+       ====================================================== */
+    const CATEGORY_FIELDS = {
+      phones: [
+        { id: "model", label: "Модель", placeholder: "iPhone 16 Pro, iPhone 15, Samsung S24…", type: "text" },
+        { id: "memory", label: "Память", type: "select", options: [["", "Любая"], ["128GB", "128 ГБ"], ["256GB", "256 ГБ"], ["512GB", "512 ГБ"], ["1TB", "1 ТБ"]] },
+        { id: "color", label: "Цвет", placeholder: "Например, золотой", type: "text" },
+        { id: "battery", label: "АКБ от (%)", placeholder: "90", type: "number" },
+        { id: "no_repair", label: "Без ремонта", type: "toggle" },
+        { id: "original", label: "Только оригинал", type: "toggle" },
+        { id: "max_price", label: "Цена до (₽)", placeholder: "Например, 80000", type: "number" },
+        { id: "region", label: "Регион", type: "select", options: [["all", "Вся Россия"], ["moskva", "Москва"], ["sankt-peterburg", "Санкт-Петербург"]] }
+      ],
+      clothes: [
+        { id: "type", label: "Тип", placeholder: "Куртка, футболка, штаны…", type: "text" },
+        { id: "brand", label: "Бренд", placeholder: "Nike, Adidas…", type: "text" },
+        { id: "size", label: "Размер", placeholder: "S / M / L / XL…", type: "text" },
+        { id: "condition", label: "Состояние", type: "select", options: [["", "Любое"], ["new", "Новое"], ["used", "Б/у"]] },
+        { id: "max_price", label: "Цена до (₽)", placeholder: "Например, 5000", type: "number" },
+        { id: "region", label: "Регион", type: "select", options: [["all", "Вся Россия"], ["moskva", "Москва"], ["sankt-peterburg", "Санкт-Петербург"]] }
+      ],
+      laptops: [
+        { id: "model", label: "Модель", placeholder: "MacBook Air M2, Lenovo…", type: "text" },
+        { id: "brand", label: "Бренд", placeholder: "Apple, ASUS, Lenovo…", type: "text" },
+        { id: "condition", label: "Состояние", type: "select", options: [["", "Любое"], ["new", "Новое"], ["used", "Б/у"]] },
+        { id: "max_price", label: "Цена до (₽)", placeholder: "Например, 70000", type: "number" },
+        { id: "region", label: "Регион", type: "select", options: [["all", "Вся Россия"], ["moskva", "Москва"], ["sankt-peterburg", "Санкт-Петербург"]] }
+      ],
+      games: [
+        { id: "model", label: "Игра / консоль", placeholder: "PS5, Nintendo Switch, Elden Ring…", type: "text" },
+        { id: "brand", label: "Бренд / платформа", placeholder: "Sony, Xbox, Nintendo…", type: "text" },
+        { id: "condition", label: "Состояние", type: "select", options: [["", "Любое"], ["new", "Новое"], ["used", "Б/у"]] },
+        { id: "max_price", label: "Цена до (₽)", placeholder: "Например, 30000", type: "number" },
+        { id: "region", label: "Регион", type: "select", options: [["all", "Вся Россия"], ["moskva", "Москва"], ["sankt-peterburg", "Санкт-Петербург"]] }
+      ],
+      shoes: [
+        { id: "model", label: "Модель", placeholder: "Air Force 1, Samba…", type: "text" },
+        { id: "brand", label: "Бренд", placeholder: "Nike, Adidas, New Balance…", type: "text" },
+        { id: "size", label: "Размер", placeholder: "Например, 42", type: "text" },
+        { id: "condition", label: "Состояние", type: "select", options: [["", "Любое"], ["new", "Новое"], ["used", "Б/у"]] },
+        { id: "max_price", label: "Цена до (₽)", placeholder: "Например, 10000", type: "number" },
+        { id: "region", label: "Регион", type: "select", options: [["all", "Вся Россия"], ["moskva", "Москва"], ["sankt-peterburg", "Санкт-Петербург"]] }
+      ]
+    };
+
+    function renderCategoryFilters() {
+      const fields = CATEGORY_FIELDS[state.category] || CATEGORY_FIELDS.phones;
+      $("#category-filter-form").innerHTML = fields.map(field => {
+        if (field.type === "toggle") return `<div class="toggle-row"><span>${escapeHTML(field.label)}</span><button type="button" class="toggle" data-category-toggle="${field.id}" role="switch" aria-checked="false" aria-label="${escapeHTML(field.label)}"></button></div>`;
+        let control;
+        if (field.type === "select") control = `<select id="category-${field.id}" class="sort-select" style="width:100%;max-width:none;min-height:46px;margin-top:7px">${field.options.map(o => `<option value="${escapeHTML(o[0])}">${escapeHTML(o[1])}</option>`).join("")}</select>`;
+        else control = `<input id="category-${field.id}" type="${field.type}" min="0" placeholder="${escapeHTML(field.placeholder || "")}" style="width:100%;min-height:46px;border-radius:12px;border:1px solid var(--border);background:var(--surface);padding:0 13px;color:var(--text);font-size:12px;margin-top:7px">`;
+        return `<label style="display:block;font-size:11px;font-weight:750;color:var(--text-secondary);margin:0 0 13px">${escapeHTML(field.label)}${control}</label>`;
+      }).join("");
+    }
+
+    $("#category-chips").addEventListener("click", event => {
+      const chip = event.target.closest("[data-category]");
+      if (!chip) return;
+      state.category = chip.dataset.category;
+      $$("#category-chips .chip").forEach(item => item.classList.toggle("active", item === chip));
+      renderCategoryFilters();
+      haptic("light");
+    });
+
+    $("#category-filter-form").addEventListener("click", event => {
+      const toggle = event.target.closest("[data-category-toggle]");
+      if (!toggle) return;
+      const on = toggle.getAttribute("aria-checked") !== "true";
+      toggle.classList.toggle("on", on);
+      toggle.setAttribute("aria-checked", String(on));
+      haptic("light");
+    });
+
+    function collectCategoryFilters() {
+      const result = {};
+      (CATEGORY_FIELDS[state.category] || []).forEach(field => {
+        if (field.type === "toggle") result[field.id] = $( `[data-category-toggle="${field.id}"]`)?.getAttribute("aria-checked") === "true";
+        else result[field.id] = $(`#category-${field.id}`)?.value?.trim() || "";
+      });
+      return result;
+    }
+
+    function categoryQuery(filters) {
+      const names = { phones: "телефоны", clothes: "одежда", laptops: "ноутбуки", games: "игры", shoes: "обувь" };
+      const parts = [filters.model, filters.type, filters.brand, filters.size, filters.memory, filters.color];
+      if (filters.battery) parts.push(`акб ${filters.battery}`);
+      if (filters.no_repair) parts.push("без ремонта");
+      if (filters.original) parts.push("оригинал");
+      if (filters.condition === "new") parts.push("новое");
+      if (filters.condition === "used") parts.push("б/у");
+      if (!parts.some(Boolean)) parts.push(names[state.category]);
+      return parts.filter(Boolean).join(" ").replace(/\s+/g, " ").trim();
+    }
+
+    async function searchCategory() {
+      haptic("medium");
+      if (!TELEGRAM_ID) { toast("Открой через бота"); return; }
+      const btn = $("#category-search-btn");
+      btn.disabled = true;
+      btn.textContent = "Ищем выгодные предложения…";
+      const filters = collectCategoryFilters();
+      const query = categoryQuery(filters);
+      const region = filters.region || "all";
+      const params = new URLSearchParams({ q: query, s: "2" });
+      if (filters.max_price) params.set("pmax", filters.max_price);
+      const url = `https://www.avito.ru/${region === "all" ? "" : region}?${params.toString()}`;
+      const payload = { telegram_id: TELEGRAM_ID, username: getUsername(), category: state.category, query, filters, url, region, max_price: filters.max_price ? Number(filters.max_price) : null };
+      let result = null;
+      try {
+        result = await api("POST", "/api/showcase/search", payload);
+      } catch (error) {
+        // Если новый endpoint ещё не развёрнут, создаём обычный отслеживаемый поиск.
+        try {
+          result = await api("POST", "/api/search/create", { ...payload, filters });
+        } catch (fallbackError) {
+          console.debug("Category search API error:", fallbackError);
+          toast("Не удалось запустить поиск. Проверь API.");
+        }
+      }
+      btn.disabled = false;
+      btn.textContent = "🔍 Найти выгодные";
+      if (!result) return;
+      const items = Array.isArray(result.items) ? result.items : (result.results || []);
+      state.categoryResults = items;
+      const avg = items.length ? Math.round(items.reduce((sum, item) => sum + (Number(item.price) || 0), 0) / items.length) : 0;
+      $("#category-results-grid").innerHTML = items.map((item, index) => showcaseCardHTML({ ...item, avgPrice: item.avgPrice || avg }, index, false)).join("");
+      $("#category-results-count").textContent = `${items.length} ${pluralize(items.length, "предложение", "предложения", "предложений")}`;
+      $("#category-results-empty").classList.toggle("hidden", items.length > 0);
+      toast("✅ Поиск создан, находки появятся в Уведомлениях");
+      if (result.search || result.search_id || result.id) await loadActiveSearches();
+      if (!items.length) {
+        // API может только создать поиск, а результаты придут позже в уведомления.
+        $("#category-results-empty").classList.remove("hidden");
+      }
+    }
+    $("#category-search-btn").addEventListener("click", searchCategory);
+    renderCategoryFilters();
+
+    // Уведомления обновляются каждые 60 секунд, только когда открыта соответствующая вкладка.
+    setInterval(() => {
+      if (state.page === "notifications" && document.visibilityState !== "hidden") loadShowcase();
+    }, 60000);
+
+    $("#notifications-time-chips").addEventListener("click", event => {
+      const chip = event.target.closest("[data-time-filter]");
+      if (!chip) return;
+      state.notificationTimeFilter = chip.dataset.timeFilter;
+      $$("#notifications-time-chips .chip").forEach(item => item.classList.toggle("active", item === chip));
+      renderShowcase();
+    });
+    $("#notifications-favorites-btn").addEventListener("click", () => showPage("favorites"));
 
     /* ======================================================
        ИСТОРИЯ
@@ -4710,8 +4916,11 @@
 
       $("#search-total").textContent = String(state.searches.length);
 
-      if (state.page === "showcase") renderShowcase();
+      if (state.page === "notifications") renderShowcase();
     }
+
+    const profileFavoritesButton = $("#profile-favorites-btn");
+    if (profileFavoritesButton) profileFavoritesButton.addEventListener("click", () => showPage("favorites"));
 
     $("#referral-link").textContent = REFERRAL_URL;
 
@@ -4764,6 +4973,7 @@
       // подгружаем её заранее.
       loadProfile();
       loadFavorites();
+      loadShowcase();
     }
 
     initializeApp();
